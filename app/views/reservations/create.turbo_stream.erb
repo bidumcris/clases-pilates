@@ -1,0 +1,20 @@
+<%= turbo_stream.append "reservations" do %>
+  <li class="reservation-item" style="padding: 1rem; border-bottom: 1px solid #eee;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong><%= @reservation.pilates_class.name %></strong>
+        <p style="margin: 0.25rem 0; color: #666;">
+          <%= @reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+        </p>
+        <span class="badge badge-confirmed">Confirmada</span>
+      </div>
+    </div>
+  </li>
+<% end %>
+
+<%= turbo_stream.replace "flash" do %>
+  <div class="alert alert-success" data-controller="alert" data-alert-auto-hide-value="3000">
+    Clase reservada exitosamente
+  </div>
+<% end %>
+

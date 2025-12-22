@@ -1,0 +1,32 @@
+{
+  "packageManager": "npm@10.8.2",
+  "name": "app",
+  "private": true,
+  "version": "0.1.0",
+  "browserslist": [
+    "defaults"
+  ],
+  "dependencies": {
+    "@swc/core": "^1.15.3",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "compression-webpack-plugin": "^11.1.0",
+    "css-loader": "^7.1.2",
+    "mini-css-extract-plugin": "^2.9.4",
+    "sass-loader": "^16.0.6",
+    "shakapacker": "9.4.0",
+    "style-loader": "^4.0.0",
+    "swc-loader": "^0.2.6",
+    "terser-webpack-plugin": "^5.3.15",
+    "vue": "^3.5.25",
+    "vue-loader": "^17.4.2",
+    "vue-template-compiler": "^2.7.16",
+    "webpack": "^5.103.0",
+    "webpack-assets-manifest": "^6.5.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-merge": "^6.0.1",
+    "webpack-subresource-integrity": "^5.1.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^5.2.2"
+  }
+}

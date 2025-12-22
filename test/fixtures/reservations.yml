@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  pilates_class: one
+  status: 1
+  reserved_at: 2025-12-08 13:27:38
+
+two:
+  user: two
+  pilates_class: two
+  status: 1
+  reserved_at: 2025-12-08 13:27:38

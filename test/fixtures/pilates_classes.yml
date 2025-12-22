@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  level: 1
+  room: one
+  instructor: one
+  start_time: 2025-12-08 13:27:26
+  end_time: 2025-12-08 13:27:26
+  max_capacity: 1
+
+two:
+  name: MyString
+  level: 1
+  room: two
+  instructor: two
+  start_time: 2025-12-08 13:27:26
+  end_time: 2025-12-08 13:27:26
+  max_capacity: 1

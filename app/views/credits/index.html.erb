@@ -1,0 +1,57 @@
+<div class="credits-page">
+  <h1>Créditos</h1>
+
+  <div class="card">
+    <div class="card-header">Resumen</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div>
+        <h3 style="color: #27ae60;"><%= @available_credits.count %></h3>
+        <p>Disponibles</p>
+      </div>
+      <div>
+        <h3 style="color: #e74c3c;"><%= @expired_credits.count %></h3>
+        <p>Expirados</p>
+      </div>
+      <div>
+        <h3 style="color: #95a5a6;"><%= @used_credits.count %></h3>
+        <p>Usados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Créditos por mes -->
+  <% @credits_by_month.each do |month, credits| %>
+    <div class="card">
+      <div class="card-header">
+        Créditos que expiran en <%= month.strftime("%B %Y") %>
+      </div>
+      <ul style="list-style: none; padding: 0;">
+        <% credits.each do |credit| %>
+          <li style="padding: 0.75rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <div>
+              <strong><%= credit.amount %> crédito(s)</strong>
+              <p style="margin: 0.25rem 0; color: #666;">
+                Expira: <%= credit.expires_at.strftime("%d/%m/%Y") %>
+              </p>
+            </div>
+            <div>
+              <% if credit.expired? %>
+                <span class="badge badge-danger">Expirado</span>
+              <% elsif credit.used? %>
+                <span class="badge badge-secondary">Usado</span>
+              <% else %>
+                <span class="badge badge-success">Disponible</span>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if @credits_by_month.empty? %>
+    <div class="card">
+      <p>No tienes créditos registrados</p>
+    </div>
+  <% end %>
+</div>

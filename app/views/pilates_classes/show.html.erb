@@ -1,0 +1,79 @@
+<div class="class-detail">
+  <%= link_to "← Volver a Agenda", agenda_path, class: "btn", style: "margin-bottom: 1rem;" %>
+
+  <div class="card">
+    <div class="card-header">
+      <h1><%= @pilates_class.name %></h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+      <div>
+        <h3 style="margin-bottom: 0.5rem;">Información</h3>
+        <p><strong>Nivel:</strong> <%= @pilates_class.level.humanize %></p>
+        <p><strong>Sala:</strong> <%= @pilates_class.room.name %></p>
+        <p><strong>Instructor:</strong> <%= @pilates_class.instructor.name %></p>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom: 0.5rem;">Horario</h3>
+        <p><strong>Inicio:</strong> <%= @pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %></p>
+        <p><strong>Fin:</strong> <%= @pilates_class.end_time.strftime("%H:%M") %></p>
+        <p><strong>Duración:</strong> <%= ((@pilates_class.end_time - @pilates_class.start_time) / 60).to_i %> minutos</p>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom: 0.5rem;">Disponibilidad</h3>
+        <p><strong>Capacidad:</strong> <%= @pilates_class.max_capacity %> personas</p>
+        <p><strong>Disponibles:</strong> <%= @available_spots %> lugares</p>
+        <% availability_class = case @pilates_class.availability_percentage
+             when 0..25 then 'availability-low'
+             when 26..50 then 'availability-medium'
+             else 'availability-high'
+           end %>
+        <p>
+          <span class="availability-badge <%= availability_class %>">
+            <%= @pilates_class.availability_percentage %>% disponible
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #eee;">
+      <% if @has_reservation %>
+        <div class="alert alert-success">
+          Ya tienes una reserva para esta clase
+        </div>
+      <% elsif @can_reserve && !@pilates_class.full? %>
+        <% if current_user.credits.available.any? %>
+          <%= button_to "Reservar Clase", reservations_path, 
+              params: { pilates_class_id: @pilates_class.id },
+              method: :post,
+              class: "btn btn-success",
+              style: "font-size: 1.125rem; padding: 1rem 2rem;",
+              data: { turbo_frame: "_top" } %>
+        <% else %>
+          <div class="alert alert-error">
+            No tienes créditos disponibles. <%= link_to "Ver créditos", creditos_path %>
+          </div>
+        <% end %>
+      <% elsif @pilates_class.full? %>
+        <div class="alert alert-error">
+          Esta clase está completa
+        </div>
+        <%= button_to "Notificarme cuando se libere un cupo", requests_path, 
+            params: { pilates_class_id: @pilates_class.id, request_type: 'alert' },
+            method: :post,
+            class: "btn btn-primary",
+            style: "margin-top: 1rem;",
+            data: { turbo_frame: "_top" } %>
+      <% elsif !@can_reserve %>
+        <div class="alert alert-error">
+          No tienes el nivel necesario para reservar esta clase.
+          <br>
+          Tu nivel: <strong><%= current_user.level.humanize %></strong> | 
+          Nivel requerido: <strong><%= @pilates_class.level.humanize %></strong>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

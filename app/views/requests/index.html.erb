@@ -1,0 +1,59 @@
+<div class="requests-page">
+  <h1>Solicitudes</h1>
+
+  <!-- Alertas -->
+  <div class="card">
+    <div class="card-header">Alertas de Cupos Liberados</div>
+    <% if @alerts.any? %>
+      <ul style="list-style: none; padding: 0;">
+        <% @alerts.each do |request| %>
+          <li style="padding: 1rem; border-bottom: 1px solid #eee;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong><%= request.pilates_class.name %></strong>
+                <p style="margin: 0.25rem 0; color: #666;">
+                  <%= request.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+                </p>
+                <span class="badge badge-<%= request.status %>">
+                  <%= request.status.humanize %>
+                </span>
+              </div>
+              <% if request.pending? %>
+                <%= button_to "Eliminar alerta", request_path(request), 
+                    method: :delete,
+                    class: "btn btn-danger",
+                    data: { turbo_frame: "_top" } %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No tienes alertas activas</p>
+    <% end %>
+  </div>
+
+  <!-- Turnos Fijos (Pendientes de Aprobación) -->
+  <div class="card">
+    <div class="card-header">Turnos Fijos Pendientes</div>
+    <% if @fixed_slots.any? %>
+      <ul style="list-style: none; padding: 0;">
+        <% @fixed_slots.each do |request| %>
+          <li style="padding: 1rem; border-bottom: 1px solid #eee;">
+            <div>
+              <strong><%= request.pilates_class.name %></strong>
+              <p style="margin: 0.25rem 0; color: #666;">
+                <%= request.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+              </p>
+              <span class="badge badge-<%= request.status %>">
+                <%= request.status.humanize %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No tienes turnos fijos pendientes</p>
+    <% end %>
+  </div>
+</div>

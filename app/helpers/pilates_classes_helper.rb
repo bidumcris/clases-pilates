@@ -1,0 +1,2 @@
+module PilatesClassesHelper
+end

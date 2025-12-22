@@ -1,0 +1,20 @@
+<%= turbo_stream.append "alerts" do %>
+  <li style="padding: 1rem; border-bottom: 1px solid #eee;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong><%= @request.pilates_class.name %></strong>
+        <p style="margin: 0.25rem 0; color: #666;">
+          <%= @request.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+        </p>
+        <span class="badge badge-pending">Pendiente</span>
+      </div>
+    </div>
+  </li>
+<% end %>
+
+<%= turbo_stream.replace "flash" do %>
+  <div class="alert alert-success" data-controller="alert" data-alert-auto-hide-value="3000">
+    Solicitud creada exitosamente
+  </div>
+<% end %>
+

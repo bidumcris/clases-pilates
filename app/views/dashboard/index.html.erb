@@ -1,0 +1,51 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+  
+  <div class="dashboard-grid">
+    <!-- Próximas Reservas -->
+    <div class="card">
+      <div class="card-header">Próximas Clases</div>
+      <% if @reservations.any? %>
+        <ul>
+          <% @reservations.each do |reservation| %>
+            <li>
+              <%= reservation.pilates_class.name %> - 
+              <%= reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No tienes reservas próximas</p>
+      <% end %>
+    </div>
+
+    <!-- Créditos Disponibles -->
+    <div class="card">
+      <div class="card-header">Créditos Disponibles</div>
+      <p class="credit-count"><%= @credits.count %> créditos disponibles</p>
+      <%= link_to "Ver todos", creditos_path, class: "btn btn-primary" %>
+    </div>
+
+    <!-- Solicitudes Pendientes -->
+    <div class="card">
+      <div class="card-header">Solicitudes Pendientes</div>
+      <% if @requests.any? %>
+        <p><%= @requests.count %> solicitudes pendientes de aprobación</p>
+        <%= link_to "Ver solicitudes", requests_path, class: "btn btn-primary" %>
+      <% else %>
+        <p>No tienes solicitudes pendientes</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Accesos Rápidos -->
+  <div class="card">
+    <div class="card-header">Accesos Rápidos</div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <%= link_to "Mi Actividad", mi_actividad_path, class: "btn btn-primary" %>
+      <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
+      <%= link_to "Créditos", creditos_path, class: "btn btn-primary" %>
+      <%= link_to "Solicitudes", requests_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>

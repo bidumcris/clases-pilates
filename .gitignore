@@ -1,0 +1,40 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# --- Rails ---
+/log/*
+/tmp/*
+/storage/*
+!/log/.keep
+!/tmp/.keep
+!/storage/.keep
+.byebug_history
+
+# --- Assets / builds ---
+/public/assets
+/public/packs
+/public/packs-test
+
+# --- Bundler ---
+/vendor/bundle
+/.bundle
+
+# --- Node ---
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.ruby-lsp/
+.DS_Store
+
+

@@ -1,0 +1,8 @@
+<%= turbo_stream.remove "reservation_#{@reservation.id}" %>
+
+<%= turbo_stream.replace "flash" do %>
+  <div class="alert alert-success" data-controller="alert" data-alert-auto-hide-value="3000">
+    Reserva cancelada exitosamente
+  </div>
+<% end %>
+

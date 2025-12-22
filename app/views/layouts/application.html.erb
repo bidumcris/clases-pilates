@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Clases Pilates" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <% if user_signed_in? %>
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <%= link_to "Clases Pilates", dashboard_path, class: "navbar-logo" %>
+        </div>
+        <div class="navbar-menu">
+          <%= link_to "Mi Actividad", mi_actividad_path, class: "navbar-item" %>
+          <%= link_to "Ver Agenda", agenda_path, class: "navbar-item" %>
+          <%= link_to "Créditos", creditos_path, class: "navbar-item" %>
+          <%= link_to "Solicitudes", requests_path, class: "navbar-item" %>
+          <% if current_user.admin? %>
+            <%= link_to "Admin", admin_root_path, class: "navbar-item" %>
+          <% end %>
+          <div class="navbar-user">
+            <span><%= current_user.email %></span>
+            <%= button_to "Cerrar Sesión", destroy_user_session_path, method: :delete, class: "btn-logout" %>
+          </div>
+        </div>
+      </nav>
+      
+      <% if notice %>
+        <div class="alert alert-success" data-controller="alert" data-alert-auto-hide-value="3000">
+          <%= notice %>
+        </div>
+      <% end %>
+      
+      <% if alert %>
+        <div class="alert alert-error" data-controller="alert" data-alert-auto-hide-value="5000">
+          <%= alert %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <main class="main-content">
+      <%= yield %>
+    </main>
+  </body>
+</html>
