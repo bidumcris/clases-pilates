@@ -30,6 +30,8 @@ bun.lockb
 .env
 .env.*
 !.env.example
+!/config/credentials/*.yml.enc
+/config/master.key
 
 # --- IDE / OS ---
 .idea/
