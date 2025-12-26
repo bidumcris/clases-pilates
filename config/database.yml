@@ -82,6 +82,7 @@ production:
   primary: &primary_production
     <<: *default
     database: clases_pilates_production
+    host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", "127.0.0.1") %>
     username: clases_pilates
     password: <%= ENV["CLASES_PILATES_DATABASE_PASSWORD"] %>
   cache:
