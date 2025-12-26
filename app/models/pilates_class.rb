@@ -17,6 +17,27 @@ class PilatesClass < ApplicationRecord
   scope :past, -> { where("start_time < ?", Time.current).order(start_time: :desc) }
   scope :by_room, ->(room_id) { where(room_id: room_id) }
 
+  # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
+  # Keep this list conservative: only what we actually filter/search in /admin.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      created_at
+      end_time
+      id
+      instructor_id
+      level
+      max_capacity
+      name
+      room_id
+      start_time
+      updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[instructor reservations requests room users]
+  end
+
   def available_spots
     max_capacity - reservations.where(status: :confirmed).count
   end

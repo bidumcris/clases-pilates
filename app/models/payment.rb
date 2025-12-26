@@ -11,6 +11,24 @@ class Payment < ApplicationRecord
   scope :completed, -> { where(payment_status: :completed) }
   scope :pending, -> { where(payment_status: :pending) }
 
+  # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      amount
+      created_at
+      id
+      payment_method
+      payment_status
+      transaction_id
+      updated_at
+      user_id
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user]
+  end
+
   def complete!
     update(payment_status: :completed)
   end

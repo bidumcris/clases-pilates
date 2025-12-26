@@ -13,6 +13,22 @@ class User < ApplicationRecord
 
   validates :level, presence: true
 
+  # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
+  # Keep this list conservative: avoid encrypted_password/reset tokens, etc.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      created_at
+      email
+      id
+      level
+      updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[credits payments requests reservations]
+  end
+
   def admin?
     level == 'admin'
   end

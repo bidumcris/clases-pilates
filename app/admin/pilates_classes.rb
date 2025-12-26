@@ -24,8 +24,16 @@ ActiveAdmin.register PilatesClass do
     end
     column "Ocupación" do |pc|
       percentage = pc.availability_percentage
-      status_tag "#{100 - percentage}%", 
-        (percentage < 25 ? :error : (percentage < 50 ? :warning : :ok))
+      tag_class =
+        if percentage < 25
+          "error"
+        elsif percentage < 50
+          "warning"
+        else
+          "ok"
+        end
+
+      status_tag("#{100 - percentage}%", class: tag_class)
     end
     column :created_at
     actions
