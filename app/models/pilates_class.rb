@@ -13,7 +13,8 @@ class PilatesClass < ApplicationRecord
   validates :max_capacity, presence: true, numericality: { greater_than: 0 }
   validate :end_time_after_start_time
 
-  scope :upcoming, -> { where('start_time > ?', Time.current) }
+  scope :upcoming, -> { where("start_time >= ?", Time.current).order(start_time: :asc) }
+  scope :past, -> { where("start_time < ?", Time.current).order(start_time: :desc) }
   scope :by_room, ->(room_id) { where(room_id: room_id) }
 
   def available_spots
