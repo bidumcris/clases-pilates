@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Clases Pilates" %></title>
+    <title><%= content_for(:title) || "Energía Pilates" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -26,15 +26,18 @@
     <% if user_signed_in? %>
       <nav class="navbar">
         <div class="navbar-brand">
-          <%= link_to "Clases Pilates", dashboard_path, class: "navbar-logo" %>
+          <%= link_to dashboard_path, class: "navbar-logo" do %>
+            <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "navbar-logo-img", onerror: "this.style.display='none'; this.nextElementSibling.style.display='inline';" %>
+            <span style="display: none;">Energía Pilates</span>
+          <% end %>
         </div>
         <div class="navbar-menu">
           <%= link_to "Mi Actividad", mi_actividad_path, class: "navbar-item" %>
           <%= link_to "Ver Agenda", agenda_path, class: "navbar-item" %>
           <%= link_to "Créditos", creditos_path, class: "navbar-item" %>
           <%= link_to "Solicitudes", requests_path, class: "navbar-item" %>
-          <% if current_user.admin? %>
-            <%= link_to "Admin", admin_root_path, class: "navbar-item" %>
+          <% if current_user.admin? || current_user.instructor? %>
+            <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
           <% end %>
           <div class="navbar-user">
             <span><%= current_user.email %></span>
@@ -54,10 +57,25 @@
           <%= alert %>
         </div>
       <% end %>
-    <% end %>
 
-    <main class="main-content">
+      <main class="main-content">
+        <%= yield %>
+      </main>
+    <% else %>
+      <!-- Landing Page - Sin navbar -->
+      <% if notice %>
+        <div class="alert alert-success" data-controller="alert" data-alert-auto-hide-value="3000">
+          <%= notice %>
+        </div>
+      <% end %>
+      
+      <% if alert %>
+        <div class="alert alert-error" data-controller="alert" data-alert-auto-hide-value="5000">
+          <%= alert %>
+        </div>
+      <% end %>
+
       <%= yield %>
-    </main>
+    <% end %>
   </body>
 </html>

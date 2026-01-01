@@ -1,49 +1,61 @@
 <div class="agenda-page">
   <h1>Ver Agenda</h1>
 
-  <!-- Filtros -->
-  <div class="calendar-filters">
-    <%= form_with url: agenda_path, method: :get, local: true, data: { turbo_frame: "calendar" } do |f| %>
-      <%= f.select :room_id, options_from_collection_for_select(@rooms, :id, :name, @room_filter), 
-          { prompt: "Todas las salas" }, { class: "form-select" } %>
-      <%= f.date_field :date, value: @date, class: "form-input" %>
-      <%= f.submit "Filtrar", class: "btn btn-primary" %>
+  <!-- Navegación Semanal -->
+  <div class="calendar-navigation">
+    <%= link_to agenda_path(date: (@week_start - 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } do %>
+      ← Semana Anterior
+    <% end %>
+    
+    <div class="week-display">
+      <h2>
+        <%= I18n.l(@week_start, format: "%d de %B") %> - 
+        <%= I18n.l(@week_end, format: "%d de %B de %Y") %>
+      </h2>
+    </div>
+    
+    <%= link_to agenda_path(date: (@week_start + 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } } do %>
+      Semana Siguiente →
     <% end %>
   </div>
 
-  <!-- Calendario con Turbo Frame -->
+  <!-- Calendario Semanal con Turbo Frame -->
   <%= turbo_frame_tag "calendar" do %>
-    <div class="calendar-container">
-      <h2>Clases del <%= @date.strftime("%d/%m/%Y") %></h2>
-      
-      <% if @classes_by_hour.any? %>
-        <% (7..21).each do |hour| %>
-          <% classes_at_hour = @classes_by_hour[hour] || [] %>
-          <div class="calendar-hour">
-            <div class="calendar-hour-header">
-              <span><%= hour %>:00</span>
-              <% if classes_at_hour.any? %>
-                <span><%= classes_at_hour.count %> clase(s)</span>
-              <% end %>
-            </div>
-            
-            <% if classes_at_hour.any? %>
-              <% classes_at_hour.each do |pilates_class| %>
-                <div class="class-item <%= 'full' if pilates_class.full? %>">
-                  <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
+    <div class="calendar-week-container">
+      <% (@week_start..@week_end).each do |day| %>
+        <% day_classes = @classes_by_day[day] || [] %>
+        <div class="calendar-day">
+          <div class="day-header">
+            <strong><%= I18n.l(day, format: "%A %d") %></strong>
+            <span class="day-classes-count"><%= day_classes.count %> clase<%= 's' if day_classes.count != 1 %></span>
+          </div>
+          
+          <% if day_classes.any? %>
+            <% day_classes.group_by { |c| c.start_time.hour }.each do |hour, classes_at_hour| %>
+              <div class="hour-block">
+                <div class="hour-label"><%= hour %>:00</div>
+                <% classes_at_hour.each do |pilates_class| %>
+                  <div class="class-item <%= 'full' if pilates_class.full? %>">
+                    <div class="class-info">
                       <strong><%= pilates_class.name %></strong>
-                      <p style="margin: 0.25rem 0; font-size: 0.875rem;">
+                      <p class="class-details">
                         <%= pilates_class.room.name %> - 
-                        <%= pilates_class.instructor.name %> - 
-                        Nivel: <%= pilates_class.level %>
+                        <%= pilates_class.instructor.name %>
                       </p>
-                      <p style="margin: 0.25rem 0; font-size: 0.875rem;">
+                      <p class="class-time">
                         <%= pilates_class.start_time.strftime("%H:%M") %> - 
                         <%= pilates_class.end_time.strftime("%H:%M") %>
                       </p>
+                      <p class="class-level">
+                        Nivel: <strong><%= pilates_class.level.humanize %></strong>
+                        <% if pilates_class.privada? %>
+                          <span class="class-type-badge">Privada</span>
+                        <% else %>
+                          <span class="class-type-badge">Grupal</span>
+                        <% end %>
+                      </p>
                     </div>
-                    <div style="text-align: right;">
+                    <div class="class-availability">
                       <% availability_class = case pilates_class.availability_percentage
                            when 0..25 then 'availability-low'
                            when 26..50 then 'availability-medium'
@@ -52,40 +64,34 @@
                       <span class="availability-badge <%= availability_class %>">
                         <%= pilates_class.availability_percentage %>%
                       </span>
-                      <p style="font-size: 0.75rem; margin-top: 0.25rem;">
+                      <p class="spots-info">
                         <%= pilates_class.available_spots %>/<%= pilates_class.max_capacity %>
                       </p>
                     </div>
+                    
+                    <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? %>
+                      <%= button_to "Reservar (1 crédito)", reservations_path, 
+                          params: { pilates_class_id: pilates_class.id },
+                          method: :post,
+                          class: "btn btn-success btn-reserve",
+                          data: { turbo_frame: "_top" } %>
+                    <% elsif pilates_class.full? %>
+                      <%= button_to "Notificarme", requests_path, 
+                          params: { pilates_class_id: pilates_class.id, request_type: 'alert' },
+                          method: :post,
+                          class: "btn btn-primary btn-reserve",
+                          data: { turbo_frame: "_top" } %>
+                    <% else %>
+                      <p class="cannot-reserve">Nivel insuficiente</p>
+                    <% end %>
                   </div>
-                  
-                  <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? %>
-                    <%= button_to "Reservar", reservations_path, 
-                        params: { pilates_class_id: pilates_class.id },
-                        method: :post,
-                        class: "btn btn-success",
-                        style: "margin-top: 0.5rem;",
-                        data: { turbo_frame: "_top" } %>
-                  <% elsif pilates_class.full? %>
-                    <%= button_to "Notificarme cuando se libere", requests_path, 
-                        params: { pilates_class_id: pilates_class.id, request_type: 'alert' },
-                        method: :post,
-                        class: "btn btn-primary",
-                        style: "margin-top: 0.5rem;",
-                        data: { turbo_frame: "_top" } %>
-                  <% else %>
-                    <p style="color: #e74c3c; font-size: 0.875rem; margin-top: 0.5rem;">
-                      Nivel insuficiente
-                    </p>
-                  <% end %>
-                </div>
-              <% end %>
-            <% else %>
-              <p style="color: #999; font-style: italic;">No hay clases en este horario</p>
+                <% end %>
+              </div>
             <% end %>
-          </div>
-        <% end %>
-      <% else %>
-        <p>No hay clases disponibles para esta fecha</p>
+          <% else %>
+            <p class="no-classes">No hay clases este día</p>
+          <% end %>
+        </div>
       <% end %>
     </div>
   <% end %>

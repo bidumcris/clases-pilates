@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     get "agenda/:id", to: "pilates_classes#show", as: :clase
 
     # Reservas
-    resources :reservations, only: [:index, :create, :destroy] do
+    resources :reservations, only: [ :index, :create, :destroy ] do
       collection do
         post :reserve_class
         delete :cancel
@@ -32,13 +32,43 @@ Rails.application.routes.draw do
     get "creditos", to: "credits#index", as: :creditos
 
     # Solicitudes
-    resources :requests, only: [:index, :create] do
+    resources :requests, only: [ :index, :create ] do
       collection do
         post :create_alert
+      end
+    end
+
+    # Panel de Gestión para Administradores e Instructores
+    namespace :management do
+      root "dashboard#index"
+      get "dashboard", to: "dashboard#index", as: :dashboard
+
+      # Gestión de Clases
+      resources :classes, only: [ :index, :new, :create, :edit, :update, :destroy ] do
+        collection do
+          get :calendar
+        end
+      end
+
+      # Gestión de Alumnos
+      resources :students, only: [ :index, :show, :edit, :update ] do
+        member do
+          post :add_credits
+          patch :update_class_type
+        end
+      end
+
+      # Gestión de Solicitudes
+      resources :requests, only: [ :index, :show ] do
+        member do
+          post :approve
+          post :reject
+        end
       end
     end
   end
 
   # Páginas públicas
   get "home", to: "home#index"
+  get "acceso", to: "home#acceso", as: :acceso
 end

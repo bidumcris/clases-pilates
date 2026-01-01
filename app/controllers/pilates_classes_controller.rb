@@ -2,16 +2,18 @@ class PilatesClassesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @room_filter = params[:room_id]
+    # Calendario semanal - obtener inicio de semana
     @date = params[:date] ? Date.parse(params[:date]) : Date.current
-    
-    @rooms = Room.all
-    @classes = PilatesClass.upcoming
-    @classes = @classes.by_room(@room_filter) if @room_filter.present?
-    @classes = @classes.where('DATE(start_time) = ?', @date)
-    
-    # Agrupar por hora para mostrar en el calendario
-    @classes_by_hour = @classes.group_by { |c| c.start_time.hour }
+    @week_start = @date.beginning_of_week(:monday)
+    @week_end = @week_start + 6.days
+
+    # Filtrar clases según nivel y tipo de usuario (sin filtrar por sala - mostrar todas)
+    @classes = PilatesClass.upcoming.for_user(current_user)
+    # Mostrar todas las clases de la semana
+    @classes = @classes.where("DATE(start_time) >= ? AND DATE(start_time) <= ?", @week_start, @week_end)
+
+    # Agrupar por día y luego por hora
+    @classes_by_day = @classes.group_by { |c| c.start_time.to_date }
   end
 
   def show

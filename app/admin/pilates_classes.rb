@@ -1,5 +1,5 @@
 ActiveAdmin.register PilatesClass do
-  permit_params :name, :level, :room_id, :instructor_id, :start_time, :end_time, :max_capacity
+  permit_params :name, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :class_type
 
   menu priority: 2, label: "Clases"
 
@@ -13,6 +13,9 @@ ActiveAdmin.register PilatesClass do
     column :name
     column :level do |pc|
       status_tag pc.level
+    end
+    column "Tipo" do |pc|
+      status_tag pc.class_type, class: pc.privada? ? "warning" : "ok"
     end
     column :room
     column :instructor
@@ -41,6 +44,7 @@ ActiveAdmin.register PilatesClass do
 
   filter :name
   filter :level
+  filter :class_type
   filter :room
   filter :instructor
   filter :start_time
@@ -51,6 +55,9 @@ ActiveAdmin.register PilatesClass do
       row :name
       row :level do |pc|
         status_tag pc.level
+      end
+      row "Tipo de Clase" do |pc|
+        status_tag pc.class_type, class: pc.privada? ? "warning" : "ok"
       end
       row :room
       row :instructor
@@ -88,7 +95,8 @@ ActiveAdmin.register PilatesClass do
   form do |f|
     f.inputs "Información de la Clase" do
       f.input :name
-      f.input :level, as: :select, collection: PilatesClass.levels.keys.map { |k| [k.humanize, k] }
+      f.input :level, as: :select, collection: PilatesClass.levels.keys.map { |k| [ k.humanize, k ] }
+      f.input :class_type, as: :select, collection: PilatesClass.class_types.keys.map { |k| [ k.humanize, k ] }, hint: "Grupal: clases normales. Privada: para un solo alumno (1 alumno, 1 sala)"
       f.input :room
       f.input :instructor
       f.input :start_time, as: :datetime_picker
@@ -110,4 +118,3 @@ ActiveAdmin.register PilatesClass do
     redirect_to admin_pilates_class_path(new_class), notice: "Clase duplicada exitosamente"
   end
 end
-
