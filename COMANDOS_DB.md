@@ -37,15 +37,17 @@ RAILS_ENV=development bundle exec rails db:drop db:create db:migrate db:seed
 
 ⚠️ **ADVERTENCIA**: Estos comandos eliminarán TODOS los datos de producción. Úsalos con precaución.
 
+**IMPORTANTE**: Rails protege la base de datos de producción. Necesitas usar `DISABLE_DATABASE_ENVIRONMENT_CHECK=1` para ejecutar comandos destructivos.
+
 ```bash
 # Opción 1: Resetear completamente (RECOMENDADO para producción limpia)
-RAILS_ENV=production bundle exec rails db:reset
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production bundle exec rails db:reset
 
 # Opción 2: Solo borrar datos y cargar seeds
-RAILS_ENV=production bundle exec rails db:seed:replant
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production bundle exec rails db:seed:replant
 
 # Opción 3: Borrar datos manualmente y cargar seeds
-RAILS_ENV=production bundle exec rails db:drop db:create db:migrate db:seed
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production bundle exec rails db:drop db:create db:migrate db:seed
 ```
 
 ## 4. COMANDOS INDIVIDUALES (si necesitas más control)
@@ -62,7 +64,7 @@ RAILS_ENV=development bundle exec rails db:seed
 ### Production
 ```bash
 # Borrar solo los datos (sin eliminar tablas)
-RAILS_ENV=production bundle exec rails db:truncate_all
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production bundle exec rails db:truncate_all
 
 # Cargar seeds
 RAILS_ENV=production bundle exec rails db:seed
@@ -88,7 +90,13 @@ RAILS_ENV=development bundle exec rails runner "puts Credit.count"
 - **db:drop db:create db:migrate db:seed**: Proceso manual paso a paso
 
 ### Para Production:
+- ⚠️ **CRÍTICO**: Rails protege la base de datos de producción
+- Debes usar `DISABLE_DATABASE_ENVIRONMENT_CHECK=1` antes de comandos destructivos
 - Asegúrate de tener backups antes de ejecutar estos comandos
 - Verifica que las variables de entorno estén configuradas correctamente
 - Considera hacer un mantenimiento programado
+- Ejemplo completo:
+  ```bash
+  DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production bundle exec rails db:reset
+  ```
 
