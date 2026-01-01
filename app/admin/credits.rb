@@ -20,11 +20,11 @@ ActiveAdmin.register Credit do
     end
     column "Estado" do |credit|
       if credit.used?
-        status_tag "Usado", :warning
+        status_tag("Usado", class: "warning")
       elsif credit.expired?
-        status_tag "Expirado", :error
+        status_tag("Expirado", class: "error")
       else
-        status_tag "Disponible", :ok
+        status_tag("Disponible", class: "ok")
       end
     end
     column :created_at
@@ -45,11 +45,11 @@ ActiveAdmin.register Credit do
       row :expires_at
       row "Estado" do |credit|
         if credit.used?
-          status_tag "Usado", :warning
+          status_tag("Usado", class: "warning")
         elsif credit.expired?
-          status_tag "Expirado", :error
+          status_tag("Expirado", class: "error")
         else
-          status_tag "Disponible", :ok
+          status_tag("Disponible", class: "ok")
         end
       end
       row :created_at
@@ -60,10 +60,15 @@ ActiveAdmin.register Credit do
     f.inputs "Información del Crédito" do
       f.input :user
       f.input :amount
-      f.input :expires_at, as: :date_picker, hint: "Fecha de expiración del crédito"
+      f.input :expires_at, as: :date_picker, hint: "Fecha de expiración del crédito (normalmente el último día del mes)"
       f.input :used, hint: "Marcar si el crédito ya fue usado"
     end
     f.actions
+  end
+
+  # Acción para crear créditos mensuales fácilmente
+  action_item :create_monthly, only: :index do
+    link_to "Crear Créditos Mensuales", new_admin_credit_path, class: "button"
   end
 
   batch_action :marcar_como_usados, confirm: "¿Marcar créditos como usados?" do |ids|
@@ -71,4 +76,3 @@ ActiveAdmin.register Credit do
     redirect_to collection_path, notice: "Créditos marcados como usados"
   end
 end
-

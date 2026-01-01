@@ -16,6 +16,23 @@ class Reservation < ApplicationRecord
              date.month, date.year) 
   }
 
+  # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      created_at
+      id
+      pilates_class_id
+      reserved_at
+      status
+      updated_at
+      user_id
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[pilates_class user]
+  end
+
   private
 
   def user_can_reserve_class

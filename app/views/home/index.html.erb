@@ -1,11 +1,85 @@
-<div class="home-page" style="text-align: center; padding: 4rem 2rem;">
-  <h1 style="font-size: 3rem; margin-bottom: 1rem;">Clases Pilates</h1>
-  <p style="font-size: 1.25rem; color: #666; margin-bottom: 3rem;">
-    Sistema de gestión de clases y reservas
-  </p>
-
-  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-    <%= link_to "Iniciar Sesión", new_user_session_path, class: "btn btn-primary", style: "padding: 1rem 2rem; font-size: 1.125rem;" %>
-    <%= link_to "Registrarse", new_user_registration_path, class: "btn btn-success", style: "padding: 1rem 2rem; font-size: 1.125rem;" %>
+<!-- Hero Section -->
+<section class="landing-hero">
+  <div class="hero-content">
+    <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "hero-logo" %>
+    <h1 class="hero-title">Transforma tu cuerpo, transforma tu vida</h1>
+    <p class="hero-subtitle">Pilates clásico para una transformación integral</p>
+    <div class="hero-cta">
+      <%= link_to acceso_path, class: "btn btn-primary btn-large" do %>
+        Iniciar Sesión - Registrarse
+      <% end %>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- Sección: Sobre Nosotros -->
+<section class="landing-section" id="sobre-nosotros">
+  <div class="container">
+    <h2 class="section-title">Sobre Energía Pilates</h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p class="lead">
+          Energía Pilates es un espacio exclusivo de pilates clásico que busca transformar la mente, el cuerpo y la energía de cada persona que asiste.
+        </p>
+        <p>
+          Nuestras clases están diseñadas para que cada alumno pueda sentir su cuerpo, moverse con conciencia y, desde allí, educar su movimiento. Es una forma de entrenamiento integral donde trabajamos fuerza, resistencia, respiración, concentración, control, centralización, precisión y fluidez.
+        </p>
+        <p>
+          En Energía, la calidad del movimiento es más importante que la cantidad y el foco está en el proceso personal que cada alumno atraviesa clase a clase.
+        </p>
+      </div>
+      
+      <div class="about-formation">
+        <h3>Studio Formación</h3>
+        <p>
+          Studio Formación es una nueva área de Energía Pilates -diferenciada del área de Alumnos-, pensada para formar a nuevos instructores de pilates clásico. Es un espacio para la construcción profesional y pedagógica del auténtico método pilates, creado por Joseph Pilates con bases teóricas y prácticas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Nuestras Clases -->
+<section class="landing-section" id="nuestras-clases">
+  <div class="container">
+    <h2 class="section-title">Nuestras Clases</h2>
+    <div class="content-placeholder">
+      <!-- Aquí irá el contenido que me envíes -->
+      <p>Información sobre las clases...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Instructores -->
+<section class="landing-section" id="instructores">
+  <div class="container">
+    <h2 class="section-title">Nuestros Instructores</h2>
+    <div class="content-placeholder">
+      <!-- Aquí irá el contenido que me envíes -->
+      <p>Información sobre los instructores...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Instalaciones -->
+<section class="landing-section" id="instalaciones">
+  <div class="container">
+    <h2 class="section-title">Nuestras Instalaciones</h2>
+    <div class="content-placeholder">
+      <!-- Aquí irá el contenido que me envíes -->
+      <p>Información sobre las instalaciones...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Contacto -->
+<section class="landing-section" id="contacto">
+  <div class="container">
+    <h2 class="section-title">Contacto</h2>
+    <div class="content-placeholder">
+      <!-- Aquí irá el contenido que me envíes -->
+      <p>Información de contacto...</p>
+    </div>
+  </div>
+</section>
+

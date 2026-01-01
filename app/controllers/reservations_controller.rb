@@ -2,15 +2,15 @@ class ReservationsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @reservations = current_user.reservations.includes(:pilates_class).order('pilates_classes.start_time ASC')
+    @reservations = current_user.reservations.includes(:pilates_class).order("pilates_classes.start_time ASC")
   end
 
   def create
     @pilates_class = PilatesClass.find(params[:pilates_class_id])
-    
+
     # Verificar si tiene créditos disponibles
     available_credit = current_user.credits.available.first
-    
+
     unless available_credit
       redirect_to creditos_path, alert: "No tienes créditos disponibles"
       return
@@ -35,9 +35,10 @@ class ReservationsController < ApplicationController
     )
 
     if @reservation.save
-      available_credit.use!
+      # Usar 1 crédito
+      available_credit.use!(1)
       respond_to do |format|
-        format.html { redirect_to agenda_path, notice: "Clase reservada exitosamente" }
+        format.html { redirect_to agenda_path, notice: "Clase reservada exitosamente. Se utilizó 1 crédito." }
         format.turbo_stream
       end
     else
@@ -48,7 +49,7 @@ class ReservationsController < ApplicationController
   def destroy
     @reservation = current_user.reservations.find(params[:id])
     @pilates_class = @reservation.pilates_class
-    
+
     if @reservation.update(status: :cancelled)
       respond_to do |format|
         format.html { redirect_to mi_actividad_path, notice: "Reserva cancelada" }

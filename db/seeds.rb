@@ -47,22 +47,40 @@ end
 
 # Crear Usuarios de prueba
 puts "Creando usuarios..."
+user_inicial = User.find_or_create_by!(email: "inicial@test.com") do |u|
+  u.password = "password123"
+  u.password_confirmation = "password123"
+  u.level = :inicial
+  u.class_type = :grupal
+end
+
 user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.level = :basic
+  u.class_type = :grupal
 end
 
 user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.level = :intermediate
+  u.class_type = :grupal
 end
 
 user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.level = :advanced
+  u.class_type = :grupal
+end
+
+# Usuario con clase privada (patología/lesión)
+user_privada = User.find_or_create_by!(email: "privada@test.com") do |u|
+  u.password = "password123"
+  u.password_confirmation = "password123"
+  u.level = :basic
+  u.class_type = :privada
 end
 
 # Crear Admin
@@ -72,17 +90,19 @@ admin = User.find_or_create_by!(email: "admin@pilates.com") do |u|
   u.level = :admin
 end
 
-# Crear Créditos para usuarios
+# Crear Créditos para usuarios (mensuales)
 puts "Creando créditos..."
-[user_basic, user_intermediate, user_advanced].each do |user|
-  # Créditos para diciembre
-  Credit.find_or_create_by!(user: user, expires_at: Date.new(Date.current.year, 12, 31)) do |c|
+[ user_inicial, user_basic, user_intermediate, user_advanced, user_privada ].each do |user|
+  # Créditos para el mes actual (vencen al final del mes actual)
+  current_month_end = Date.current.end_of_month
+  Credit.find_or_create_by!(user: user, expires_at: current_month_end) do |c|
     c.amount = 10
     c.used = false
   end
-  
-  # Créditos para enero
-  Credit.find_or_create_by!(user: user, expires_at: Date.new(Date.current.year + 1, 1, 31)) do |c|
+
+  # Créditos para el mes siguiente (vencen al final del mes siguiente)
+  next_month_end = Date.current.next_month.end_of_month
+  Credit.find_or_create_by!(user: user, expires_at: next_month_end) do |c|
     c.amount = 8
     c.used = false
   end
@@ -91,46 +111,171 @@ end
 # Crear Clases de Pilates
 puts "Creando clases de pilates..."
 start_date = Date.tomorrow
-instructors = [instructor1, instructor2, instructor3]
-rooms = [room1, room2, room3]
-levels = [:basic, :intermediate, :advanced]
+instructors = [ instructor1, instructor2, instructor3 ]
+rooms = [ room1, room2, room3 ]
+levels = [ :inicial, :basic, :intermediate, :advanced ]
 
-# Crear clases para los próximos 7 días
-7.times do |day|
+# Crear clases para las próximas 2 semanas (14 días)
+14.times do |day|
   current_date = start_date + day.days
-  
-  # Clases por la mañana (9:00, 10:00, 11:00)
-  [9, 10, 11].each do |hour|
+
+  # Clases grupales por la mañana (9:00, 10:00, 11:00)
+  [ 9, 10, 11 ].each do |hour|
+    level = levels.sample
+    room = rooms.sample
+    instructor = instructors.sample
+
     PilatesClass.find_or_create_by!(
-      name: "Clase #{levels.sample.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+      name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
       start_time: Time.zone.parse("#{current_date} #{hour}:00"),
-      room: rooms.sample,
-      instructor: instructors.sample
+      room: room,
+      instructor: instructor
     ) do |pc|
-      pc.level = levels.sample
+      pc.level = level
+      pc.class_type = :grupal
       pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
-      pc.max_capacity = [8, 10, 12, 15].sample
+      pc.max_capacity = case room.room_type
+      when "planta_alta_privadas"
+                          8
+      when "circuito"
+                          12
+      when "planta_baja_mat_accesorios"
+                          15
+      else
+                          10
+      end
     end
   end
-  
-  # Clases por la tarde (17:00, 18:00, 19:00)
-  [17, 18, 19].each do |hour|
+
+  # Clases grupales por la tarde (17:00, 18:00, 19:00)
+  [ 17, 18, 19 ].each do |hour|
+    level = levels.sample
+    room = rooms.sample
+    instructor = instructors.sample
+
     PilatesClass.find_or_create_by!(
-      name: "Clase #{levels.sample.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+      name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
       start_time: Time.zone.parse("#{current_date} #{hour}:00"),
-      room: rooms.sample,
-      instructor: instructors.sample
+      room: room,
+      instructor: instructor
     ) do |pc|
-      pc.level = levels.sample
+      pc.level = level
+      pc.class_type = :grupal
       pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
-      pc.max_capacity = [8, 10, 12, 15].sample
+      pc.max_capacity = case room.room_type
+      when "planta_alta_privadas"
+                          8
+      when "circuito"
+                          12
+      when "planta_baja_mat_accesorios"
+                          15
+      else
+                          10
+      end
+    end
+  end
+
+  # Crear algunas clases privadas (solo para niveles inicial y basic)
+  if day % 2 == 0 # Cada 2 días
+    [ 10, 11, 17, 18 ].sample(2).each do |hour|
+      level = [ :inicial, :basic ].sample
+      # Las clases privadas van en Planta Alta - Privadas
+      room_privada = room1
+      instructor = instructors.sample
+
+      PilatesClass.find_or_create_by!(
+        name: "Clase Privada #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+        start_time: Time.zone.parse("#{current_date} #{hour}:00"),
+        room: room_privada,
+        instructor: instructor
+      ) do |pc|
+        pc.level = level
+        pc.class_type = :privada
+        pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
+        pc.max_capacity = 1 # Clases privadas: 1 alumno
+      end
     end
   end
 end
 
-puts "✅ Seeds completados!"
-puts "\nUsuarios de prueba creados:"
-puts "  - Básico: basico@test.com / password123"
-puts "  - Intermedio: intermedio@test.com / password123"
-puts "  - Avanzado: avanzado@test.com / password123"
-puts "  - Admin: admin@pilates.com / admin123"
+# Crear algunas reservas de ejemplo
+puts "Creando reservas de ejemplo..."
+if user_basic && user_intermediate && user_advanced
+  # Obtener algunas clases grupales disponibles
+  available_classes = PilatesClass.grupal.upcoming.limit(5)
+
+  available_classes.each_with_index do |pilates_class, index|
+    user = [ user_basic, user_intermediate, user_advanced ][index % 3]
+
+    # Verificar que el usuario puede reservar esta clase
+    if user.can_reserve_class?(pilates_class)
+      credit = user.credits.available.first
+      if credit && credit.amount > 0
+        reservation = Reservation.find_or_create_by!(
+          user: user,
+          pilates_class: pilates_class
+        ) do |r|
+          r.status = :confirmed
+          r.reserved_at = Time.current
+        end
+
+        # Usar 1 crédito
+        credit.use!(1) if reservation.persisted?
+      end
+    end
+  end
+end
+
+# Crear algunas solicitudes de ejemplo
+puts "Creando solicitudes de ejemplo..."
+if user_inicial && user_basic
+  # Solicitud de alerta (cuando una clase está llena)
+  full_class = PilatesClass.grupal.upcoming.first
+  if full_class
+    Request.find_or_create_by!(
+      user: user_inicial,
+      pilates_class: full_class,
+      request_type: :alert
+    ) do |r|
+      r.status = :pending
+    end
+  end
+
+  # Solicitud de turno fijo (pendiente de aprobación)
+  future_class = PilatesClass.grupal.upcoming.where(level: :basic).first
+  if future_class
+    Request.find_or_create_by!(
+      user: user_basic,
+      pilates_class: future_class,
+      request_type: :fixed_slot
+    ) do |r|
+      r.status = :pending
+    end
+  end
+end
+
+puts "\n✅ Seeds completados!"
+puts "\n" + "="*60
+puts "USUARIOS DE PRUEBA CREADOS:"
+puts "="*60
+puts "  📚 Alumnos:"
+puts "    • Inicial (Grupal): inicial@test.com / password123"
+puts "    • Básico (Grupal): basico@test.com / password123"
+puts "    • Intermedio (Grupal): intermedio@test.com / password123"
+puts "    • Avanzado (Grupal): avanzado@test.com / password123"
+puts "    • Privada (Patología/Lesión): privada@test.com / password123"
+puts "\n  👨‍💼 Administrador:"
+puts "    • Admin: admin@pilates.com / admin123"
+puts "\n" + "="*60
+puts "DATOS CREADOS:"
+puts "="*60
+puts "  • #{Room.count} salas"
+puts "  • #{Instructor.count} instructores"
+puts "  • #{User.where.not(level: :admin).count} alumnos"
+puts "  • #{PilatesClass.count} clases (grupales y privadas)"
+puts "  • #{Credit.count} créditos mensuales"
+puts "  • #{Reservation.count} reservas de ejemplo"
+puts "  • #{Request.count} solicitudes de ejemplo"
+puts "\n💡 Tip: Las clases privadas solo aparecen para usuarios con class_type: privada"
+puts "💡 Tip: Los créditos vencen al final de cada mes"
+puts "="*60

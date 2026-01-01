@@ -10,4 +10,20 @@ class Room < ApplicationRecord
   validates :name, presence: true
   validates :room_type, presence: true
   validates :capacity, presence: true, numericality: { greater_than: 0 }
+
+  # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      capacity
+      created_at
+      id
+      name
+      room_type
+      updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[pilates_classes]
+  end
 end

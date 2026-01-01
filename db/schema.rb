@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_08_163202) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_08_163202) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_credits_on_user_id"
+  end
+
+  create_table "fixed_slots", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "day_of_week", null: false
+    t.integer "hour", null: false
+    t.bigint "room_id", null: false
+    t.bigint "instructor_id", null: false
+    t.string "level", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["instructor_id"], name: "index_fixed_slots_on_instructor_id"
+    t.index ["room_id"], name: "index_fixed_slots_on_room_id"
+    t.index ["user_id", "day_of_week", "hour"], name: "index_fixed_slots_on_user_id_and_day_of_week_and_hour", unique: true
+    t.index ["user_id"], name: "index_fixed_slots_on_user_id"
   end
 
   create_table "instructors", force: :cascade do |t|
@@ -67,6 +83,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_08_163202) do
     t.integer "max_capacity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "class_type", default: 0, null: false
     t.index ["instructor_id"], name: "index_pilates_classes_on_instructor_id"
     t.index ["room_id"], name: "index_pilates_classes_on_room_id"
   end
@@ -110,11 +127,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_08_163202) do
     t.integer "level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "class_type", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "credits", "users"
+  add_foreign_key "fixed_slots", "instructors"
+  add_foreign_key "fixed_slots", "rooms"
+  add_foreign_key "fixed_slots", "users"
   add_foreign_key "payments", "users"
   add_foreign_key "pilates_classes", "instructors"
   add_foreign_key "pilates_classes", "rooms"

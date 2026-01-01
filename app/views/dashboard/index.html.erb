@@ -1,30 +1,113 @@
 <div class="dashboard">
-  <h1>Dashboard</h1>
+  <div class="dashboard-header">
+    <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "dashboard-logo" %>
+    <h1>Bienvenido, <%= current_user.email %></h1>
+  </div>
+
+  <!-- Mensaje Importante sobre Créditos -->
+  <% unused_credits = @credits.select { |c| c.amount > 0 } %>
+  <% if unused_credits.any? %>
+    <div class="card important-notice">
+      <div class="notice-header">
+        <strong>Importante</strong>
+      </div>
+      <div class="notice-content">
+        <p>
+          Tienes <strong><%= unused_credits.sum(&:amount) %> crédito<%= 's' if unused_credits.sum(&:amount) > 1 %> sin usar</strong>. 
+          Ten en cuenta que los créditos a favor en ningún caso corren las fechas de tu abono y debes consumirlos antes de su vencimiento. 
+          Revisa la pestaña <strong>'Créditos'</strong> para más información. 
+          Te recomendamos reservar turnos lo antes posible para evitar el vencimiento de tus créditos.
+        </p>
+        <%= link_to "Ver Créditos", creditos_path, class: "btn btn-primary" %>
+        <%= link_to "Reservar Clase", agenda_path, class: "btn btn-outline-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Créditos Destacados (Urgente - se vencen) -->
+  <% expiring_credits = @credits.select { |c| c.expires_at && c.expires_at <= 7.days.from_now && c.amount > 0 } %>
+  <% next_expiration = @credits.select { |c| c.expires_at && c.amount > 0 }.map(&:expires_at).compact.min %>
+  <% if @credits.any? %>
+    <div class="card credits-alert">
+      <div class="card-header credits-header">
+        <span>Créditos Disponibles</span>
+        <% if expiring_credits.any? %>
+          <span class="expiring-badge">Vencen pronto</span>
+        <% end %>
+      </div>
+      <div class="credits-summary">
+        <div class="credits-total">
+          <span class="credits-number"><%= @credits.sum(&:amount) %></span>
+          <span class="credits-label">créditos disponibles</span>
+          <% if next_expiration %>
+            <p class="expiration-warning">
+              ⚠️ <strong>¡Úsalos antes que se venzan!</strong> Los créditos vencen el <strong><%= I18n.l(next_expiration, format: :long) %></strong>
+            </p>
+            <p class="expiration-cta">
+              Reserva tu clase ahora antes que se venzan al final del mes
+            </p>
+          <% end %>
+        </div>
+        <% if expiring_credits.any? %>
+          <div class="credits-expiring">
+            <strong><%= expiring_credits.sum(&:amount) %> créditos vencen en los próximos 7 días</strong>
+            <ul class="expiring-list">
+              <% expiring_credits.each do |credit| %>
+                <li>
+                  <%= credit.amount %> créditos - 
+                  Vence: <%= credit.expires_at.strftime("%d/%m/%Y") %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="credits-actions">
+          <%= link_to "Ver Agenda y Reservar", agenda_path, class: "btn btn-primary btn-large" %>
+          <%= link_to "Ver todos los créditos", creditos_path, class: "btn btn-outline-white" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
   
   <div class="dashboard-grid">
     <!-- Próximas Reservas -->
     <div class="card">
       <div class="card-header">Próximas Clases</div>
       <% if @reservations.any? %>
-        <ul>
-          <% @reservations.each do |reservation| %>
-            <li>
-              <%= reservation.pilates_class.name %> - 
-              <%= reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %>
+        <ul class="reservations-list">
+          <% @reservations.limit(5).each do |reservation| %>
+            <li class="reservation-item">
+              <div>
+                <strong><%= reservation.pilates_class.name %></strong>
+                <p class="reservation-details">
+                  <%= reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %> - 
+                  <%= reservation.pilates_class.room.name %>
+                </p>
+              </div>
             </li>
           <% end %>
         </ul>
+        <%= link_to "Ver todas", mi_actividad_path, class: "btn btn-outline" %>
       <% else %>
         <p>No tienes reservas próximas</p>
+        <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
       <% end %>
     </div>
 
-    <!-- Créditos Disponibles -->
-    <div class="card">
-      <div class="card-header">Créditos Disponibles</div>
-      <p class="credit-count"><%= @credits.count %> créditos disponibles</p>
-      <%= link_to "Ver todos", creditos_path, class: "btn btn-primary" %>
-    </div>
+    <!-- Turnos Fijos (solo para usuarios grupales) -->
+    <% if current_user.grupal? && current_user.fixed_slots.active.any? %>
+      <div class="card">
+        <div class="card-header">Turnos Fijos</div>
+        <ul class="fixed-slots-list">
+          <% current_user.fixed_slots.active.each do |slot| %>
+            <li>
+              <strong><%= slot.day_name %></strong> a las <strong><%= slot.time_string %></strong>
+              <p class="slot-details"><%= slot.room.name %> - <%= slot.instructor.name %></p>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
     <!-- Solicitudes Pendientes -->
     <div class="card">
@@ -41,7 +124,7 @@
   <!-- Accesos Rápidos -->
   <div class="card">
     <div class="card-header">Accesos Rápidos</div>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div class="quick-access">
       <%= link_to "Mi Actividad", mi_actividad_path, class: "btn btn-primary" %>
       <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
       <%= link_to "Créditos", creditos_path, class: "btn btn-primary" %>

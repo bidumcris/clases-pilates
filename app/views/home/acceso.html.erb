@@ -1,0 +1,42 @@
+<!-- Sección de Login/Registro para Alumnos -->
+<section class="landing-login-section">
+  <div class="container">
+    <div class="acceso-header">
+      <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "acceso-logo" %>
+      <h1 class="acceso-title">Acceso para Alumnos</h1>
+      <p class="acceso-subtitle">Gestiona tus clases, reservas y créditos de forma fácil y rápida</p>
+    </div>
+    
+    <div class="login-section-content">
+      <div class="login-info">
+        <h2>Beneficios</h2>
+        <ul class="features-list">
+          <li>✓ Reserva tus clases favoritas</li>
+          <li>✓ Consulta tu calendario personal</li>
+          <li>✓ Gestiona tus créditos</li>
+          <li>✓ Recibe notificaciones de cupos disponibles</li>
+        </ul>
+      </div>
+      <div class="login-forms" data-controller="tabs">
+        <div class="login-tabs">
+          <button class="tab-button active" data-tabs-target="button" data-action="click->tabs#switch">Iniciar Sesión</button>
+          <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch">Registrarse</button>
+        </div>
+        
+        <div class="tab-content active" data-tabs-target="content">
+          <% resource = User.new %>
+          <% resource_name = :user %>
+          <%= render partial: "devise/sessions/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: Devise.mappings[:user] } %>
+        </div>
+        
+        <div class="tab-content" data-tabs-target="content">
+          <% resource = User.new %>
+          <% resource_name = :user %>
+          <% @minimum_password_length = Devise.password_length.min %>
+          <%= render partial: "devise/registrations/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: Devise.mappings[:user] } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
