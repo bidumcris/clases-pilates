@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  email: MyString
-  phone: MyString
+  name: María García
+  email: maria.garcia@test.com
+  phone: +34 600 123 456
 
 two:
-  name: MyString
-  email: MyString
-  phone: MyString
+  name: Juan López
+  email: juan.lopez@test.com
+  phone: +34 600 234 567
