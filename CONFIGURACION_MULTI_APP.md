@@ -54,51 +54,61 @@ BOT_PORT=3001
 # [OTRA_APP]_PORT=3002
 ```
 
-## ¿Por qué una sola base de datos?
+## ¿Por qué bases de datos separadas?
 
 ✅ **Ventajas:**
-- **Más simple**: Una sola configuración
-- **Compartir datos**: El bot puede acceder a usuarios, clases, reservas
-- **Menos recursos**: Menos conexiones, menos memoria
-- **Backups más fáciles**: Un solo backup para todo
-- **Transacciones**: Si el bot necesita modificar datos, todo está en el mismo lugar
+- **Aislamiento**: Cada app es independiente
+- **Seguridad**: Si una app tiene problemas, no afecta a la otra
+- **Escalabilidad**: Puedes escalar cada app por separado
+- **Backups independientes**: Backups separados por app
+- **Mantenimiento**: Actualizar una app no afecta a la otra
 
-❌ **Cuándo usar bases de datos separadas:**
-- Apps completamente independientes
-- Requisitos de seguridad diferentes
-- Necesidad de escalar por separado
-- Apps de diferentes empresas/clientes
+## Ejemplo: Configurar el Bot (con su propia BD)
 
-## Ejemplo: Agregar Bot (usando la misma BD)
+### 1. Crear Base de Datos para el Bot
 
-### 1. El bot usará la misma base de datos
+```bash
+sudo -u postgres psql
+```
 
-No necesitas crear nada nuevo. El bot se conectará a la misma base de datos.
+```sql
+-- Crear usuario para el bot
+CREATE USER bot_user WITH PASSWORD 'password_seguro_bot';
 
-### 2. Agregar Variables al `.env` (solo para el bot)
+-- Crear base de datos para el bot
+CREATE DATABASE bot_production OWNER bot_user;
+
+-- Dar permisos
+GRANT ALL PRIVILEGES ON DATABASE bot_production TO bot_user;
+
+-- Salir
+\q
+```
+
+### 2. Configurar `.env` en `~/apps/bot/.env`
 
 ```bash
 # =============================================================================
 # CONFIGURACIÓN DEL BOT
 # =============================================================================
+DATABASE_URL=postgres://bot_user:password_seguro_bot@127.0.0.1:5432/bot_production
 BOT_TOKEN=tu_bot_token_de_telegram
 BOT_PORT=3001
-# El bot usará la misma DATABASE_URL que ya tienes configurada
 ```
 
 ### 3. Configurar `database.yml` del Bot
 
-En el proyecto del bot, usar la misma `DATABASE_URL`:
+En el proyecto del bot (`~/apps/bot/config/database.yml`):
 
 ```yaml
 production:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL", "") %>
   # O si prefieres variables individuales:
-  # database: <%= ENV.fetch("DATABASE_NAME", "clases_pilates_production") %>
+  # database: <%= ENV.fetch("DATABASE_NAME", "bot_production") %>
   # host: <%= ENV.fetch("DATABASE_HOST", "127.0.0.1") %>
   # port: <%= ENV.fetch("DATABASE_PORT", "5432") %>
-  # username: <%= ENV.fetch("DATABASE_USERNAME", "clases_pilates") %>
+  # username: <%= ENV.fetch("DATABASE_USERNAME", "bot_user") %>
   # password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
 ```
 
@@ -184,24 +194,24 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE clases_pilates_produc
 
 ## Ventajas de Esta Estructura
 
-✅ **Simple**: Una sola base de datos, una sola configuración
-✅ **Eficiente**: Menos recursos, menos complejidad
-✅ **Compartir datos**: El bot puede acceder directamente a las tablas
-✅ **Backups fáciles**: Un solo comando para respaldar todo
-✅ **Mantenible**: Menos cosas que configurar y mantener
+✅ **Aislamiento**: Cada app es completamente independiente
+✅ **Seguridad**: Problemas en una app no afectan a la otra
+✅ **Escalabilidad**: Puedes escalar cada app por separado
+✅ **Backups independientes**: Backups separados por app
+✅ **Mantenible**: Actualizar una app no afecta a la otra
+✅ **Claro**: Cada app tiene su propia configuración
 
-## Estructura de Directorios Recomendada
+## Estructura de Directorios
 
 ```
-/home/deploy/
-├── apps/
-│   ├── pilates/          # Clases Pilates (Rails)
-│   │   ├── .env          # Comparte DATABASE_URL con el bot
-│   │   └── ...
-│   └── bot/              # Bot (Ruby/Python/etc)
-│       ├── .env          # Misma DATABASE_URL
-│       └── ...
+/home/deploy/apps/
+├── pilates/              # App Clases Pilates
+│   ├── .env              # DATABASE_URL → pilates_production
+│   └── ...
+└── bot/                  # App Bot
+    ├── .env              # DATABASE_URL → bot_production
+    └── ...
 ```
 
-**Ambas apps usan el mismo `.env` o copian las mismas variables de BD.**
+**Cada app tiene su propia base de datos y configuración independiente.**
 
