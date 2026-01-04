@@ -84,9 +84,10 @@ production:
   # Ejemplo: DATABASE_URL="postgres://user:password@host:5432/database_name"
   url: <%= ENV.fetch("DATABASE_URL", "") %>
   
-  # Si no hay DATABASE_URL, usar configuración individual con prefijo de app
-  # Esto permite tener múltiples apps en el mismo servidor
-  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", "clases_pilates_production") %>
+  # Si no hay DATABASE_URL, usar configuración individual
+  # Compatible con variables genéricas (DATABASE_*) o con prefijo (CLASES_PILATES_DATABASE_*)
+  # Esta misma BD puede ser compartida con otras apps (bot, etc.)
+  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "clases_pilates_production")) %>
   host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", ENV.fetch("DATABASE_HOST", "127.0.0.1")) %>
   port: <%= ENV.fetch("CLASES_PILATES_DATABASE_PORT", ENV.fetch("DATABASE_PORT", "5432")) %>
   username: <%= ENV.fetch("CLASES_PILATES_DATABASE_USERNAME", ENV.fetch("DATABASE_USERNAME", "clases_pilates")) %>
