@@ -87,7 +87,7 @@ production:
   # Si no hay DATABASE_URL, usar configuración individual
   # Compatible con variables genéricas (DATABASE_*) o con prefijo (CLASES_PILATES_DATABASE_*)
   # Cada app tiene su propia base de datos (pilates_production, bot_production, etc.)
-  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "pilates_production")) %>
+  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "clases_pilates_production")) %>
   host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", ENV.fetch("DATABASE_HOST", "127.0.0.1")) %>
   port: <%= ENV.fetch("CLASES_PILATES_DATABASE_PORT", ENV.fetch("DATABASE_PORT", "5432")) %>
   username: <%= ENV.fetch("CLASES_PILATES_DATABASE_USERNAME", ENV.fetch("DATABASE_USERNAME", "clases_pilates")) %>

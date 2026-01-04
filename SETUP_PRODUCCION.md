@@ -45,7 +45,7 @@ cd ~/apps/pilates
 nano .env
 ```
 
-**Contenido del `.env` para PILATES:**
+**Contenido del `.env` para PILATES (versión limpia):**
 
 ```bash
 # =============================================================================
@@ -64,16 +64,25 @@ BIND=127.0.0.1
 PORT=3000
 
 # =============================================================================
-# BASE DE DATOS (SOLO PARA PILATES)
+# BASE DE DATOS (OPCIÓN 1: DATABASE_URL - RECOMENDADO)
 # =============================================================================
-DATABASE_URL=postgres://pilates_user:tu_password_seguro@127.0.0.1:5432/pilates_production
+DATABASE_URL=postgres://clases_pilates:tu_password@127.0.0.1:5432/clases_pilates_production
 
-# O si prefieres variables individuales:
-# DATABASE_NAME=pilates_production
+# =============================================================================
+# BASE DE DATOS (OPCIÓN 2: Variables individuales - si prefieres más control)
+# =============================================================================
+# DATABASE_NAME=clases_pilates_production
 # DATABASE_HOST=127.0.0.1
 # DATABASE_PORT=5432
-# DATABASE_USERNAME=pilates_user
-# DATABASE_PASSWORD=tu_password_seguro
+# DATABASE_USERNAME=clases_pilates
+# DATABASE_PASSWORD=tu_password
+
+# O usando prefijo (también funciona):
+# CLASES_PILATES_DATABASE_NAME=clases_pilates_production
+# CLASES_PILATES_DATABASE_HOST=127.0.0.1
+# CLASES_PILATES_DATABASE_PORT=5432
+# CLASES_PILATES_DATABASE_USERNAME=clases_pilates
+# CLASES_PILATES_DATABASE_PASSWORD=tu_password
 
 # =============================================================================
 # RAILS CREDENTIALS
@@ -129,13 +138,13 @@ BOT_PORT=3001
 
 ```bash
 # Backup de la base de datos de PILATES
-pg_dump -U pilates_user -h localhost pilates_production > ~/backups/pilates_$(date +%Y%m%d).sql
+pg_dump -U clases_pilates -h localhost clases_pilates_production > ~/backups/pilates_$(date +%Y%m%d).sql
 
 # Backup de la base de datos del BOT (si lo necesitas)
 pg_dump -U bot_user -h localhost bot_production > ~/backups/bot_$(date +%Y%m%d).sql
 
 # Restaurar pilates
-psql -U pilates_user -h localhost pilates_production < ~/backups/pilates_20260101.sql
+psql -U clases_pilates -h localhost clases_pilates_production < ~/backups/pilates_20260101.sql
 ```
 
 ## Troubleshooting
@@ -143,22 +152,22 @@ psql -U pilates_user -h localhost pilates_production < ~/backups/pilates_2026010
 ### Error: "permission denied to create database"
 ```bash
 # Crear la BD manualmente como superusuario:
-sudo -u postgres createdb -O pilates_user pilates_production
+sudo -u postgres createdb -O clases_pilates clases_pilates_production
 ```
 
 ### Error: "database does not exist"
 ```bash
 # Verificar que existe:
-sudo -u postgres psql -c "\l" | grep pilates_production
+sudo -u postgres psql -c "\l" | grep clases_pilates_production
 
 # Si no existe, crearla:
-sudo -u postgres createdb -O pilates_user pilates_production
+sudo -u postgres createdb -O clases_pilates clases_pilates_production
 ```
 
 ### Error: "password authentication failed"
 ```bash
 # Verificar password en .env
 # Cambiar password en PostgreSQL:
-sudo -u postgres psql -c "ALTER USER pilates_user WITH PASSWORD 'nuevo_password';"
+sudo -u postgres psql -c "ALTER USER clases_pilates WITH PASSWORD 'nuevo_password';"
 ```
 
