@@ -54,64 +54,52 @@ BOT_PORT=3001
 # [OTRA_APP]_PORT=3002
 ```
 
-## Convenciones de Nomenclatura
+## ¿Por qué una sola base de datos?
 
-### Para Base de Datos
-- `[APP_NAME]_DATABASE_NAME`: Nombre de la base de datos
-- `[APP_NAME]_DATABASE_HOST`: Host de PostgreSQL
-- `[APP_NAME]_DATABASE_PORT`: Puerto de PostgreSQL
-- `[APP_NAME]_DATABASE_USERNAME`: Usuario de PostgreSQL
-- `[APP_NAME]_DATABASE_PASSWORD`: Password de PostgreSQL
+✅ **Ventajas:**
+- **Más simple**: Una sola configuración
+- **Compartir datos**: El bot puede acceder a usuarios, clases, reservas
+- **Menos recursos**: Menos conexiones, menos memoria
+- **Backups más fáciles**: Un solo backup para todo
+- **Transacciones**: Si el bot necesita modificar datos, todo está en el mismo lugar
 
-### Para Rails
-- `[APP_NAME]_RAILS_MASTER_KEY`: Master key de Rails credentials
+❌ **Cuándo usar bases de datos separadas:**
+- Apps completamente independientes
+- Requisitos de seguridad diferentes
+- Necesidad de escalar por separado
+- Apps de diferentes empresas/clientes
 
-### Para Aplicaciones Específicas
-- `[APP_NAME]_PORT`: Puerto donde corre la app
-- `[APP_NAME]_TOKEN`: Tokens específicos (ej: bot token)
+## Ejemplo: Agregar Bot (usando la misma BD)
 
-## Ejemplo: Agregar Bot
+### 1. El bot usará la misma base de datos
 
-### 1. Crear Base de Datos para Bot
+No necesitas crear nada nuevo. El bot se conectará a la misma base de datos.
 
-```bash
-sudo -u postgres psql
-```
-
-```sql
-CREATE USER bot_user WITH PASSWORD 'password_seguro_bot';
-CREATE DATABASE bot_production OWNER bot_user;
-GRANT ALL PRIVILEGES ON DATABASE bot_production TO bot_user;
-\q
-```
-
-### 2. Agregar Variables al `.env`
+### 2. Agregar Variables al `.env` (solo para el bot)
 
 ```bash
 # =============================================================================
-# APLICACIÓN: BOT
+# CONFIGURACIÓN DEL BOT
 # =============================================================================
-BOT_DATABASE_NAME=bot_production
-BOT_DATABASE_HOST=127.0.0.1
-BOT_DATABASE_PORT=5432
-BOT_DATABASE_USERNAME=bot_user
-BOT_DATABASE_PASSWORD=password_seguro_bot
 BOT_TOKEN=tu_bot_token_de_telegram
 BOT_PORT=3001
+# El bot usará la misma DATABASE_URL que ya tienes configurada
 ```
 
 ### 3. Configurar `database.yml` del Bot
 
-En el proyecto del bot, usar las mismas convenciones:
+En el proyecto del bot, usar la misma `DATABASE_URL`:
 
 ```yaml
 production:
   <<: *default
-  database: <%= ENV.fetch("BOT_DATABASE_NAME", "bot_production") %>
-  host: <%= ENV.fetch("BOT_DATABASE_HOST", "127.0.0.1") %>
-  port: <%= ENV.fetch("BOT_DATABASE_PORT", "5432") %>
-  username: <%= ENV.fetch("BOT_DATABASE_USERNAME", "bot_user") %>
-  password: <%= ENV.fetch("BOT_DATABASE_PASSWORD", "") %>
+  url: <%= ENV.fetch("DATABASE_URL", "") %>
+  # O si prefieres variables individuales:
+  # database: <%= ENV.fetch("DATABASE_NAME", "clases_pilates_production") %>
+  # host: <%= ENV.fetch("DATABASE_HOST", "127.0.0.1") %>
+  # port: <%= ENV.fetch("DATABASE_PORT", "5432") %>
+  # username: <%= ENV.fetch("DATABASE_USERNAME", "clases_pilates") %>
+  # password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
 ```
 
 ### 4. Configurar Nginx (si usas reverse proxy)
@@ -148,37 +136,72 @@ server {
 }
 ```
 
+## Configuración Final Recomendada
+
+### Tu `.env` en producción debería ser así:
+
+```bash
+# =============================================================================
+# CONFIGURACIÓN COMPARTIDA (Rails)
+# =============================================================================
+RAILS_ENV=production
+RAILS_LOG_TO_STDOUT=1
+RAILS_SERVE_STATIC_FILES=1
+RAILS_MAX_THREADS=5
+FORCE_SSL=0
+
+# =============================================================================
+# PUMA (Servidor Web)
+# =============================================================================
+BIND=127.0.0.1
+PORT=3000
+
+# =============================================================================
+# BASE DE DATOS (COMPARTIDA PARA TODAS LAS APPS)
+# =============================================================================
+DATABASE_URL=postgres://clases_pilates:tu_password@127.0.0.1:5432/clases_pilates_production
+
+# =============================================================================
+# RAILS CREDENTIALS
+# =============================================================================
+RAILS_MASTER_KEY=tu_master_key_aqui
+
+# =============================================================================
+# BOT (Futuro - cuando lo agregues)
+# =============================================================================
+# BOT_TOKEN=tu_token_aqui
+# BOT_PORT=3001
+```
+
+### Comandos para crear la base de datos (UNA SOLA VEZ):
+
+```bash
+# 1. Crear usuario y base de datos
+sudo -u postgres psql -c "CREATE USER clases_pilates WITH PASSWORD 'tu_password_seguro';"
+sudo -u postgres psql -c "CREATE DATABASE clases_pilates_production OWNER clases_pilates;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE clases_pilates_production TO clases_pilates;"
+```
+
 ## Ventajas de Esta Estructura
 
-✅ **Escalable**: Fácil agregar nuevas apps
-✅ **Organizado**: Cada app tiene su sección clara
-✅ **Seguro**: Variables separadas por app
-✅ **Mantenible**: Fácil encontrar y actualizar configuraciones
-✅ **Flexible**: Cada app puede tener su propio puerto, BD, etc.
-
-## Mejores Prácticas
-
-1. **Usar prefijos consistentes**: `[APP_NAME]_` para todas las variables
-2. **Documentar cada sección**: Comentarios claros en el `.env`
-3. **Separar por app**: Cada app en su propia sección
-4. **Variables compartidas al inicio**: Rails, Puma, etc.
-5. **Comentar apps futuras**: Dejar plantillas comentadas para futuras apps
+✅ **Simple**: Una sola base de datos, una sola configuración
+✅ **Eficiente**: Menos recursos, menos complejidad
+✅ **Compartir datos**: El bot puede acceder directamente a las tablas
+✅ **Backups fáciles**: Un solo comando para respaldar todo
+✅ **Mantenible**: Menos cosas que configurar y mantener
 
 ## Estructura de Directorios Recomendada
 
 ```
 /home/deploy/
 ├── apps/
-│   ├── pilates/          # Clases Pilates
-│   │   ├── .env
+│   ├── pilates/          # Clases Pilates (Rails)
+│   │   ├── .env          # Comparte DATABASE_URL con el bot
 │   │   └── ...
-│   ├── bot/              # Bot
-│   │   ├── .env
-│   │   └── ...
-│   └── otra_app/         # Otra app
-│       ├── .env
+│   └── bot/              # Bot (Ruby/Python/etc)
+│       ├── .env          # Misma DATABASE_URL
 │       └── ...
 ```
 
-Cada app puede tener su propio `.env` o compartir uno centralizado (recomendado para facilitar mantenimiento).
+**Ambas apps usan el mismo `.env` o copian las mismas variables de BD.**
 
