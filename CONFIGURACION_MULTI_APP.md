@@ -1,58 +1,21 @@
 # Configuración Multi-Aplicación
 
-Esta guía explica cómo configurar múltiples aplicaciones Rails en el mismo servidor.
+Esta guía explica cómo configurar múltiples aplicaciones en el mismo servidor, **cada una con su propia base de datos**.
 
-## Estructura del `.env` en Producción
+## 🎯 Estructura: Cada App con su Propia Base de Datos
 
-### Template Organizado
-
-```bash
-# =============================================================================
-# CONFIGURACIÓN COMPARTIDA (Rails)
-# =============================================================================
-RAILS_ENV=production
-RAILS_LOG_TO_STDOUT=1
-RAILS_SERVE_STATIC_FILES=1
-RAILS_MAX_THREADS=5
-FORCE_SSL=0
-
-# =============================================================================
-# PUMA (Servidor Web)
-# =============================================================================
-BIND=127.0.0.1
-PORT=3000
-
-# =============================================================================
-# APLICACIÓN: CLASES PILATES
-# =============================================================================
-CLASES_PILATES_DATABASE_NAME=clases_pilates_production
-CLASES_PILATES_DATABASE_HOST=127.0.0.1
-CLASES_PILATES_DATABASE_PORT=5432
-CLASES_PILATES_DATABASE_USERNAME=clases_pilates
-CLASES_PILATES_DATABASE_PASSWORD=tu_password_aqui
-CLASES_PILATES_RAILS_MASTER_KEY=tu_master_key_aqui
-
-# =============================================================================
-# APLICACIÓN: BOT
-# =============================================================================
-BOT_DATABASE_NAME=bot_production
-BOT_DATABASE_HOST=127.0.0.1
-BOT_DATABASE_PORT=5432
-BOT_DATABASE_USERNAME=bot_user
-BOT_DATABASE_PASSWORD=tu_password_bot_aqui
-BOT_TOKEN=tu_bot_token_aqui
-BOT_PORT=3001
-
-# =============================================================================
-# APLICACIÓN: [OTRA_APP]
-# =============================================================================
-# [OTRA_APP]_DATABASE_NAME=[otra_app]_production
-# [OTRA_APP]_DATABASE_HOST=127.0.0.1
-# [OTRA_APP]_DATABASE_PORT=5432
-# [OTRA_APP]_DATABASE_USERNAME=[otra_app]_user
-# [OTRA_APP]_DATABASE_PASSWORD=tu_password_aqui
-# [OTRA_APP]_PORT=3002
+**Estructura del servidor:**
 ```
+/home/deploy/apps/
+├── pilates/          # App Clases Pilates
+│   └── .env          # Configuración de pilates
+└── bot/              # App Bot
+    └── .env          # Configuración del bot
+```
+
+**Cada app tiene su propia base de datos independiente:**
+- `pilates` → `pilates_production`
+- `bot` → `bot_production`
 
 ## ¿Por qué bases de datos separadas?
 
@@ -148,7 +111,7 @@ server {
 
 ## Configuración Final Recomendada
 
-### Tu `.env` en producción debería ser así:
+### 1. `.env` en `~/apps/pilates/.env`:
 
 ```bash
 # =============================================================================
@@ -167,29 +130,43 @@ BIND=127.0.0.1
 PORT=3000
 
 # =============================================================================
-# BASE DE DATOS (COMPARTIDA PARA TODAS LAS APPS)
+# BASE DE DATOS (SOLO PARA PILATES)
 # =============================================================================
-DATABASE_URL=postgres://clases_pilates:tu_password@127.0.0.1:5432/clases_pilates_production
+DATABASE_URL=postgres://pilates_user:tu_password_seguro@127.0.0.1:5432/pilates_production
 
 # =============================================================================
 # RAILS CREDENTIALS
 # =============================================================================
 RAILS_MASTER_KEY=tu_master_key_aqui
-
-# =============================================================================
-# BOT (Futuro - cuando lo agregues)
-# =============================================================================
-# BOT_TOKEN=tu_token_aqui
-# BOT_PORT=3001
 ```
 
-### Comandos para crear la base de datos (UNA SOLA VEZ):
+### 2. `.env` en `~/apps/bot/.env`:
 
 ```bash
-# 1. Crear usuario y base de datos
-sudo -u postgres psql -c "CREATE USER clases_pilates WITH PASSWORD 'tu_password_seguro';"
-sudo -u postgres psql -c "CREATE DATABASE clases_pilates_production OWNER clases_pilates;"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE clases_pilates_production TO clases_pilates;"
+# =============================================================================
+# BASE DE DATOS (SOLO PARA BOT)
+# =============================================================================
+DATABASE_URL=postgres://bot_user:password_bot@127.0.0.1:5432/bot_production
+
+# =============================================================================
+# CONFIGURACIÓN DEL BOT
+# =============================================================================
+BOT_TOKEN=tu_token_aqui
+BOT_PORT=3001
+```
+
+### Comandos para crear las bases de datos:
+
+```bash
+# Base de datos para PILATES
+sudo -u postgres psql -c "CREATE USER pilates_user WITH PASSWORD 'tu_password_seguro';"
+sudo -u postgres psql -c "CREATE DATABASE pilates_production OWNER pilates_user;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE pilates_production TO pilates_user;"
+
+# Base de datos para BOT
+sudo -u postgres psql -c "CREATE USER bot_user WITH PASSWORD 'password_bot';"
+sudo -u postgres psql -c "CREATE DATABASE bot_production OWNER bot_user;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE bot_production TO bot_user;"
 ```
 
 ## Ventajas de Esta Estructura
