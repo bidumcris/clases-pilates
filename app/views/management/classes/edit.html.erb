@@ -5,7 +5,7 @@
   </div>
 
   <div class="form-container">
-    <%= form_with model: [:management, @pilates_class], local: true, class: "admin-form" do |f| %>
+    <%= form_with model: @pilates_class, url: management_class_path(@pilates_class), scope: :pilates_class, method: :patch, local: true, class: "admin-form" do |f| %>
       <%= render "shared/error_messages", resource: @pilates_class %>
 
       <div class="form-row">
