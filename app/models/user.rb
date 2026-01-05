@@ -5,7 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   enum :role, { alumno: 0, instructor: 1, admin: 2 }
-  enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3, admin: 4 }
+  # Nivel SOLO para alumnos (el rol admin vive en `role`)
+  enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3 }
   enum :class_type, { grupal: 0, privada: 1 }
 
   has_many :reservations, dependent: :destroy
@@ -47,8 +48,7 @@ class User < ApplicationRecord
   end
 
   def admin?
-    # Compatibilidad: antes se usaba `level: admin` como rol
-    role == "admin" || level == "admin"
+    role == "admin"
   end
 
   def instructor?

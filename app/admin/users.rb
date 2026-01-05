@@ -8,7 +8,6 @@ ActiveAdmin.register User do
   scope :basic
   scope :intermediate
   scope :advanced
-  scope :admin
 
   index do
     selectable_column

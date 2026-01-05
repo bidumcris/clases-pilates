@@ -5,10 +5,11 @@ if Rails.env.development?
   Request.destroy_all
   Credit.destroy_all
   Payment.destroy_all
+  FixedSlot.destroy_all if defined?(FixedSlot)
   PilatesClass.destroy_all
   Instructor.destroy_all
   Room.destroy_all
-  User.where.not(level: :admin).destroy_all
+  User.destroy_all
 end
 
 # Crear Salas
@@ -30,26 +31,62 @@ end
 
 # Crear Instructores
 puts "Creando instructores..."
-instructor1 = Instructor.find_or_create_by!(email: "maria.garcia@pilates.com") do |i|
-  i.name = "María García"
-  i.phone = "+34 600 123 456"
+def find_or_create_user!(email:, password:, role:, level: :basic, class_type: :grupal)
+  user = User.find_or_initialize_by(email: email)
+  user.password = password if user.new_record?
+  user.password_confirmation = password if user.new_record?
+  user.role = role
+  user.level = level
+  user.class_type = class_type
+  user.save!
+  user
 end
 
-instructor2 = Instructor.find_or_create_by!(email: "juan.lopez@pilates.com") do |i|
-  i.name = "Juan López"
-  i.phone = "+34 600 234 567"
-end
+instructor_user_1 = find_or_create_user!(
+  email: "maria.garcia@pilates.com",
+  password: "password123",
+  role: :instructor,
+  level: :advanced,
+  class_type: :grupal
+)
+instructor1 = Instructor.find_or_initialize_by(email: instructor_user_1.email)
+instructor1.name = "María García"
+instructor1.phone = "+34 600 123 456"
+instructor1.user = instructor_user_1
+instructor1.save!
 
-instructor3 = Instructor.find_or_create_by!(email: "ana.martinez@pilates.com") do |i|
-  i.name = "Ana Martínez"
-  i.phone = "+34 600 345 678"
-end
+instructor_user_2 = find_or_create_user!(
+  email: "juan.lopez@pilates.com",
+  password: "password123",
+  role: :instructor,
+  level: :advanced,
+  class_type: :grupal
+)
+instructor2 = Instructor.find_or_initialize_by(email: instructor_user_2.email)
+instructor2.name = "Juan López"
+instructor2.phone = "+34 600 234 567"
+instructor2.user = instructor_user_2
+instructor2.save!
+
+instructor_user_3 = find_or_create_user!(
+  email: "ana.martinez@pilates.com",
+  password: "password123",
+  role: :instructor,
+  level: :advanced,
+  class_type: :grupal
+)
+instructor3 = Instructor.find_or_initialize_by(email: instructor_user_3.email)
+instructor3.name = "Ana Martínez"
+instructor3.phone = "+34 600 345 678"
+instructor3.user = instructor_user_3
+instructor3.save!
 
 # Crear Usuarios de prueba
 puts "Creando usuarios..."
 user_inicial = User.find_or_create_by!(email: "inicial@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
+  u.role = :alumno
   u.level = :inicial
   u.class_type = :grupal
 end
@@ -57,6 +94,7 @@ end
 user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
+  u.role = :alumno
   u.level = :basic
   u.class_type = :grupal
 end
@@ -64,6 +102,7 @@ end
 user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
+  u.role = :alumno
   u.level = :intermediate
   u.class_type = :grupal
 end
@@ -71,6 +110,7 @@ end
 user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
+  u.role = :alumno
   u.level = :advanced
   u.class_type = :grupal
 end
@@ -79,15 +119,24 @@ end
 user_privada = User.find_or_create_by!(email: "privada@test.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
+  u.role = :alumno
   u.level = :basic
   u.class_type = :privada
 end
 
 # Crear Admin
-admin = User.find_or_create_by!(email: "admin@pilates.com") do |u|
-  u.password = "admin123"
-  u.password_confirmation = "admin123"
-  u.level = :admin
+admin_email = ENV["ADMIN_EMAIL"].presence || (Rails.env.development? ? "admin@pilates.com" : nil)
+admin_password = ENV["ADMIN_PASSWORD"].presence || (Rails.env.development? ? "admin123" : nil)
+
+admin = nil
+if admin_email && admin_password
+  admin = User.find_or_initialize_by(email: admin_email)
+  admin.password = admin_password if admin.new_record?
+  admin.password_confirmation = admin_password if admin.new_record?
+  admin.role = :admin
+  admin.level = :advanced
+  admin.class_type = :grupal
+  admin.save!
 end
 
 # Crear Créditos para usuarios (mensuales)
@@ -264,14 +313,22 @@ puts "    • Básico (Grupal): basico@test.com / password123"
 puts "    • Intermedio (Grupal): intermedio@test.com / password123"
 puts "    • Avanzado (Grupal): avanzado@test.com / password123"
 puts "    • Privada (Patología/Lesión): privada@test.com / password123"
+puts "\n  👩‍🏫 Instructores:"
+puts "    • María: maria.garcia@pilates.com / password123"
+puts "    • Juan:  juan.lopez@pilates.com / password123"
+puts "    • Ana:   ana.martinez@pilates.com / password123"
 puts "\n  👨‍💼 Administrador:"
-puts "    • Admin: admin@pilates.com / admin123"
+if admin
+  puts "    • Admin: #{admin.email} / #{Rails.env.development? ? 'admin123' : '(definido por ENV)'}"
+else
+  puts "    • Admin: (no creado — definí ADMIN_EMAIL y ADMIN_PASSWORD para crearlo)"
+end
 puts "\n" + "="*60
 puts "DATOS CREADOS:"
 puts "="*60
 puts "  • #{Room.count} salas"
 puts "  • #{Instructor.count} instructores"
-puts "  • #{User.where.not(level: :admin).count} alumnos"
+puts "  • #{User.where(role: :alumno).count} alumnos"
 puts "  • #{PilatesClass.count} clases (grupales y privadas)"
 puts "  • #{Credit.count} créditos mensuales"
 puts "  • #{Reservation.count} reservas de ejemplo"
