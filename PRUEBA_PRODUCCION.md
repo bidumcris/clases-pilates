@@ -102,7 +102,16 @@ sudo -u postgres createdb -O clases_pilates clases_pilates_production
 sudo -u postgres psql -c "ALTER USER clases_pilates WITH PASSWORD 'grinco';"
 ```
 
-### Error: "permission denied"
+### Error: "permission denied for schema public"
+```bash
+# Dar permisos al usuario en el schema public
+sudo -u postgres psql -d clases_pilates_production -c "GRANT ALL ON SCHEMA public TO clases_pilates;"
+sudo -u postgres psql -d clases_pilates_production -c "GRANT CREATE ON SCHEMA public TO clases_pilates;"
+sudo -u postgres psql -d clases_pilates_production -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO clases_pilates;"
+sudo -u postgres psql -d clases_pilates_production -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO clases_pilates;"
+```
+
+### Error: "permission denied" (general)
 ```bash
 # Verificar permisos
 sudo -u postgres psql -c "\du" | grep clases_pilates
