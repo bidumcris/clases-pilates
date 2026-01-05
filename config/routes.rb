@@ -43,6 +43,10 @@ Rails.application.routes.draw do
       root "dashboard#index"
       get "dashboard", to: "dashboard#index", as: :dashboard
 
+      # Caja (solo admin)
+      get "cashbox", to: "cashbox#index", as: :cashbox
+      post "cashbox/payments", to: "cashbox#create_payment", as: :cashbox_payments
+
       # Gestión de Clases
       resources :classes, only: [ :index, :new, :create, :edit, :update, :destroy ] do
         collection do

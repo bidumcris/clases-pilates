@@ -1,0 +1,109 @@
+<div class="admin-dashboard">
+  <div class="admin-header">
+    <h1>Caja</h1>
+    <p class="admin-subtitle">Control de pagos por período y método</p>
+  </div>
+
+  <div class="admin-section">
+    <h2>Filtros</h2>
+    <%= form_with url: management_cashbox_path, method: :get, local: true do %>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+        <div>
+          <label>Desde</label><br>
+          <%= date_field_tag :start_date, @start_date, class: "form-input" %>
+        </div>
+        <div>
+          <label>Hasta</label><br>
+          <%= date_field_tag :end_date, @end_date, class: "form-input" %>
+        </div>
+        <div>
+          <%= submit_tag "Aplicar", class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <div class="stat-number"><%= number_to_currency(@total_completed, unit: "$", separator: ",", delimiter: ".") %></div>
+      <div class="stat-label">Total (completados)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number"><%= @count_completed %></div>
+      <div class="stat-label">Pagos completados</div>
+    </div>
+    <% Payment.payment_methods.keys.each do |method| %>
+      <div class="stat-card">
+        <div class="stat-number">
+          <%= number_to_currency(@totals_by_method[method].to_f, unit: "$", separator: ",", delimiter: ".") %>
+        </div>
+        <div class="stat-label"><%= method.humanize %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="admin-section">
+    <h2>Registrar pago</h2>
+    <%= form_with url: management_cashbox_payments_path, method: :post, local: true do %>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+        <div>
+          <label>Email del usuario</label><br>
+          <%= text_field_tag :email, nil, class: "form-input", placeholder: "alumno@..." %>
+        </div>
+        <div>
+          <label>Monto</label><br>
+          <%= number_field_tag :amount, nil, step: "0.01", min: "0", class: "form-input" %>
+        </div>
+        <div>
+          <label>Método</label><br>
+          <%= select_tag :payment_method, options_for_select(Payment.payment_methods.keys.map { |k| [k.humanize, k] }), class: "form-select" %>
+        </div>
+        <div>
+          <label>Estado</label><br>
+          <%= select_tag :payment_status, options_for_select(Payment.payment_statuses.keys.map { |k| [k.humanize, k] }, "completed"), class: "form-select" %>
+        </div>
+        <div>
+          <label>ID / referencia</label><br>
+          <%= text_field_tag :transaction_id, nil, class: "form-input", placeholder: "Opcional" %>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <%= submit_tag "Guardar pago", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="admin-section">
+    <h2>Pagos del período</h2>
+    <% if @payments.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Estado</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+            <tr>
+              <td><%= payment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= payment.user.email %></td>
+              <td><%= number_to_currency(payment.amount, unit: "$", separator: ",", delimiter: ".") %></td>
+              <td><%= payment.payment_method.humanize %></td>
+              <td><%= payment.payment_status.humanize %></td>
+              <td><%= payment.transaction_id.presence || "-" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No hay pagos en este período.</p>
+    <% end %>
+  </div>
+</div>
+
+

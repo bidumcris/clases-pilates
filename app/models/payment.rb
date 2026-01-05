@@ -1,7 +1,7 @@
 class Payment < ApplicationRecord
   belongs_to :user
 
-  enum :payment_method, { card: 0, qr: 1, deposit: 2 }
+  enum :payment_method, { efectivo: 0, debito: 1, credito: 2, transferencia: 3 }
   enum :payment_status, { pending: 0, completed: 1, failed: 2, refunded: 3 }
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
