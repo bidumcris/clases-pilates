@@ -28,7 +28,7 @@ class Management::ClassesController < Management::BaseController
     @instructors = Instructor.all
     # Valores por defecto
     @pilates_class.start_time = Time.current.beginning_of_hour + 1.hour
-    @pilates_class.end_time = @pilates_class.start_time + 1.hour
+    # end_time se calcula automáticamente al guardar (+1 hora) si queda vacío
     @pilates_class.max_capacity = 10
     @pilates_class.level = :basic
     @pilates_class.class_type = :grupal

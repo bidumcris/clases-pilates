@@ -58,7 +58,7 @@
 
         <div class="form-group">
           <%= f.label :end_time, "Hora de fin (opcional)" %>
-          <%= f.datetime_local_field :end_time, class: "form-control", value: @pilates_class.end_time&.strftime("%Y-%m-%dT%H:%M") %>
+          <%= f.datetime_local_field :end_time, class: "form-control", value: "" %>
           <small class="form-hint">Si lo dejás vacío, se calcula automáticamente (+1 hora)</small>
         </div>
       </div>
