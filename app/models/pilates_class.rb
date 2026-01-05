@@ -8,11 +8,14 @@ class PilatesClass < ApplicationRecord
   enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3 }
   enum :class_type, { grupal: 0, privada: 1 }
 
+  before_validation :set_default_name
+
   validates :name, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :max_capacity, presence: true, numericality: { greater_than: 0 }
   validate :end_time_after_start_time
+  validate :private_class_rules
 
   scope :upcoming, -> { where("start_time >= ?", Time.current).order(start_time: :asc) }
   scope :past, -> { where("start_time < ?", Time.current).order(start_time: :desc) }
@@ -70,9 +73,38 @@ class PilatesClass < ApplicationRecord
 
   private
 
+  def set_default_name
+    return if name.present?
+    return unless start_time && instructor
+
+    type = class_type.present? ? class_type.humanize : "Clase"
+    level_str = level.present? ? level.humanize : nil
+    date_str = I18n.l(start_time.to_date, format: "%d/%m")
+    time_str = start_time.strftime("%H:%M")
+
+    parts = [type]
+    parts << level_str if level_str.present?
+    parts << "- #{instructor.name}"
+    parts << "- #{date_str} #{time_str}"
+
+    self.name = parts.compact.join(" ")
+  end
+
   def end_time_after_start_time
     return unless start_time && end_time
 
     errors.add(:end_time, "debe ser después de la hora de inicio") if end_time <= start_time
+  end
+
+  def private_class_rules
+    return unless privada?
+
+    if max_capacity.present? && max_capacity != 1
+      errors.add(:max_capacity, "debe ser 1 para clases privadas")
+    end
+
+    if room && !Room.private_enabled.where(id: room.id).exists?
+      errors.add(:room, "debe ser una sala habilitada para privadas")
+    end
   end
 end

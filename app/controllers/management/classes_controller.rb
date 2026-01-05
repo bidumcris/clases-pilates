@@ -39,6 +39,8 @@ class Management::ClassesController < Management::BaseController
     @rooms = Room.all
     @instructors = Instructor.all
 
+    normalize_class_times_and_capacity
+
     if @pilates_class.save
       redirect_to management_classes_path, notice: "Clase creada exitosamente"
     else
@@ -52,7 +54,10 @@ class Management::ClassesController < Management::BaseController
   end
 
   def update
-    if @pilates_class.update(pilates_class_params)
+    @pilates_class.assign_attributes(pilates_class_params)
+    normalize_class_times_and_capacity
+
+    if @pilates_class.save
       redirect_to management_classes_path, notice: "Clase actualizada exitosamente"
     else
       render :edit, status: :unprocessable_entity
@@ -116,6 +121,19 @@ class Management::ClassesController < Management::BaseController
 
     flash[:alert] = "No tienes acceso a esta clase"
     redirect_to management_classes_path
+  end
+
+  def normalize_class_times_and_capacity
+    if @pilates_class.start_time.present? && @pilates_class.end_time.blank?
+      @pilates_class.end_time = @pilates_class.start_time + 1.hour
+    end
+
+    if @pilates_class.privada?
+      @pilates_class.max_capacity = 1
+      @pilates_class.room ||= Room.private_enabled.first
+    elsif @pilates_class.room && @pilates_class.max_capacity.blank?
+      @pilates_class.max_capacity = @pilates_class.room.capacity
+    end
   end
 
   def pilates_class_params
