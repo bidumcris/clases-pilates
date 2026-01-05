@@ -4,6 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  enum :role, { alumno: 0, instructor: 1, admin: 2 }
   enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3, admin: 4 }
   enum :class_type, { grupal: 0, privada: 1 }
 
@@ -13,6 +14,7 @@ class User < ApplicationRecord
   has_many :payments, dependent: :destroy
   has_many :fixed_slots, dependent: :destroy
 
+  validates :role, presence: true
   validates :level, presence: true
   validates :class_type, presence: true
 
@@ -20,6 +22,7 @@ class User < ApplicationRecord
   after_initialize :set_defaults, if: :new_record?
 
   def set_defaults
+    self.role ||= :alumno
     self.level ||= :inicial
     self.class_type ||= :grupal
   end
@@ -33,6 +36,7 @@ class User < ApplicationRecord
       email
       id
       level
+      role
       updated_at
     ]
   end
@@ -42,13 +46,12 @@ class User < ApplicationRecord
   end
 
   def admin?
-    level == "admin"
+    # Compatibilidad: antes se usaba `level: admin` como rol
+    role == "admin" || level == "admin"
   end
 
   def instructor?
-    # Por ahora, los instructores son entidades separadas
-    # Si en el futuro se relacionan con User, se puede actualizar aquí
-    false
+    role == "instructor"
   end
 
   def can_reserve_class?(pilates_class)

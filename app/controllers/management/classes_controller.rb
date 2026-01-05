@@ -1,6 +1,7 @@
 class Management::ClassesController < Management::BaseController
   before_action :set_pilates_class, only: [ :show, :edit, :update, :destroy ]
   before_action :set_pilates_class, only: [ :edit, :update, :destroy ]
+  before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :destroy ]
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Date.current

@@ -1,8 +1,11 @@
 class Management::StudentsController < Management::BaseController
   before_action :set_user, only: [ :show, :edit, :update ]
+  before_action :ensure_admin!, only: [ :edit, :update, :add_credits, :update_class_type ]
 
   def index
-    @students = User.where.not(level: :admin).order(created_at: :desc)
+    @students = User.where.not(role: :admin).order(created_at: :desc)
+    @students = @students.where(role: params[:role]) if params[:role].present?
+    @students = @students.where(role: :alumno) unless params[:role].present?
     @students = @students.where("email ILIKE ?", "%#{params[:search]}%") if params[:search].present?
     @students = @students.where(level: params[:level]) if params[:level].present?
     @students = @students.where(class_type: params[:class_type]) if params[:class_type].present?
@@ -53,6 +56,6 @@ class Management::StudentsController < Management::BaseController
   end
 
   def user_params
-    params.require(:user).permit(:level, :class_type)
+    params.require(:user).permit(:role, :level, :class_type)
   end
 end

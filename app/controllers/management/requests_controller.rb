@@ -1,5 +1,6 @@
 class Management::RequestsController < Management::BaseController
   before_action :set_request, only: [ :show, :approve, :reject ]
+  before_action :ensure_admin!, only: [ :approve, :reject ]
 
   def index
     @requests = Request.includes(:user, :pilates_class).order(created_at: :desc)
