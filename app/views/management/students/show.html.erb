@@ -19,6 +19,7 @@
         <div><strong>DNI:</strong> <%= @user.dni.presence || "-" %></div>
         <div><strong>Celular:</strong> <%= @user.mobile.presence || "-" %></div>
         <div><strong>Teléfono:</strong> <%= @user.phone.presence || "-" %></div>
+        <div><strong>Fecha de nacimiento:</strong> <%= @user.birth_date ? @user.birth_date.strftime("%d/%m/%Y") : "-" %></div>
         <div><strong>Email:</strong> <%= @user.email %></div>
       </div>
     </div>

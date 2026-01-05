@@ -100,6 +100,7 @@ user_inicial = User.find_or_create_by!(email: "inicial@test.com") do |u|
   u.class_type = :grupal
   u.dni = "30000001"
   u.mobile = "+54 11 7000 0001"
+  u.birth_date = Date.new(1995, 1, 10)
 end
 
 user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
@@ -110,6 +111,7 @@ user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
   u.class_type = :grupal
   u.dni = "30000002"
   u.mobile = "+54 11 7000 0002"
+  u.birth_date = Date.new(1992, 6, 22)
 end
 
 user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
@@ -120,6 +122,7 @@ user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
   u.class_type = :grupal
   u.dni = "30000003"
   u.mobile = "+54 11 7000 0003"
+  u.birth_date = Date.new(1989, 11, 5)
 end
 
 user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|

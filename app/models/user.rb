@@ -34,6 +34,7 @@ class User < ApplicationRecord
   # Keep this list conservative: avoid encrypted_password/reset tokens, etc.
   def self.ransackable_attributes(_auth_object = nil)
     %w[
+      birth_date
       class_type
       created_at
       dni

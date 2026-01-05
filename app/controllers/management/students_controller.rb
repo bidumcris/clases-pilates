@@ -77,6 +77,6 @@ class Management::StudentsController < Management::BaseController
   end
 
   def user_params
-    params.require(:user).permit(:role, :level, :class_type, :dni, :phone, :mobile, :email)
+    params.require(:user).permit(:role, :level, :class_type, :dni, :phone, :mobile, :birth_date, :email)
   end
 end
