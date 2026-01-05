@@ -164,6 +164,10 @@ instructors = [ instructor1, instructor2, instructor3 ]
 rooms = [ room1, room2, room3 ]
 levels = [ :inicial, :basic, :intermediate, :advanced ]
 
+def room_available?(room:, start_time:, end_time:)
+  !PilatesClass.where(room: room).where("start_time < ? AND end_time > ?", end_time, start_time).exists?
+end
+
 # Crear clases para las próximas 2 semanas (14 días)
 14.times do |day|
   current_date = start_date + day.days
@@ -171,18 +175,21 @@ levels = [ :inicial, :basic, :intermediate, :advanced ]
   # Clases grupales por la mañana (9:00, 10:00, 11:00)
   [ 9, 10, 11 ].each do |hour|
     level = levels.sample
-    room = rooms.sample
+    start_time = Time.zone.parse("#{current_date} #{hour}:00")
+    end_time = start_time + 1.hour
+    room = rooms.shuffle.find { |r| room_available?(room: r, start_time: start_time, end_time: end_time) }
+    next unless room
     instructor = instructors.sample
 
     PilatesClass.find_or_create_by!(
       name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
-      start_time: Time.zone.parse("#{current_date} #{hour}:00"),
+      start_time: start_time,
       room: room,
       instructor: instructor
     ) do |pc|
       pc.level = level
       pc.class_type = :grupal
-      pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
+      pc.end_time = end_time
       pc.max_capacity = case room.room_type
       when "planta_alta_privadas"
                           8
@@ -199,18 +206,21 @@ levels = [ :inicial, :basic, :intermediate, :advanced ]
   # Clases grupales por la tarde (17:00, 18:00, 19:00)
   [ 17, 18, 19 ].each do |hour|
     level = levels.sample
-    room = rooms.sample
+    start_time = Time.zone.parse("#{current_date} #{hour}:00")
+    end_time = start_time + 1.hour
+    room = rooms.shuffle.find { |r| room_available?(room: r, start_time: start_time, end_time: end_time) }
+    next unless room
     instructor = instructors.sample
 
     PilatesClass.find_or_create_by!(
       name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
-      start_time: Time.zone.parse("#{current_date} #{hour}:00"),
+      start_time: start_time,
       room: room,
       instructor: instructor
     ) do |pc|
       pc.level = level
       pc.class_type = :grupal
-      pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
+      pc.end_time = end_time
       pc.max_capacity = case room.room_type
       when "planta_alta_privadas"
                           8
@@ -231,16 +241,19 @@ levels = [ :inicial, :basic, :intermediate, :advanced ]
       # Las clases privadas van en Planta Alta - Privadas
       room_privada = room1
       instructor = instructors.sample
+      start_time = Time.zone.parse("#{current_date} #{hour}:00")
+      end_time = start_time + 1.hour
+      next unless room_available?(room: room_privada, start_time: start_time, end_time: end_time)
 
       PilatesClass.find_or_create_by!(
         name: "Clase Privada #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
-        start_time: Time.zone.parse("#{current_date} #{hour}:00"),
+        start_time: start_time,
         room: room_privada,
         instructor: instructor
       ) do |pc|
         pc.level = level
         pc.class_type = :privada
-        pc.end_time = Time.zone.parse("#{current_date} #{hour}:00") + 1.hour
+        pc.end_time = end_time
         pc.max_capacity = 1 # Clases privadas: 1 alumno
       end
     end

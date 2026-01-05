@@ -16,6 +16,7 @@ class PilatesClass < ApplicationRecord
   validates :max_capacity, presence: true, numericality: { greater_than: 0 }
   validate :end_time_after_start_time
   validate :private_class_rules
+  validate :no_room_time_overlap
 
   scope :upcoming, -> { where("start_time >= ?", Time.current).order(start_time: :asc) }
   scope :past, -> { where("start_time < ?", Time.current).order(start_time: :desc) }
@@ -106,5 +107,21 @@ class PilatesClass < ApplicationRecord
     if room && !Room.private_enabled.where(id: room.id).exists?
       errors.add(:room, "debe ser una sala habilitada para privadas")
     end
+  end
+
+  # No permitir dos clases que se solapen en la misma sala
+  # Regla: si (start_time < other.end_time) y (end_time > other.start_time) => hay solapamiento
+  def no_room_time_overlap
+    return unless room_id && start_time && end_time
+
+    overlapping = PilatesClass
+      .where(room_id: room_id)
+      .where.not(id: id)
+      .where("start_time < ? AND end_time > ?", end_time, start_time)
+      .exists?
+
+    return unless overlapping
+
+    errors.add(:base, "Ya existe una clase en esa sala y horario")
   end
 end
