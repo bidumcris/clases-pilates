@@ -14,6 +14,14 @@
 
   <div class="admin-section">
     <h2>Datos</h2>
+    <div class="card" style="margin-bottom: 1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
+        <div><strong>DNI:</strong> <%= @user.dni.presence || "-" %></div>
+        <div><strong>Celular:</strong> <%= @user.mobile.presence || "-" %></div>
+        <div><strong>Teléfono:</strong> <%= @user.phone.presence || "-" %></div>
+        <div><strong>Email:</strong> <%= @user.email %></div>
+      </div>
+    </div>
     <div class="admin-stats">
       <div class="stat-card">
         <div class="stat-number"><%= @user.level.humanize %></div>

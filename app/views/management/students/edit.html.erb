@@ -20,6 +20,30 @@
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :dni, "DNI" %>
+          <%= f.text_field :dni, class: "form-control", placeholder: "Opcional (pero recomendado)" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :mobile, "Celular" %>
+          <%= f.text_field :mobile, class: "form-control", placeholder: "+54 ..." %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :phone, "Teléfono (opcional)" %>
+          <%= f.text_field :phone, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :email, "Email" %>
+          <%= f.email_field :email, class: "form-control" %>
+        </div>
+      </div>
+
       <div class="form-actions">
         <%= f.submit "Guardar", class: "btn btn-primary btn-large" %>
         <%= link_to "Cancelar", management_student_path(@user), class: "btn btn-outline" %>

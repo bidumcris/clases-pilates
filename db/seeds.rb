@@ -31,13 +31,16 @@ end
 
 # Crear Instructores
 puts "Creando instructores..."
-def find_or_create_user!(email:, password:, role:, level: :basic, class_type: :grupal)
+def find_or_create_user!(email:, password:, role:, level: :basic, class_type: :grupal, dni: nil, mobile: nil, phone: nil)
   user = User.find_or_initialize_by(email: email)
   user.password = password if user.new_record?
   user.password_confirmation = password if user.new_record?
   user.role = role
   user.level = level
   user.class_type = class_type
+  user.dni = dni if dni.present?
+  user.mobile = mobile if mobile.present?
+  user.phone = phone if phone.present?
   user.save!
   user
 end
@@ -47,7 +50,9 @@ instructor_user_1 = find_or_create_user!(
   password: "password123",
   role: :instructor,
   level: :advanced,
-  class_type: :grupal
+  class_type: :grupal,
+  dni: "20000001",
+  mobile: "+54 11 6000 0001"
 )
 instructor1 = Instructor.find_or_initialize_by(email: instructor_user_1.email)
 instructor1.name = "María García"
@@ -60,7 +65,9 @@ instructor_user_2 = find_or_create_user!(
   password: "password123",
   role: :instructor,
   level: :advanced,
-  class_type: :grupal
+  class_type: :grupal,
+  dni: "20000002",
+  mobile: "+54 11 6000 0002"
 )
 instructor2 = Instructor.find_or_initialize_by(email: instructor_user_2.email)
 instructor2.name = "Juan López"
@@ -73,7 +80,9 @@ instructor_user_3 = find_or_create_user!(
   password: "password123",
   role: :instructor,
   level: :advanced,
-  class_type: :grupal
+  class_type: :grupal,
+  dni: "20000003",
+  mobile: "+54 11 6000 0003"
 )
 instructor3 = Instructor.find_or_initialize_by(email: instructor_user_3.email)
 instructor3.name = "Ana Martínez"
@@ -89,6 +98,8 @@ user_inicial = User.find_or_create_by!(email: "inicial@test.com") do |u|
   u.role = :alumno
   u.level = :inicial
   u.class_type = :grupal
+  u.dni = "30000001"
+  u.mobile = "+54 11 7000 0001"
 end
 
 user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
@@ -97,6 +108,8 @@ user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
   u.role = :alumno
   u.level = :basic
   u.class_type = :grupal
+  u.dni = "30000002"
+  u.mobile = "+54 11 7000 0002"
 end
 
 user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
@@ -105,6 +118,8 @@ user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
   u.role = :alumno
   u.level = :intermediate
   u.class_type = :grupal
+  u.dni = "30000003"
+  u.mobile = "+54 11 7000 0003"
 end
 
 user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|
@@ -113,6 +128,8 @@ user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|
   u.role = :alumno
   u.level = :advanced
   u.class_type = :grupal
+  u.dni = "30000004"
+  u.mobile = "+54 11 7000 0004"
 end
 
 # Usuario con clase privada (patología/lesión)
@@ -122,6 +139,8 @@ user_privada = User.find_or_create_by!(email: "privada@test.com") do |u|
   u.role = :alumno
   u.level = :basic
   u.class_type = :privada
+  u.dni = "30000005"
+  u.mobile = "+54 11 7000 0005"
 end
 
 # Crear Admin
@@ -136,6 +155,8 @@ if admin_email && admin_password
   admin.role = :admin
   admin.level = :advanced
   admin.class_type = :grupal
+  admin.dni ||= "10000000" if Rails.env.development?
+  admin.mobile ||= "+54 11 5000 0000" if Rails.env.development?
   admin.save!
 end
 

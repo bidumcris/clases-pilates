@@ -19,6 +19,7 @@ class User < ApplicationRecord
   validates :role, presence: true
   validates :level, presence: true
   validates :class_type, presence: true
+  validates :dni, uniqueness: true, allow_blank: true
 
   # Valores por defecto
   after_initialize :set_defaults, if: :new_record?
@@ -35,9 +36,12 @@ class User < ApplicationRecord
     %w[
       class_type
       created_at
+      dni
       email
       id
       level
+      mobile
+      phone
       role
       updated_at
     ]
