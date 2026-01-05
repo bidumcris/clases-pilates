@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :requests, dependent: :destroy
   has_many :payments, dependent: :destroy
   has_many :fixed_slots, dependent: :destroy
+  has_one :instructor_profile, class_name: "Instructor", dependent: :nullify
 
   validates :role, presence: true
   validates :level, presence: true

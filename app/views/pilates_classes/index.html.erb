@@ -14,7 +14,7 @@
       </h2>
     </div>
     
-    <%= link_to agenda_path(date: (@week_start + 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } } do %>
+    <%= link_to agenda_path(date: (@week_start + 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } do %>
       Semana Siguiente →
     <% end %>
   </div>

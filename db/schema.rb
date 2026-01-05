@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_05_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_05_121000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_120000) do
     t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_instructors_on_user_id", unique: true
   end
 
   create_table "payments", force: :cascade do |t|
@@ -137,6 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_120000) do
   add_foreign_key "fixed_slots", "instructors"
   add_foreign_key "fixed_slots", "rooms"
   add_foreign_key "fixed_slots", "users"
+  add_foreign_key "instructors", "users"
   add_foreign_key "payments", "users"
   add_foreign_key "pilates_classes", "instructors"
   add_foreign_key "pilates_classes", "rooms"

@@ -10,6 +10,10 @@ class Management::ClassesController < Management::BaseController
 
     @classes = PilatesClass.where("DATE(start_time) >= ? AND DATE(start_time) <= ?", @week_start, @week_end)
                            .order(start_time: :asc)
+    if current_user.instructor?
+      instructor = current_user.instructor_profile
+      @classes = instructor ? @classes.where(instructor_id: instructor.id) : @classes.none
+    end
     @classes_by_day = @classes.group_by { |c| c.start_time.to_date }
 
     @rooms = Room.all

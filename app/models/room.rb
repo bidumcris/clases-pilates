@@ -7,6 +7,8 @@ class Room < ApplicationRecord
 
   has_many :pilates_classes, dependent: :destroy
 
+  scope :private_enabled, -> { where(room_type: :planta_alta_privadas) }
+
   validates :name, presence: true
   validates :room_type, presence: true
   validates :capacity, presence: true, numericality: { greater_than: 0 }

@@ -22,7 +22,7 @@ class PilatesClass < ApplicationRecord
     classes = where(level: user.allowed_levels)
 
     if user.privada?
-      classes.where(class_type: :privada)
+      classes.where(class_type: :privada).joins(:room).merge(Room.private_enabled)
     else
       classes.where(class_type: :grupal)
     end

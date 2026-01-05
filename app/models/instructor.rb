@@ -1,4 +1,5 @@
 class Instructor < ApplicationRecord
+  belongs_to :user, optional: true
   has_many :pilates_classes, dependent: :destroy
 
   validates :name, presence: true
