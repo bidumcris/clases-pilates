@@ -98,3 +98,23 @@ production:
   
   # Timeout de conexión
   connect_timeout: 5
+
+# Configuración para SolidCable (usa la misma BD principal)
+cable:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL", "") %>
+  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "clases_pilates_production")) %>
+  host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", ENV.fetch("DATABASE_HOST", "127.0.0.1")) %>
+  port: <%= ENV.fetch("CLASES_PILATES_DATABASE_PORT", ENV.fetch("DATABASE_PORT", "5432")) %>
+  username: <%= ENV.fetch("CLASES_PILATES_DATABASE_USERNAME", ENV.fetch("DATABASE_USERNAME", "clases_pilates")) %>
+  password: <%= ENV.fetch("CLASES_PILATES_DATABASE_PASSWORD", ENV.fetch("DATABASE_PASSWORD", "")) %>
+
+# Configuración para SolidQueue (usa la misma BD principal)
+queue:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL", "") %>
+  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "clases_pilates_production")) %>
+  host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", ENV.fetch("DATABASE_HOST", "127.0.0.1")) %>
+  port: <%= ENV.fetch("CLASES_PILATES_DATABASE_PORT", ENV.fetch("DATABASE_PORT", "5432")) %>
+  username: <%= ENV.fetch("CLASES_PILATES_DATABASE_USERNAME", ENV.fetch("DATABASE_USERNAME", "clases_pilates")) %>
+  password: <%= ENV.fetch("CLASES_PILATES_DATABASE_PASSWORD", ENV.fetch("DATABASE_PASSWORD", "")) %>
