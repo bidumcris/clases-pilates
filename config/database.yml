@@ -79,21 +79,22 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    database: clases_pilates_production
-    host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", "127.0.0.1") %>
-    username: clases_pilates
-    password: <%= ENV["CLASES_PILATES_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: clases_pilates_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: clases_pilates_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: clases_pilates_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  # Usar DATABASE_URL si está disponible (mejor práctica para servicios gestionados)
+  # Ejemplo: DATABASE_URL="postgres://user:password@host:5432/database_name"
+  url: <%= ENV.fetch("DATABASE_URL", "") %>
+  
+  # Si no hay DATABASE_URL, usar configuración individual
+  # Compatible con variables genéricas (DATABASE_*) o con prefijo (CLASES_PILATES_DATABASE_*)
+  # Cada app tiene su propia base de datos (pilates_production, bot_production, etc.)
+  database: <%= ENV.fetch("CLASES_PILATES_DATABASE_NAME", ENV.fetch("DATABASE_NAME", "clases_pilates_production")) %>
+  host: <%= ENV.fetch("CLASES_PILATES_DATABASE_HOST", ENV.fetch("DATABASE_HOST", "127.0.0.1")) %>
+  port: <%= ENV.fetch("CLASES_PILATES_DATABASE_PORT", ENV.fetch("DATABASE_PORT", "5432")) %>
+  username: <%= ENV.fetch("CLASES_PILATES_DATABASE_USERNAME", ENV.fetch("DATABASE_USERNAME", "clases_pilates")) %>
+  password: <%= ENV.fetch("CLASES_PILATES_DATABASE_PASSWORD", ENV.fetch("DATABASE_PASSWORD", "")) %>
+  
+  # Pool de conexiones para producción
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", "5").to_i %>
+  
+  # Timeout de conexión
+  connect_timeout: 5
