@@ -176,7 +176,7 @@ ActiveAdmin.setup do |config|
   # You can exclude possibly sensitive model attributes from being displayed,
   # added to forms, or exported by default by ActiveAdmin
   #
-  config.filter_attributes = [:encrypted_password, :password, :password_confirmation]
+  config.filter_attributes = [ :encrypted_password, :password, :password_confirmation ]
 
   # == Localize Date/Time Format
   #
@@ -238,7 +238,7 @@ ActiveAdmin.setup do |config|
   # == CSV options
   #
   # Set the CSV builder separator
-  config.csv_options = { col_sep: ';', force_quotes: true }
+  config.csv_options = { col_sep: ";", force_quotes: true }
 
   # == Menu System
   #
@@ -348,7 +348,7 @@ ActiveAdmin.setup do |config|
   # You can switch to using Webpacker here.
   #
   # config.use_webpacker = true
-  
+
   # Use Sprockets (not Webpacker)
   config.use_webpacker = false
 end

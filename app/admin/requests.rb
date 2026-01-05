@@ -19,7 +19,7 @@ ActiveAdmin.register Request do
       link_to request.pilates_class.name, admin_pilates_class_path(request.pilates_class)
     end
     column "Tipo" do |request|
-      request.request_type == 'alert' ? "Alerta" : "Turno Fijo"
+      request.request_type == "alert" ? "Alerta" : "Turno Fijo"
     end
     column :status do |request|
       status_tag request.status
@@ -43,7 +43,7 @@ ActiveAdmin.register Request do
         link_to request.pilates_class.name, admin_pilates_class_path(request.pilates_class)
       end
       row "Tipo" do |request|
-        request.request_type == 'alert' ? "Alerta de Cupo" : "Turno Fijo"
+        request.request_type == "alert" ? "Alerta de Cupo" : "Turno Fijo"
       end
       row :status do |request|
         status_tag request.status
@@ -56,8 +56,8 @@ ActiveAdmin.register Request do
     f.inputs "Información de la Solicitud" do
       f.input :user
       f.input :pilates_class
-      f.input :request_type, as: :select, collection: [['Alerta', 'alert'], ['Turno Fijo', 'fixed_slot']]
-      f.input :status, as: :select, collection: Request.statuses.keys.map { |k| [k.humanize, k] }
+      f.input :request_type, as: :select, collection: [ [ "Alerta", "alert" ], [ "Turno Fijo", "fixed_slot" ] ]
+      f.input :status, as: :select, collection: Request.statuses.keys.map { |k| [ k.humanize, k ] }
     end
     f.actions
   end
@@ -90,4 +90,3 @@ ActiveAdmin.register Request do
     redirect_to collection_path, notice: "Solicitudes rechazadas"
   end
 end
-

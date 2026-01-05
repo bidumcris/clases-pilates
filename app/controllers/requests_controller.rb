@@ -9,7 +9,7 @@ class RequestsController < ApplicationController
 
   def create
     @pilates_class = PilatesClass.find(params[:pilates_class_id])
-    request_type = params[:request_type] || 'alert'
+    request_type = params[:request_type] || "alert"
 
     @request = current_user.requests.build(
       pilates_class: @pilates_class,

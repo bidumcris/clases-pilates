@@ -19,11 +19,11 @@ ActiveAdmin.register Payment do
     end
     column "Método" do |payment|
       case payment.payment_method
-      when 'card'
+      when "card"
         "Tarjeta"
-      when 'qr'
+      when "qr"
         "QR"
-      when 'deposit'
+      when "deposit"
         "Seña (50%)"
       else
         payment.payment_method
@@ -53,11 +53,11 @@ ActiveAdmin.register Payment do
       end
       row "Método de Pago" do |payment|
         case payment.payment_method
-        when 'card'
+        when "card"
           "Tarjeta"
-        when 'qr'
+        when "qr"
           "QR"
-        when 'deposit'
+        when "deposit"
           "Seña (50%)"
         else
           payment.payment_method
@@ -76,11 +76,11 @@ ActiveAdmin.register Payment do
       f.input :user
       f.input :amount
       f.input :payment_method, as: :select, collection: [
-        ['Tarjeta', 'card'],
-        ['QR', 'qr'],
-        ['Seña (50%)', 'deposit']
+        [ "Tarjeta", "card" ],
+        [ "QR", "qr" ],
+        [ "Seña (50%)", "deposit" ]
       ]
-      f.input :payment_status, as: :select, collection: Payment.payment_statuses.keys.map { |k| [k.humanize, k] }
+      f.input :payment_status, as: :select, collection: Payment.payment_statuses.keys.map { |k| [ k.humanize, k ] }
       f.input :transaction_id, hint: "ID de transacción del procesador de pagos"
     end
     f.actions
@@ -95,4 +95,3 @@ ActiveAdmin.register Payment do
     redirect_to resource_path, notice: "Pago marcado como completado"
   end
 end
-

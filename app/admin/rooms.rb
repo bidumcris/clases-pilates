@@ -33,7 +33,7 @@ ActiveAdmin.register Room do
     end
 
     panel "Clases Programadas" do
-      table_for room.pilates_classes.upcoming.order('start_time ASC').limit(10) do
+      table_for room.pilates_classes.upcoming.order("start_time ASC").limit(10) do
         column "Nombre" do |pc|
           link_to pc.name, admin_pilates_class_path(pc)
         end
@@ -53,10 +53,9 @@ ActiveAdmin.register Room do
   form do |f|
     f.inputs "Información de la Sala" do
       f.input :name
-      f.input :room_type, as: :select, collection: Room.room_types.keys.map { |k| [k.humanize, k] }
+      f.input :room_type, as: :select, collection: Room.room_types.keys.map { |k| [ k.humanize, k ] }
       f.input :capacity
     end
     f.actions
   end
 end
-
