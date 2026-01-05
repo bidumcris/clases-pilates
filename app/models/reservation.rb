@@ -3,6 +3,7 @@ class Reservation < ApplicationRecord
   belongs_to :pilates_class
 
   enum :status, { pending: 0, confirmed: 1, cancelled: 2, completed: 3 }
+  enum :attendance_status, { sin_marcar: 0, presente: 1, ausente: 2 }
 
   validates :reserved_at, presence: true
   validate :user_can_reserve_class
@@ -19,6 +20,7 @@ class Reservation < ApplicationRecord
   # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
   def self.ransackable_attributes(_auth_object = nil)
     %w[
+      attendance_status
       created_at
       id
       pilates_class_id

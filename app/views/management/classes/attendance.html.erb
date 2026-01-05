@@ -1,0 +1,64 @@
+<div class="admin-classes">
+  <div class="admin-page-header">
+    <h1>Tomar lista</h1>
+    <%= link_to "← Volver a Clases", management_classes_path(date: @pilates_class.start_time.to_date.to_s), class: "btn btn-outline" %>
+  </div>
+
+  <div class="card" style="margin-bottom: 1rem;">
+    <div class="card-header">
+      <h2 style="margin: 0;"><%= @pilates_class.name %></h2>
+      <p style="margin: 0.25rem 0 0 0; opacity: 0.8;">
+        <%= @pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %> ·
+        <%= @pilates_class.room.name %> ·
+        <%= @pilates_class.instructor.name %>
+      </p>
+    </div>
+    <div style="display: flex; gap: 1rem; padding: 1rem;">
+      <div><strong>Presentes:</strong> <%= @present_count %></div>
+      <div><strong>Ausentes:</strong> <%= @absent_count %></div>
+      <div><strong>Sin marcar:</strong> <%= @unmarked_count %></div>
+      <div style="margin-left: auto;"><strong>Total:</strong> <%= @reservations.count %></div>
+    </div>
+  </div>
+
+  <% if @reservations.any? %>
+    <%= form_with url: update_attendance_management_class_path(@pilates_class), method: :patch do %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reservations.each do |reservation| %>
+            <tr>
+              <td><%= reservation.user.email %></td>
+              <td>
+                <%= select_tag "attendance[#{reservation.id}]",
+                    options_for_select(
+                      [
+                        ["Sin marcar", "sin_marcar"],
+                        ["Presente", "presente"],
+                        ["Ausente", "ausente"]
+                      ],
+                      reservation.attendance_status
+                    ),
+                    class: "form-select" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+        <%= link_to "Volver", management_classes_path(date: @pilates_class.start_time.to_date.to_s), class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>No hay reservas confirmadas para esta clase.</p>
+  <% end %>
+</div>
+
+

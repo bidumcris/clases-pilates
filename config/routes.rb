@@ -48,6 +48,10 @@ Rails.application.routes.draw do
         collection do
           get :calendar
         end
+        member do
+          get :attendance
+          patch :update_attendance
+        end
       end
 
       # Gestión de Alumnos

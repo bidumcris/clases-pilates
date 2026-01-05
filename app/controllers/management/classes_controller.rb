@@ -2,6 +2,8 @@ class Management::ClassesController < Management::BaseController
   before_action :set_pilates_class, only: [ :show, :edit, :update, :destroy ]
   before_action :set_pilates_class, only: [ :edit, :update, :destroy ]
   before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :destroy ]
+  before_action :set_pilates_class, only: [ :attendance, :update_attendance ]
+  before_action :ensure_can_take_attendance!, only: [ :attendance, :update_attendance ]
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Date.current
@@ -72,10 +74,48 @@ class Management::ClassesController < Management::BaseController
     @classes_by_day = @classes.group_by { |c| c.start_time.to_date }
   end
 
+  def attendance
+    @reservations = @pilates_class.reservations.includes(:user).where(status: :confirmed).order("users.email ASC")
+    @present_count = @reservations.where(attendance_status: :presente).count
+    @absent_count = @reservations.where(attendance_status: :ausente).count
+    @unmarked_count = @reservations.where(attendance_status: :sin_marcar).count
+  end
+
+  def update_attendance
+    updates = params.fetch(:attendance, {}).to_h
+
+    Reservation.transaction do
+      @pilates_class.reservations.where(status: :confirmed).find_each do |reservation|
+        next unless updates.key?(reservation.id.to_s)
+
+        status = updates[reservation.id.to_s]
+        next unless Reservation.attendance_statuses.key?(status)
+
+        reservation.update!(attendance_status: status)
+      end
+    end
+
+    redirect_to attendance_management_class_path(@pilates_class), notice: "Lista actualizada"
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to attendance_management_class_path(@pilates_class), alert: e.record.errors.full_messages.join(", ")
+  end
+
   private
 
   def set_pilates_class
     @pilates_class = PilatesClass.find(params[:id])
+  end
+
+  def ensure_can_take_attendance!
+    return if current_user.admin?
+
+    if current_user.instructor?
+      instructor = current_user.instructor_profile
+      return if instructor && @pilates_class.instructor_id == instructor.id
+    end
+
+    flash[:alert] = "No tienes acceso a esta clase"
+    redirect_to management_classes_path
   end
 
   def pilates_class_params
