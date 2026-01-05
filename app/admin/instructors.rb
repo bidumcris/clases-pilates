@@ -29,7 +29,7 @@ ActiveAdmin.register Instructor do
     end
 
     panel "Clases Programadas" do
-      table_for instructor.pilates_classes.upcoming.order('start_time ASC').limit(10) do
+      table_for instructor.pilates_classes.upcoming.order("start_time ASC").limit(10) do
         column "Nombre" do |pc|
           link_to pc.name, admin_pilates_class_path(pc)
         end
@@ -55,4 +55,3 @@ ActiveAdmin.register Instructor do
     f.actions
   end
 end
-

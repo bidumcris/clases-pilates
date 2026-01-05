@@ -66,7 +66,7 @@ ActiveAdmin.register Reservation do
     f.inputs "Información de la Reserva" do
       f.input :user
       f.input :pilates_class
-      f.input :status, as: :select, collection: Reservation.statuses.keys.map { |k| [k.humanize, k] }
+      f.input :status, as: :select, collection: Reservation.statuses.keys.map { |k| [ k.humanize, k ] }
       f.input :reserved_at, as: :datetime_picker
     end
     f.actions
@@ -77,4 +77,3 @@ ActiveAdmin.register Reservation do
     redirect_to collection_path, notice: "Reservas canceladas exitosamente"
   end
 end
-

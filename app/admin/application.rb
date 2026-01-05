@@ -8,4 +8,3 @@ module ActiveAdmin::ViewHelpers
     number_to_currency(amount, unit: "€", separator: ",", delimiter: ".")
   end
 end
-

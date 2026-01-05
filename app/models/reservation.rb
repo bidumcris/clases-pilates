@@ -9,11 +9,11 @@ class Reservation < ApplicationRecord
   validate :class_has_availability
   validate :class_not_in_past
 
-  scope :upcoming, -> { joins(:pilates_class).where('pilates_classes.start_time > ?', Time.current) }
-  scope :by_month, ->(date) { 
+  scope :upcoming, -> { joins(:pilates_class).where("pilates_classes.start_time > ?", Time.current) }
+  scope :by_month, ->(date) {
     joins(:pilates_class)
-      .where('EXTRACT(MONTH FROM pilates_classes.start_time) = ? AND EXTRACT(YEAR FROM pilates_classes.start_time) = ?', 
-             date.month, date.year) 
+      .where("EXTRACT(MONTH FROM pilates_classes.start_time) = ? AND EXTRACT(YEAR FROM pilates_classes.start_time) = ?",
+             date.month, date.year)
   }
 
   # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
@@ -39,7 +39,7 @@ class Reservation < ApplicationRecord
     return unless user && pilates_class
 
     unless user.can_reserve_class?(pilates_class)
-      errors.add(:base, 'No tienes el nivel necesario para reservar esta clase')
+      errors.add(:base, "No tienes el nivel necesario para reservar esta clase")
     end
   end
 
@@ -47,7 +47,7 @@ class Reservation < ApplicationRecord
     return unless pilates_class
 
     if pilates_class.full?
-      errors.add(:base, 'La clase está completa')
+      errors.add(:base, "La clase está completa")
     end
   end
 
@@ -55,7 +55,7 @@ class Reservation < ApplicationRecord
     return unless pilates_class
 
     if pilates_class.start_time < Time.current
-      errors.add(:base, 'No se pueden reservar clases pasadas')
+      errors.add(:base, "No se pueden reservar clases pasadas")
     end
   end
 end

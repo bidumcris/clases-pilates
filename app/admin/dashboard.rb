@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
 
@@ -15,7 +16,7 @@ ActiveAdmin.register_page "Dashboard" do
         end
 
         panel "Reservas Recientes" do
-          table_for Reservation.includes(:user, :pilates_class).order('created_at DESC').limit(10) do
+          table_for Reservation.includes(:user, :pilates_class).order("created_at DESC").limit(10) do
             column "Usuario" do |reservation|
               reservation.user.email
             end
@@ -37,7 +38,7 @@ ActiveAdmin.register_page "Dashboard" do
 
       column do
         panel "Clases Próximas" do
-          table_for PilatesClass.upcoming.order('start_time ASC').limit(10) do
+          table_for PilatesClass.upcoming.order("start_time ASC").limit(10) do
             column "Nombre" do |pc|
               link_to pc.name, admin_pilates_class_path(pc)
             end
