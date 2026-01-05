@@ -1,0 +1,31 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Editar alumno</h1>
+    <%= link_to "Volver", management_student_path(@user), class: "btn btn-outline" %>
+  </div>
+
+  <div class="form-container">
+    <%= form_with model: @user, url: management_student_path(@user), scope: :user, method: :patch, local: true, class: "admin-form" do |f| %>
+      <%= render "shared/error_messages", resource: @user %>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :level, "Nivel" %>
+          <%= f.select :level, options_for_select(User.levels.keys.map { |k| [k.humanize, k] }, @user.level), {}, { class: "form-control" } %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :class_type, "Tipo de clase" %>
+          <%= f.select :class_type, options_for_select(User.class_types.keys.map { |k| [k.humanize, k] }, @user.class_type), {}, { class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Guardar", class: "btn btn-primary btn-large" %>
+        <%= link_to "Cancelar", management_student_path(@user), class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+

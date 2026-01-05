@@ -1,5 +1,5 @@
 class Management::StudentsController < Management::BaseController
-  before_action :set_user, only: [ :show, :edit, :update ]
+  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :update_class_type ]
   before_action :ensure_admin!, only: [ :edit, :update, :add_credits, :update_class_type ]
 
   def index
@@ -26,6 +26,7 @@ class Management::StudentsController < Management::BaseController
     @reservations = @user.reservations.includes(:pilates_class).order("pilates_classes.start_time DESC").limit(10)
     @credits = @user.credits.order(expires_at: :asc)
     @requests = @user.requests.order(created_at: :desc).limit(10)
+    @payments = @user.payments.order(created_at: :desc).limit(20)
   end
 
   def edit
