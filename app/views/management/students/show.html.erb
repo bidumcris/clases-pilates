@@ -1,0 +1,145 @@
+<div class="admin-dashboard">
+  <div class="admin-page-header" style="display:flex; gap: 1rem; align-items: center; justify-content: space-between;">
+    <div>
+      <h1 style="margin:0;">Ficha de alumno</h1>
+      <p style="margin:.25rem 0 0 0; opacity:.8;"><%= @user.email %></p>
+    </div>
+    <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
+      <%= link_to "← Volver", management_students_path, class: "btn btn-outline" %>
+      <% if current_user.admin? %>
+        <%= link_to "Editar", edit_management_student_path(@user), class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>Datos</h2>
+    <div class="card" style="margin-bottom: 1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
+        <div><strong>DNI:</strong> <%= @user.dni.presence || "-" %></div>
+        <div><strong>Celular:</strong> <%= @user.mobile.presence || "-" %></div>
+        <div><strong>Teléfono:</strong> <%= @user.phone.presence || "-" %></div>
+        <div><strong>Fecha de nacimiento:</strong> <%= @user.birth_date ? @user.birth_date.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Email:</strong> <%= @user.email %></div>
+      </div>
+    </div>
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.level.humanize %></div>
+        <div class="stat-label">Nivel</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.class_type.humanize %></div>
+        <div class="stat-label">Tipo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.credits.available.sum(:amount) %></div>
+        <div class="stat-label">Créditos disponibles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @payments.select(&:completed?).sum(&:amount) %></div>
+        <div class="stat-label">Pagos (completados)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>Pagos</h2>
+    <% if @payments.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Estado</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+            <tr>
+              <td><%= payment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= number_to_currency(payment.amount, unit: "$", separator: ",", delimiter: ".") %></td>
+              <td><%= payment.payment_method.humanize %></td>
+              <td><%= payment.payment_status.humanize %></td>
+              <td><%= payment.transaction_id.presence || "-" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <p style="opacity:.7; margin-top:.5rem;">Tip: podés registrar pagos desde <%= link_to "Caja", management_cashbox_path %>.</p>
+    <% else %>
+      <p>No hay pagos registrados.</p>
+    <% end %>
+  </div>
+
+  <div class="admin-section">
+    <h2>Créditos</h2>
+    <% if @credits.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Cantidad</th>
+            <th>Expira</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @credits.each do |credit| %>
+            <tr>
+              <td><%= credit.amount %></td>
+              <td><%= credit.expires_at.strftime("%d/%m/%Y") %></td>
+              <td>
+                <% if credit.used? %>
+                  Usado
+                <% elsif credit.expired? %>
+                  Expirado
+                <% else %>
+                  Disponible
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No hay créditos.</p>
+    <% end %>
+  </div>
+
+  <div class="admin-section">
+    <h2>Reservas recientes</h2>
+    <% if @reservations.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Clase</th>
+            <th>Fecha</th>
+            <th>Sala</th>
+            <th>Instructor</th>
+            <th>Estado</th>
+            <th>Asistencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reservations.each do |reservation| %>
+            <tr>
+              <td><%= reservation.pilates_class.name %></td>
+              <td><%= reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= reservation.pilates_class.room.name %></td>
+              <td><%= reservation.pilates_class.instructor.name %></td>
+              <td><%= reservation.status.humanize %></td>
+              <td><%= reservation.attendance_status.humanize %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <p style="opacity:.7; margin-top:.5rem;">La asistencia se marca desde “Tomar lista” en la clase.</p>
+    <% else %>
+      <p>No hay reservas.</p>
+    <% end %>
+  </div>
+</div>
+
+

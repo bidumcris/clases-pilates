@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
     t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_instructors_on_user_id", unique: true
   end
 
   create_table "payments", force: :cascade do |t|
@@ -106,6 +108,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
     t.datetime "reserved_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "attendance_status", default: 0, null: false
     t.index ["pilates_class_id"], name: "index_reservations_on_pilates_class_id"
     t.index ["user_id"], name: "index_reservations_on_user_id"
   end
@@ -128,6 +131,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "class_type", default: 0, null: false
+    t.integer "role", default: 0, null: false
+    t.string "dni"
+    t.string "phone"
+    t.string "mobile"
+    t.date "birth_date"
+    t.index ["dni"], name: "index_users_on_dni", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -136,6 +145,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_01_221328) do
   add_foreign_key "fixed_slots", "instructors"
   add_foreign_key "fixed_slots", "rooms"
   add_foreign_key "fixed_slots", "users"
+  add_foreign_key "instructors", "users"
   add_foreign_key "payments", "users"
   add_foreign_key "pilates_classes", "instructors"
   add_foreign_key "pilates_classes", "rooms"

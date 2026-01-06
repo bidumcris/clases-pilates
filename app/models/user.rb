@@ -4,7 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3, admin: 4 }
+  enum :role, { alumno: 0, instructor: 1, admin: 2 }
+  # Nivel SOLO para alumnos (el rol admin vive en `role`)
+  enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3 }
   enum :class_type, { grupal: 0, privada: 1 }
 
   has_many :reservations, dependent: :destroy
@@ -12,14 +14,18 @@ class User < ApplicationRecord
   has_many :requests, dependent: :destroy
   has_many :payments, dependent: :destroy
   has_many :fixed_slots, dependent: :destroy
+  has_one :instructor_profile, class_name: "Instructor", dependent: :nullify
 
+  validates :role, presence: true
   validates :level, presence: true
   validates :class_type, presence: true
+  validates :dni, uniqueness: true, allow_blank: true
 
   # Valores por defecto
   after_initialize :set_defaults, if: :new_record?
 
   def set_defaults
+    self.role ||= :alumno
     self.level ||= :inicial
     self.class_type ||= :grupal
   end
@@ -28,11 +34,16 @@ class User < ApplicationRecord
   # Keep this list conservative: avoid encrypted_password/reset tokens, etc.
   def self.ransackable_attributes(_auth_object = nil)
     %w[
+      birth_date
       class_type
       created_at
+      dni
       email
       id
       level
+      mobile
+      phone
+      role
       updated_at
     ]
   end
@@ -42,13 +53,11 @@ class User < ApplicationRecord
   end
 
   def admin?
-    level == "admin"
+    role == "admin"
   end
 
   def instructor?
-    # Por ahora, los instructores son entidades separadas
-    # Si en el futuro se relacionan con User, se puede actualizar aquí
-    false
+    role == "instructor"
   end
 
   def can_reserve_class?(pilates_class)

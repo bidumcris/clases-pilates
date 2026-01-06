@@ -1,17 +1,32 @@
 class Management::StudentsController < Management::BaseController
-  before_action :set_user, only: [ :show, :edit, :update ]
+  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :update_class_type ]
+  before_action :ensure_admin!, only: [ :edit, :update, :add_credits, :update_class_type ]
 
   def index
-    @students = User.where.not(level: :admin).order(created_at: :desc)
+    @students = User.where(role: :alumno).order(created_at: :desc)
     @students = @students.where("email ILIKE ?", "%#{params[:search]}%") if params[:search].present?
     @students = @students.where(level: params[:level]) if params[:level].present?
     @students = @students.where(class_type: params[:class_type]) if params[:class_type].present?
+
+    if current_user.instructor?
+      instructor = current_user.instructor_profile
+      @students = if instructor
+        @students
+          .joins(reservations: :pilates_class)
+          .where(reservations: { status: Reservation.statuses[:confirmed] })
+          .where(pilates_classes: { instructor_id: instructor.id })
+          .distinct
+      else
+        @students.none
+      end
+    end
   end
 
   def show
     @reservations = @user.reservations.includes(:pilates_class).order("pilates_classes.start_time DESC").limit(10)
     @credits = @user.credits.order(expires_at: :asc)
     @requests = @user.requests.order(created_at: :desc).limit(10)
+    @payments = @user.payments.order(created_at: :desc).limit(20)
   end
 
   def edit
@@ -50,9 +65,18 @@ class Management::StudentsController < Management::BaseController
 
   def set_user
     @user = User.find(params[:id])
+
+    if current_user.instructor?
+      instructor = current_user.instructor_profile
+      allowed = instructor && @user.reservations.joins(:pilates_class).where(status: :confirmed, pilates_classes: { instructor_id: instructor.id }).exists?
+      unless allowed
+        flash[:alert] = "No tienes acceso a este alumno"
+        redirect_to management_students_path
+      end
+    end
   end
 
   def user_params
-    params.require(:user).permit(:level, :class_type)
+    params.require(:user).permit(:role, :level, :class_type, :dni, :phone, :mobile, :birth_date, :email)
   end
 end

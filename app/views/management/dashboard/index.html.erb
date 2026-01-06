@@ -47,6 +47,14 @@
         <p>Revisar y aprobar/rechazar solicitudes</p>
       <% end %>
 
+      <% if current_user.admin? %>
+        <%= link_to management_cashbox_path, class: "quick-access-card" do %>
+          <div class="card-icon">💵</div>
+          <h3>Caja</h3>
+          <p>Control de pagos por método y período</p>
+        <% end %>
+      <% end %>
+
       <%= link_to admin_root_path, class: "quick-access-card" do %>
         <div class="card-icon">📊</div>
         <h3>Panel Avanzado</h3>

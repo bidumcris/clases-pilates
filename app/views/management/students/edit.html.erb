@@ -1,0 +1,62 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Editar alumno</h1>
+    <%= link_to "Volver", management_student_path(@user), class: "btn btn-outline" %>
+  </div>
+
+  <div class="form-container">
+    <%= form_with model: @user, url: management_student_path(@user), scope: :user, method: :patch, local: true, class: "admin-form" do |f| %>
+      <%= render "shared/error_messages", resource: @user %>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :level, "Nivel" %>
+          <%= f.select :level, options_for_select(User.levels.keys.map { |k| [k.humanize, k] }, @user.level), {}, { class: "form-control" } %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :class_type, "Tipo de clase" %>
+          <%= f.select :class_type, options_for_select(User.class_types.keys.map { |k| [k.humanize, k] }, @user.class_type), {}, { class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :dni, "DNI" %>
+          <%= f.text_field :dni, class: "form-control", placeholder: "Opcional (pero recomendado)" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :mobile, "Celular" %>
+          <%= f.text_field :mobile, class: "form-control", placeholder: "+54 ..." %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :birth_date, "Fecha de nacimiento (opcional)" %>
+          <%= f.date_field :birth_date, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :phone, "Teléfono (opcional)" %>
+          <%= f.text_field :phone, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :email, "Email" %>
+          <%= f.email_field :email, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Guardar", class: "btn btn-primary btn-large" %>
+        <%= link_to "Cancelar", management_student_path(@user), class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+

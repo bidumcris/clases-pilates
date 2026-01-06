@@ -1,8 +1,10 @@
 <div class="admin-classes">
   <div class="admin-page-header">
     <h1>Gestión de Clases</h1>
-    <%= link_to "Nueva Clase", new_management_class_path, class: "btn btn-primary" %>
-    <%= link_to "Panel Avanzado (ActiveAdmin)", admin_root_path, class: "btn btn-outline" %>
+    <% if current_user.admin? %>
+      <%= link_to "Nueva Clase", new_management_class_path, class: "btn btn-primary" %>
+      <%= link_to "Panel Avanzado (ActiveAdmin)", admin_root_path, class: "btn btn-outline" %>
+    <% end %>
   </div>
 
   <!-- Navegación Semanal -->
@@ -58,10 +60,13 @@
                     </p>
                   </div>
                   <div class="class-actions">
-                    <%= link_to "Editar", edit_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
-                    <%= button_to "Eliminar", management_class_path(pilates_class), method: :delete, 
-                        class: "btn btn-sm btn-danger", 
-                        data: { confirm: "¿Estás seguro de eliminar esta clase?" } %>
+                    <%= link_to "Tomar lista", attendance_management_class_path(pilates_class), class: "btn btn-sm btn-outline" %>
+                    <% if current_user.admin? %>
+                      <%= link_to "Editar", edit_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
+                      <%= button_to "Eliminar", management_class_path(pilates_class), method: :delete, 
+                          class: "btn btn-sm btn-danger", 
+                          data: { confirm: "¿Estás seguro de eliminar esta clase?" } %>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
