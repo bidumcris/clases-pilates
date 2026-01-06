@@ -86,85 +86,62 @@ sudo journalctl -u pilates -n 50
 sudo journalctl -u pilates -f
 ```
 
-### 2. **Configuración de Nginx (Reverse Proxy)**
+### 2. **Configuración de Caddy (Reverse Proxy)**
 
 #### Configuración recomendada para Pilates:
 
 ```bash
-sudo nano /etc/nginx/sites-available/pilates
+sudo nano /etc/caddy/Caddyfile
 ```
 
-```nginx
-# Upstream para Pilates
-upstream pilates {
-    server 127.0.0.1:3000;
-    keepalive 32;
-}
+```caddyfile
+# Caddy reverse proxy para Pilates (Puma en 127.0.0.1:3000)
+# Si todavía no tenés dominio, podés usar la IP pública:
+:80 {
+	encode gzip zstd
 
-# Servidor principal
-server {
-    listen 80;
-    server_name 165.1.121.75;  # Tu IP o dominio
+	# Logs
+	log {
+		output file /var/log/caddy/pilates_access.log
+	}
 
-    # Logs
-    access_log /var/log/nginx/pilates_access.log;
-    error_log /var/log/nginx/pilates_error.log;
+	# Assets estáticos (opcional: útil si querés que Caddy los sirva directo)
+	@assets path /assets/*
+	handle @assets {
+		root * /home/deploy/apps/pilates/public
+		file_server
+		header Cache-Control "public, max-age=31536000, immutable"
+	}
 
-    # Tamaño máximo de upload
-    client_max_body_size 10M;
+	# Health check
+	@up path /up
+	handle @up {
+		reverse_proxy 127.0.0.1:3000
+	}
 
-    # Timeouts
-    proxy_connect_timeout 60s;
-    proxy_send_timeout 60s;
-    proxy_read_timeout 60s;
-
-    location / {
-        proxy_pass http://pilates;
-        proxy_http_version 1.1;
-        
-        # Headers importantes
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Connection "";
-        
-        # Buffering
-        proxy_buffering on;
-        proxy_buffer_size 4k;
-        proxy_buffers 8 4k;
-        proxy_busy_buffers_size 8k;
-    }
-
-    # Assets estáticos (si los sirves con Nginx)
-    location /assets {
-        alias /home/deploy/apps/pilates/public/assets;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Health check
-    location /up {
-        proxy_pass http://pilates;
-        access_log off;
-    }
+	# App Rails
+	handle {
+		reverse_proxy 127.0.0.1:3000 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
 }
 ```
 
 #### Activar configuración:
 
 ```bash
-# Crear symlink
-sudo ln -s /etc/nginx/sites-available/pilates /etc/nginx/sites-enabled/
+# Validar config
+sudo caddy validate --config /etc/caddy/Caddyfile
 
-# Quitar default si existe
-sudo rm /etc/nginx/sites-enabled/default
+# Recargar sin cortar conexiones (recomendado)
+sudo systemctl reload caddy
 
-# Probar configuración
-sudo nginx -t
-
-# Reiniciar
-sudo systemctl restart nginx
+# O reiniciar si hace falta
+sudo systemctl restart caddy
 ```
 
 ### 3. **Configuración de Puma (Optimizada)**
@@ -199,9 +176,9 @@ WEB_CONCURRENCY=2
 # Logs de systemd
 sudo journalctl -u pilates -f
 
-# Logs de Nginx
-sudo tail -f /var/log/nginx/pilates_error.log
-sudo tail -f /var/log/nginx/pilates_access.log
+# Logs de Caddy
+sudo journalctl -u caddy -f
+sudo tail -f /var/log/caddy/pilates_access.log
 
 # Logs de Rails (si los crea)
 tail -f ~/apps/pilates/log/production.log
@@ -342,7 +319,7 @@ sudo systemctl restart postgresql
 ### 9. **Checklist de Producción**
 
 - [ ] Systemd configurado para pilates
-- [ ] Nginx configurado como reverse proxy
+- [ ] Caddy configurado como reverse proxy
 - [ ] Firewall (UFW) activado
 - [ ] Backups automáticos configurados
 - [ ] Logs centralizados
@@ -355,14 +332,14 @@ sudo systemctl restart postgresql
 
 ```bash
 # Reiniciar todo
-sudo systemctl restart pilates nginx postgresql
+sudo systemctl restart pilates caddy postgresql
 
 # Ver qué está fallando
-sudo systemctl status pilates nginx postgresql
+sudo systemctl status pilates caddy postgresql
 
 # Ver logs de errores
 sudo journalctl -u pilates -n 100 --no-pager
-sudo tail -100 /var/log/nginx/pilates_error.log
+sudo journalctl -u caddy -n 200 --no-pager
 
 # Reiniciar servidor completo
 sudo reboot
@@ -371,7 +348,7 @@ sudo reboot
 ## 🚀 Prioridades
 
 1. **CRÍTICO**: Systemd para pilates (auto-inicio y auto-restart)
-2. **IMPORTANTE**: Nginx bien configurado
+2. **IMPORTANTE**: Caddy bien configurado
 3. **IMPORTANTE**: Backups automáticos
 4. **RECOMENDADO**: SSL/HTTPS
 5. **OPCIONAL**: Monitoreo avanzado
@@ -382,7 +359,7 @@ Con tu hardware (4 CPU, 24GB):
 - **Pilates**: 2 workers, 5 threads = ~10 conexiones concurrentes
 - **Bot**: 1 worker, 3 threads = ~3 conexiones concurrentes
 - **PostgreSQL**: 6GB shared_buffers
-- **Nginx**: Muy ligero, no consume mucho
+- **Caddy**: Muy ligero, no consume mucho
 
 Tienes recursos de sobra para ambas apps.
 
