@@ -1,7 +1,8 @@
 ActiveAdmin.register PilatesClass do
   permit_params :name, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :class_type
 
-  menu priority: 2, label: "Clases"
+  # Ocultar del menú de /admin (mantiene la ruta disponible si se accede directo)
+  menu false
 
   scope :all, default: true
   scope :upcoming
