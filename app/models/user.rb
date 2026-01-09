@@ -63,21 +63,8 @@ class User < ApplicationRecord
   def can_reserve_class?(pilates_class)
     return false if pilates_class.nil?
 
-    # Verificar nivel
-    level_ok = case level
-    when "inicial"
-      pilates_class.level == "inicial"
-    when "basic"
-      [ "inicial", "basic" ].include?(pilates_class.level)
-    when "intermediate"
-      [ "inicial", "basic", "intermediate" ].include?(pilates_class.level)
-    when "advanced"
-      true
-    else
-      false
-    end
-
-    return false unless level_ok
+    # Verificar nivel (por ahora, estrictamente el mismo nivel)
+    return false unless pilates_class.level == level
 
     # Verificar tipo de clase
     if privada?
@@ -89,17 +76,7 @@ class User < ApplicationRecord
 
   # Niveles permitidos según el nivel del usuario
   def allowed_levels
-    case level
-    when "inicial"
-      [ "inicial" ]
-    when "basic"
-      [ "inicial", "basic" ]
-    when "intermediate"
-      [ "inicial", "basic", "intermediate" ]
-    when "advanced"
-      [ "inicial", "basic", "intermediate", "advanced" ]
-    else
-      []
-    end
+    # Por ahora, estrictamente el mismo nivel
+    [ level ]
   end
 end

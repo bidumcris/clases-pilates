@@ -1,85 +1,511 @@
-<!-- Hero Section -->
-<section class="landing-hero">
+<!-- Hero / Acceso -->
+<section class="landing-hero" id="inicio">
   <div class="hero-content">
     <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "hero-logo" %>
-    <h1 class="hero-title">Transforma tu cuerpo, transforma tu vida</h1>
-    <p class="hero-subtitle">Pilates clásico para una transformación integral</p>
-    <div class="hero-cta">
-      <%= link_to acceso_path, class: "btn btn-primary btn-large" do %>
-        Iniciar Sesión - Registrarse
+    <h1 class="hero-title">Bienvenidos a Energía Pilates!</h1>
+    <p class="hero-subtitle">
+      Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
+    </p>
+
+    <div class="login-bubbles" aria-label="Acceso">
+      <%= link_to acceso_path, class: "bubble-card bubble-card--primary" do %>
+        <span class="bubble-title">sos alumna de energia pilates</span>
+        <span class="bubble-subtitle">Ingresá para gestionar tu agenda, reservas y créditos</span>
+      <% end %>
+
+      <%= link_to "#contacto", class: "bubble-card bubble-card--secondary" do %>
+        <span class="bubble-title">no sos alumna de energia pilates</span>
+        <span class="bubble-subtitle">Conocé el estudio y escribinos para empezar</span>
       <% end %>
     </div>
   </div>
 </section>
 
-<!-- Sección: Sobre Nosotros -->
-<section class="landing-section" id="sobre-nosotros">
+<!-- INICIO -->
+<section class="landing-section" aria-label="Inicio - Video">
   <div class="container">
-    <h2 class="section-title">Sobre Energía Pilates</h2>
+    <h2 class="section-title">INICIO</h2>
+
+    <div class="landing-split">
+      <div>
+        <div class="video-placeholder" role="img" aria-label="Video de Belu y Pachi en Reformer">
+          VIDEO DE BELU Y PACHI EN REFOR (placeholder)
+        </div>
+      </div>
+
+      <div>
+        <p class="landing-lead">
+          Buscamos enseñar, transmitir y vivenciar el Método auténtico de Joseph Pilates como un estilo de vida transformando mentes, cuerpos y energías.
+        </p>
+        <p class="landing-quote">
+          Tal como lo dijo Joseph: <em>"Cada momento de nuestra vida puede ser el comienzo de grandes cosas"</em>
+        </p>
+        <p><strong>Y vos, ¿ya elegiste cómo iniciarlo?</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Conocenos -->
+<section class="landing-section" id="conocenos">
+  <div class="container">
+    <h2 class="section-title">Conocenos un poquito más</h2>
+
+    <div class="landing-split">
+      <div>
+        <p>
+          Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
+        </p>
+        <p>
+          Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
+        </p>
+      </div>
+      <div class="media-placeholder" role="img" aria-label="Foto Belu y Pachi en recepción">
+        FOTO BELU Y PACHI EN RECEPCIÓN (placeholder)
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Elegí cómo querés entrenar -->
+<section class="landing-section" id="servicios">
+  <div class="container">
+    <h2 class="section-title">¡Elegí cómo querés Entrenar!</h2>
+    <p class="landing-center">
+      Te ofrecemos una amplia gama de Clases, diseñadas para adaptarse a tus necesidades y objetivos.
+      Selecciona tu forma de entrenamiento y descubrí tu mejor versión con Energía Pilates!
+    </p>
+    <p class="landing-center"><strong>Slogan:</strong> transforma tu cuerpo, mente y energía</p>
+
+    <div class="landing-cards">
+      <div class="landing-card">
+        <h3>Clases Online</h3>
+        <p>
+          Entrená sin salir de casa. Explora nuestras opciones de Clases Online y elegí la versión que mejor se acomode a vos.
+        </p>
+        <a class="btn btn-outline-primary" href="#online">Ver opciones online</a>
+      </div>
+
+      <div class="landing-card">
+        <h3>Clases Presenciales en el Estudio</h3>
+        <p>
+          Vení a nuestro estudio y experimentá nuestras modalidades de Clases Presenciales, diseñadas para brindarte una experiencia única y transformadora.
+        </p>
+        <a class="btn btn-outline-primary" href="#presencial">Ver opciones presenciales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Preguntas Frecuentes (CTA corto) -->
+<section class="landing-cta-section" aria-label="Preguntas frecuentes">
+  <div class="cta-content">
+    <h2 class="cta-title">Preguntas Frecuentes</h2>
+    <p class="cta-subtitle">
+      Si tenés dudas de cómo empezar a entrenar o qué modalidad hacer, visitá esta sección pensada para despejar las dudas más frecuentes.
+    </p>
+    <a class="btn btn-cta-large" href="#preguntas-frecuentes">Ver Más</a>
+  </div>
+</section>
+
+<!-- QUIENES SOMOS -->
+<section class="landing-section" id="quienes-somos">
+  <div class="container">
+    <h2 class="section-title">QUIENES SOMOS</h2>
+
     <div class="about-content">
       <div class="about-text">
-        <p class="lead">
-          Energía Pilates es un espacio exclusivo de pilates clásico que busca transformar la mente, el cuerpo y la energía de cada persona que asiste.
+        <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
+        <p>
+          Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
+          Nuestra trayectoria profesional ha estado marcada por la danza, la enseñanza y una búsqueda constante de disciplinas que promuevan el bienestar integral.
         </p>
         <p>
-          Nuestras clases están diseñadas para que cada alumno pueda sentir su cuerpo, moverse con conciencia y, desde allí, educar su movimiento. Es una forma de entrenamiento integral donde trabajamos fuerza, resistencia, respiración, concentración, control, centralización, precisión y fluidez.
-        </p>
-        <p>
-          En Energía, la calidad del movimiento es más importante que la cantidad y el foco está en el proceso personal que cada alumno atraviesa clase a clase.
+          Así descubrimos que el Método Pilates Clásico reúne y sintetiza nuestra profesión transformando no sólo el Cuerpo, sino también la Mente y la Energía.
         </p>
       </div>
-      
+
       <div class="about-formation">
-        <h3>Studio Formación</h3>
+        <h3>Nuestra Formación Profesional</h3>
+        <ul class="landing-list">
+          <li>Licenciadas en Folklore mención Danzas en la Universidad Nacional de las Artes - Buenos Aires (2018).</li>
+          <li>Docentes en el área Artística dentro de la educación formal en el nivel primario y secundario.</li>
+          <li>Instructorado del Método Pilates con la Asociación Mutual de Instructores y Profesores, Buenos Aires (2019).</li>
+          <li>Formación en el Método Pilates Clásico con Paulina Tomasini, Córdoba (2022).</li>
+          <li>Formación en el Método Pilates Clásico con Luciana Ischia, Buenos Aires (2024).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="landing-divider"></div>
+
+    <h3 class="landing-h3">Nuestra Visión como Estudio</h3>
+    <p>
+      Buscamos ser referentes de la enseñanza y la práctica del Pilates Clásico, ofreciendo un espacio de entrenamiento integral transformando Cuerpos, Mentes y Energías.
+      Aspiramos a expandir nuestra comunidad a nivel nacional e internacional, brindando clases presenciales y online de excelencia. Creando una experiencia única que eleve la calidad de vida de nuestros alumnos, promoviendo el bienestar y la conexión consciente con el movimiento.
+    </p>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="landing-section" id="servicios-detalle">
+  <div class="container">
+    <h2 class="section-title">SERVICIOS</h2>
+
+    <p class="landing-center"><strong>Transforma tu Cuerpo, Mente y Energía</strong></p>
+    <p>
+      Si buscas una actividad física transformadora que combine Fuerza, Resistencia, Flexibilidad y Control Corporal, el Pilates Clásico es la opción ideal.
+      El Estudio cuenta con Clases Presenciales y Online para encontrar la modalidad de entrenamiento que se ajuste a tu día a día y a tus objetivos corporales.
+    </p>
+
+    <div class="landing-split" id="presencial">
+      <div class="media-placeholder" role="img" aria-label="Foto clases presenciales">
+        FOTO CLASES PRESENCIALES (placeholder)
+      </div>
+      <div>
+        <h3 class="landing-h3">Clases Presenciales por Niveles</h3>
         <p>
-          Studio Formación es una nueva área de Energía Pilates -diferenciada del área de Alumnos-, pensada para formar a nuevos instructores de pilates clásico. Es un espacio para la construcción profesional y pedagógica del auténtico método pilates, creado por Joseph Pilates con bases teóricas y prácticas.
+          En nuestro Estudio de Río Cuarto, te invitamos a vivir una experiencia auténtica del Método Pilates Clásico.
+          Disponemos de tres salas exclusivas, equipadas con 8 equipos para ofrecerte un entrenamiento personalizado, dinámico, integral y versátil junto a un sistema de niveles que te permitirá avanzar de forma continua y progresiva.
         </p>
+      </div>
+    </div>
+
+    <h3 class="landing-h3">Elegí tu Clase Ideal</h3>
+
+    <details class="landing-details">
+      <summary><strong>1- Grupal</strong> — Clases grupales por niveles en días y horarios fijos (máx. 8 personas)</summary>
+      <div class="details-body">
+        <p><strong>Niveles:</strong> inicial · basic · intermediate · advanced</p>
+        <p>
+          Son clases presenciales diseñadas para entrenar en días y horarios fijos con un enfoque progresivo y personalizado del Pilates Clásico con capacidad máxima para 8 personas por clase.
+        </p>
+        <p><strong>Clases Grupales por Niveles</strong></p>
+        <ul class="landing-list">
+          <li><strong>Nivel Inicial:</strong> Para quienes nunca hicieron Pilates. Aprenden la técnica desde cero y la base de los ejercicios. Entrenan en la Sala de Reformer y Mat y Accesorios.</li>
+          <li><strong>Nivel Basic:</strong> Para alumnos con al menos 3 meses de entrenamiento continuo y que ya conocen las series y ejercicios iniciales, logrando independencia en las clases. Entrenan en la Sala de Reformer y Mat y Accesorios.</li>
+          <li><strong>Nivel Intermedio:</strong> Para alumnos con al menos 6 meses de entrenamiento constante, con independencia y buen ritmo. Avanzan en nuevas series y ejercicios, utilizando nuevos equipos. Entrenan en la sala de Mat y accesorios y en Circuito.</li>
+        </ul>
+        <p>
+          <%= link_to "Días y horarios disponibles (WhatsApp)", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary" %>
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>2- Personalizado</strong> — Mano a mano (clase privada) a sala cerrada</summary>
+      <div class="details-body">
+        <p>
+          Es un trabajo 100% personalizado, al ritmo y nivel de entrenamiento del alumno con un enfoque detallado permitiendo adaptar la clase de manera precisa a las necesidades, objetivos y condiciones físicas de cada persona.
+        </p>
+        <p>
+          Las clases privadas están diseñadas para que asista un alumno por clase, haciendo que sea un entrenamiento personalizado que te permitirá alcanzar tus objetivos con precisión y eficacia.
+        </p>
+        <p><strong>¿Para quiénes son ideales estas clases?</strong></p>
+        <ul class="landing-list">
+          <li>Para clase de prueba.</li>
+          <li>Para quienes nunca hicieron pilates.</li>
+          <li>Cuando tenes una patología o limitación física.</li>
+          <li>Para personas con lesiones o presencia de dolor.</li>
+          <li>Para potenciar el rendimiento de deportistas.</li>
+          <li>Para personas que buscan un entrenamiento exclusivo.</li>
+          <li>Para personas que quieren desafiar su propio cuerpo.</li>
+        </ul>
+        <p><a class="btn btn-outline-primary" href="#contacto">Más información</a></p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>3- Libre</strong> — Flexibilidad para entrenar según tu rutina</summary>
+      <div class="details-body">
+        <p>
+          Una modalidad flexible para entrenar según tu rutina: elegís día, horario y sala. Reserva a través de nuestra App. Clases grupales (máx. 8 personas).
+        </p>
+        <p>
+          Ahora el entrenamiento se adapta a tu ritmo de vida y a tu agenda! Es la opción perfecta para quienes buscan flexibilidad, comodidad, adaptabilidad, variedad y resultados.
+        </p>
+        <p><strong>¿Cómo funciona?</strong></p>
+        <ol class="landing-list-ol">
+          <li>Elige tu pack: Selecciona el pack de 8 o 12 clases mensuales.</li>
+          <li>Realiza el pago del pack y envía el comprobante al Wpp para que podemos activarte como usuario en la App del Estudio.</li>
+          <li>En el transcurso de 24hs ya podrás utiliza la App del estudio para reservar tus clases iniciales.</li>
+        </ol>
+        <p>
+          El estudio abre de lunes a viernes de 07:00 a 11:00 / 15:30 a 22:00hs.
+          Podrás elegir tu clase inicial hasta 15 minutos antes de la clase o con 48hs de anticipación.
+        </p>
+        <p><a class="btn btn-outline-primary" href="#contacto">Más detalles</a></p>
+      </div>
+    </details>
+
+    <div class="landing-divider"></div>
+
+    <div id="online" class="landing-split">
+      <div>
+        <h3 class="landing-h3">4- Online: Energía Pilates Online!</h3>
+        <p>
+          Ahora llegamos a tu casa con clases de Pilates Clásico en vivo para una experiencia completa de entrenamiento personalizado adaptado a tu ritmo,
+          permitiéndote entrenar con la misma calidad y profesionalismo que en la presencialidad junto a la guía y al acompañamiento de la profesora.
+        </p>
+
+        <details class="landing-details">
+          <summary><strong>Clases privadas y personalizadas en vivo</strong></summary>
+          <div class="details-body">
+            <p>
+              Entrenamiento individual en Mat, guiado paso a paso. Adaptado a tu nivel y objetivos. Acompañamiento cercano, estés donde estés.
+            </p>
+            <p><strong>Beneficios</strong></p>
+            <ul class="landing-list">
+              <li>Atención personalizada en el entrenamiento.</li>
+              <li>Corrección y adaptación según necesidades y objetivos.</li>
+              <li>Flexibilidad de horarios: de lunes a viernes de 7am a 21 hs.</li>
+            </ul>
+            <p><a class="btn btn-outline-primary" href="#contacto">Más información</a></p>
+          </div>
+        </details>
+
+        <details class="landing-details">
+          <summary><strong>Mat at Home (HOY EN DIA NO ESTA DISPONIBLE)</strong></summary>
+          <div class="details-body">
+            <p>
+              Son clases grupales online de Mat en Vivo los días lunes y miércoles a las 17 hs (ARG) a través de Google Meet.
+              (Por ahora no está disponible).
+            </p>
+          </div>
+        </details>
+
+        <details class="landing-details">
+          <summary><strong>Clases Grabadas (NO ESTA DISPONIBLE)</strong></summary>
+          <div class="details-body">
+            <p>
+              Entrena cuando y donde quieras con tu pack de clases grabadas diseñadas para que te inicies en el Pilates Mat desde cero.
+              (Por ahora no está disponible).
+            </p>
+          </div>
+        </details>
+
+        <details class="landing-details">
+          <summary><strong>5- Formación</strong></summary>
+          <div class="details-body">
+            <p>
+              Además de entrenar, en Energía Pilates formamos a futuros instructores en Pilates Clásico.
+              Con esta formación vas a vivir un proceso transformador: no solo aprenderás a enseñar Pilates Clásico con fidelidad al método,
+              sino que también desarrollarás una mirada integral, profesional y apasionada.
+            </p>
+            <p><em>“Transformamos tu práctica en tu profesión. Primero lo vivís, después lo enseñas.”</em></p>
+          </div>
+        </details>
+      </div>
+
+      <div class="media-placeholder" role="img" aria-label="Foto clases privadas / online">
+        FOTO CLASE PRIVADA / ONLINE (placeholder)
       </div>
     </div>
   </div>
 </section>
 
-<!-- Sección: Nuestras Clases -->
-<section class="landing-section" id="nuestras-clases">
-  <div class="container">
-    <h2 class="section-title">Nuestras Clases</h2>
-    <div class="content-placeholder">
-      <!-- Aquí irá el contenido que me envíes -->
-      <p>Información sobre las clases...</p>
-    </div>
-  </div>
-</section>
-
-<!-- Sección: Instructores -->
-<section class="landing-section" id="instructores">
-  <div class="container">
-    <h2 class="section-title">Nuestros Instructores</h2>
-    <div class="content-placeholder">
-      <!-- Aquí irá el contenido que me envíes -->
-      <p>Información sobre los instructores...</p>
-    </div>
-  </div>
-</section>
-
-<!-- Sección: Instalaciones -->
-<section class="landing-section" id="instalaciones">
-  <div class="container">
-    <h2 class="section-title">Nuestras Instalaciones</h2>
-    <div class="content-placeholder">
-      <!-- Aquí irá el contenido que me envíes -->
-      <p>Información sobre las instalaciones...</p>
-    </div>
-  </div>
-</section>
-
-<!-- Sección: Contacto -->
+<!-- UBICACIÓN + CONTACTO -->
 <section class="landing-section" id="contacto">
   <div class="container">
-    <h2 class="section-title">Contacto</h2>
-    <div class="content-placeholder">
-      <!-- Aquí irá el contenido que me envíes -->
-      <p>Información de contacto...</p>
+    <h2 class="section-title">UBICACIÓN</h2>
+
+    <div class="landing-split">
+      <div>
+        <h3 class="landing-h3">¿Dónde nos Encontras?</h3>
+        <p>
+          Nuestro Estudio se encuentra ubicado en la calle <strong>San Martín 1045</strong>, Río Cuarto - Córdoba.
+          Una ubicación céntrica con fácil acceso en transporte público y amplias opciones de estacionamiento.
+        </p>
+        <p>
+          Al ingresar a nuestro Estudio, te recibirán salas diseñadas para brindarte la mejor experiencia de entrenamiento.
+          Cada espacio cuenta con un ambiente climatizado y acogedor, pensado para que te sientas cómodo y motivado clase a clase.
+        </p>
+        <p>
+          <%= link_to "Google Maps", "https://www.google.com/maps/search/?api=1&query=San%20Mart%C3%ADn%201045%20R%C3%ADo%20Cuarto%20C%C3%B3rdoba", target: "_blank", rel: "noopener", class: "btn btn-outline-primary" %>
+        </p>
+      </div>
+      <div class="media-placeholder" role="img" aria-label="Imagen de ubicación">
+        IMAGEN DE UBICACIÓN (placeholder)
+      </div>
     </div>
+
+    <div class="landing-divider"></div>
+
+    <h2 class="section-title">Contáctanos!</h2>
+    <p>Para más información e inscripciones, contáctanos a través de:</p>
+    <ul class="landing-list">
+      <li><strong>Redes sociales:</strong> @energia.pilates</li>
+      <li><strong>WhatsApp:</strong> <%= link_to "3584830778", "https://wa.me/5493584830778", target: "_blank", rel: "noopener" %></li>
+      <li><strong>Correo electrónico:</strong> <a href="mailto:energiapilatesr4@gmail.com">energiapilatesr4@gmail.com</a></li>
+    </ul>
+
+    <div class="landing-form">
+      <h3 class="landing-h3">Formulario de contacto</h3>
+      <form action="mailto:energiapilatesr4@gmail.com" method="post" enctype="text/plain">
+        <div class="form-row-landing">
+          <label>Nombre
+            <input class="form-control" type="text" name="nombre" required>
+          </label>
+          <label>WhatsApp
+            <input class="form-control" type="text" name="whatsapp">
+          </label>
+        </div>
+        <label>Mensaje
+          <textarea class="form-control" name="mensaje" rows="5" required></textarea>
+        </label>
+        <div style="margin-top: 1rem;">
+          <button class="btn btn-primary btn-large" type="submit">Enviar</button>
+          <%= link_to "Escribir por WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
+        </div>
+        <p class="landing-note">Nota: este formulario abre tu cliente de correo para enviar el mensaje.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="landing-section" id="testimonios">
+  <div class="container">
+    <h2 class="section-title">TESTIMONIOS</h2>
+    <p class="landing-center">
+      Sumate a Nuestra Manada Pilatera. En Energía Pilates te espera una comunidad vibrante, clases que te conectan de pies a cabeza y una energía que te va a contagiar día a día!
+    </p>
+
+    <div class="landing-cards">
+      <div class="landing-card">
+        <p>“Me gustan mucho las clases, aún cuando termino matadisima salgo con mucha energía y ganas de volver...”</p>
+        <p><strong>Florencia Bogino</strong></p>
+      </div>
+      <div class="landing-card">
+        <p>“Es excelente, siempre tengo algo nuevo para trabajar y eso me motiva muchísimo...”</p>
+        <p><strong>Camila Laino</strong></p>
+      </div>
+      <div class="landing-card">
+        <p>“Amor y odio. Es inexplicable porque ese dolor del cuerpo es tan adictivo...”</p>
+        <p><strong>Candelaria Arzaut</strong></p>
+      </div>
+      <div class="landing-card">
+        <p>“Mis clases son mi refugio, la culminación de mi día y la recarga energética para el día siguiente...”</p>
+        <p><strong>Virginia Sommaro</strong></p>
+      </div>
+      <div class="landing-card">
+        <p>“Siempre es mayor el aprendizaje y la constante mejora mental y física...”</p>
+        <p><strong>Belen Falco</strong></p>
+      </div>
+      <div class="landing-card">
+        <p>“Me encantan! Es la primera vez que voy con muchas ganas a entrenar...”</p>
+        <p><strong>Stefania Yelinek</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREGUNTAS FRECUENTES -->
+<section class="landing-section" id="preguntas-frecuentes">
+  <div class="container">
+    <h2 class="section-title">PREGUNTAS FRECUENTES</h2>
+
+    <details class="landing-details">
+      <summary><strong>¿Qué es Energía Pilates?</strong></summary>
+      <div class="details-body">
+        <p>
+          Somos un estudio de Pilates Clásico de la Ciudad de Río Cuarto creado hace 4 años con mucho amor, convicción y determinación por Belén y Paz Maidana,
+          dos apasionadas docentes e instructoras. En nuestro estudio, no sólo te enseñamos a entrenar el cuerpo de manera consciente y saludable,
+          sino que también te guiamos en un viaje de autoconocimiento y transformación personal.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Cuáles son los beneficios del Pilates?</strong></summary>
+      <div class="details-body">
+        <p>El Pilates ofrece una amplia gama de beneficios, entre los que se destacan:</p>
+        <ul class="landing-list">
+          <li>Fortalecimiento muscular (powerhouse).</li>
+          <li>Tonificación corporal.</li>
+          <li>Respiración consciente.</li>
+          <li>Control y precisión.</li>
+          <li>Flexibilidad y elongación.</li>
+          <li>Concentración en el entrenamiento.</li>
+          <li>Alineación y corrección postural.</li>
+          <li>Prevención de lesiones.</li>
+          <li>Ayuda a rehabilitar lesiones y patologías (con supervisión).</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Cómo saber qué clase es la ideal para vos?</strong></summary>
+      <div class="details-body">
+        <p>
+          El estudio busca brindarte el estilo de clases que estas buscando y que sea lo que tu cuerpo necesita para lograr un entrenamiento de calidad.
+          Podés entrenar desde tu casa o asistiendo presencialmente al Estudio, en grupos reducidos o de manera privada.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Con qué frecuencia debes entrenar?</strong></summary>
+      <div class="details-body">
+        <p>Depende de tu nivel, condición física y objetivos, pero en general, se recomienda al menos 3 veces por semana.</p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Cuánto tiempo tardaré en ver resultados?</strong></summary>
+      <div class="details-body">
+        <p>
+          El Pilates es una práctica a largo plazo. La clave está en la consistencia y la paciencia para disfrutar de sus beneficios continuos.
+          Joseph Pilates decía: “En 10 sesiones sentirás la diferencia, en 20 sesiones verás la diferencia y en 30 sesiones tu cuerpo habrá cambiado por completo”.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Necesito experiencia previa para comenzar Pilates?</strong></summary>
+      <div class="details-body">
+        <p>
+          No se necesita experiencia previa para comenzar Pilates Clásico. El método se adapta a alumnos principiantes como para alumnos avanzados.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Qué es Pilates Clásico y en qué se diferencia del Pilates Contemporáneo?</strong></summary>
+      <div class="details-body">
+        <p>
+          El Pilates Clásico mantiene y enseña la metodología y los principios originales creados por Joseph Pilates. A diferencia del contemporáneo,
+          que incorpora interpretaciones y adaptaciones modernas del método original.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Qué horarios tiene el Estudio?</strong></summary>
+      <div class="details-body">
+        <p>El Estudio abre sus puertas de Lunes a Viernes, de 07:00 a 11:00 hs y de 14.30 a 22:00 hs.</p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Ofrecen clases de prueba?</strong></summary>
+      <div class="details-body">
+        <p>
+          Para que el cuerpo entienda el método Pilates se requiere un mínimo de 8 clases, por lo que te invitamos a que te regales un mes de clases y descubras lo que Pilates Clásico tiene para ofrecerte.
+        </p>
+      </div>
+    </details>
+
+    <details class="landing-details">
+      <summary><strong>¿Se pueden recuperar las clases perdidas?</strong></summary>
+      <div class="details-body">
+        <p>
+          Cada alumno cuenta con dos recuperos mensuales, siempre y cuando se cancele la misma con un mínimo de 4hs.
+          También damos la posibilidad de recuperar las clases que el estudio no abre por motivos de feriados nacionales.
+          Todo se gestiona mediante nuestro sistema de TomoTurnos.
+        </p>
+      </div>
+    </details>
   </div>
 </section>
 

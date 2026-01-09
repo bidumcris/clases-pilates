@@ -39,8 +39,7 @@
                     <div class="class-info">
                       <strong><%= pilates_class.name %></strong>
                       <p class="class-details">
-                        <%= pilates_class.room.name %> - 
-                        <%= pilates_class.instructor.name %>
+                        <%= pilates_class.room.name %>
                       </p>
                       <p class="class-time">
                         <%= pilates_class.start_time.strftime("%H:%M") %> - 
@@ -48,26 +47,9 @@
                       </p>
                       <p class="class-level">
                         Nivel: <strong><%= pilates_class.level.humanize %></strong>
-                        <% if pilates_class.privada? %>
-                          <span class="class-type-badge">Privada</span>
-                        <% else %>
-                          <span class="class-type-badge">Grupal</span>
-                        <% end %>
                       </p>
                     </div>
-                    <div class="class-availability">
-                      <% availability_class = case pilates_class.availability_percentage
-                           when 0..25 then 'availability-low'
-                           when 26..50 then 'availability-medium'
-                           else 'availability-high'
-                         end %>
-                      <span class="availability-badge <%= availability_class %>">
-                        <%= pilates_class.availability_percentage %>%
-                      </span>
-                      <p class="spots-info">
-                        <%= pilates_class.available_spots %>/<%= pilates_class.max_capacity %>
-                      </p>
-                    </div>
+                    <div class="class-availability"></div>
                     
                     <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? %>
                       <%= button_to "Reservar (1 crédito)", reservations_path, 

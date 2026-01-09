@@ -22,8 +22,13 @@ class PilatesClass < ApplicationRecord
   scope :past, -> { where("start_time < ?", Time.current).order(start_time: :desc) }
   scope :by_room, ->(room_id) { where(room_id: room_id) }
   scope :for_user, ->(user) {
-    # Filtrar por nivel del usuario y tipo de clase
-    classes = where(level: user.allowed_levels)
+    # Filtrar por nivel del usuario y tipo de clase.
+    # Por ahora, para alumnos: solo el mismo nivel exacto.
+    classes = if user&.alumno?
+      where(level: user.level)
+    else
+      all
+    end
 
     if user.privada?
       classes.where(class_type: :privada).joins(:room).merge(Room.private_enabled)
