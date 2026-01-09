@@ -28,8 +28,7 @@
                     <%= reservation.pilates_class.end_time.strftime("%H:%M") %>
                   </p>
                   <p style="margin: 0.25rem 0; color: #666;">
-                    <%= reservation.pilates_class.room.name %> - 
-                    <%= reservation.pilates_class.instructor.name %>
+                    <%= reservation.pilates_class.room.name %>
                   </p>
                   <span class="badge badge-<%= reservation.status %>">
                     <%= reservation.status.humanize %>
