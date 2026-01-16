@@ -788,9 +788,10 @@ body {
 }
 
 .landing-header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0.75rem 1.5rem;
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 1rem;
@@ -831,22 +832,29 @@ body {
 
 .landing-header-cta {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  align-items: flex-end;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .landing-header-link {
   color: #444;
   text-decoration: none;
-  font-size: 0.80rem;
+  font-size: 0.78rem;
   font-weight: 700;
   opacity: 0.95;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(127, 88, 143, 0.08);
+  border: 1px solid rgba(127, 88, 143, 0.14);
+  white-space: nowrap;
 }
 
 .landing-header-link:hover {
   color: var(--color-azul);
-  text-decoration: underline;
+  text-decoration: none;
+  background: rgba(74, 133, 186, 0.10);
+  border-color: rgba(74, 133, 186, 0.22);
 }
 
 /* Landing - Videos */
@@ -1847,10 +1855,13 @@ body {
   .landing-header-inner {
     grid-template-columns: 1fr;
     justify-items: center;
+    padding: 0.75rem 1rem;
   }
 
   .landing-header-cta {
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .landing-video-grid {
