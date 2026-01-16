@@ -771,6 +771,153 @@ body {
    LANDING PAGE STYLES
    ============================================ */
 
+/* Landing header (fixed) */
+.landing-page {
+  padding-top: 78px; /* espacio para el header fijo */
+}
+
+.landing-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(244, 244, 244, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(127, 88, 143, 0.15);
+}
+
+.landing-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.landing-header-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.landing-header-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+.landing-header-nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.landing-header-nav a {
+  color: var(--color-malva);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+}
+
+.landing-header-nav a:hover {
+  background: rgba(127, 88, 143, 0.10);
+}
+
+.landing-header-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: flex-end;
+}
+
+.landing-header-link {
+  color: #444;
+  text-decoration: none;
+  font-size: 0.80rem;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.landing-header-link:hover {
+  color: var(--color-azul);
+  text-decoration: underline;
+}
+
+/* Landing - Videos */
+.landing-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.landing-video video {
+  width: 100%;
+  height: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(127, 88, 143, 0.12);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  background: #000;
+}
+
+/* Landing - Nuestro Estudio (fotos) */
+.landing-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.landing-photo-grid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(127, 88, 143, 0.12);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  background: var(--color-marfil);
+}
+
+/* Landing - Tipos de clase */
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.type-card {
+  background: var(--color-blanco);
+  border-radius: 14px;
+  padding: 1.5rem;
+  border: 1px solid rgba(127, 88, 143, 0.12);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+}
+
+.type-icon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.type-card h3 {
+  color: var(--color-malva);
+  margin-bottom: 0.5rem;
+}
+
+.type-card p {
+  color: #444;
+  line-height: 1.75;
+  margin: 0;
+}
+
 /* Hero Section - Paleta Alumnos */
 .landing-hero {
   min-height: 90vh;
@@ -1691,6 +1838,31 @@ body {
 
   .landing-login-section {
     padding: 2rem 1rem 3rem;
+  }
+
+  .landing-page {
+    padding-top: 96px;
+  }
+
+  .landing-header-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .landing-header-cta {
+    align-items: center;
+  }
+
+  .landing-video-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .types-grid {
+    grid-template-columns: 1fr;
   }
 
   .login-bubbles {

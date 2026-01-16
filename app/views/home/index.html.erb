@@ -1,101 +1,121 @@
-<!-- Hero / Acceso -->
-<section class="landing-hero" id="inicio">
-  <div class="hero-content">
-    <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "hero-logo" %>
-    <h1 class="hero-title">Bienvenidos a Energía Pilates!</h1>
-    <p class="hero-subtitle">
-      Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
-    </p>
-
-    <div class="login-bubbles" aria-label="Acceso">
-      <%= link_to acceso_path, class: "bubble-card bubble-card--primary" do %>
-        <span class="bubble-title">sos alumna de energia pilates</span>
-        <span class="bubble-subtitle">Ingresá para gestionar tu agenda, reservas y créditos</span>
+<div class="landing-page">
+  <header class="landing-header" role="banner">
+    <div class="landing-header-inner">
+      <%= link_to "#inicio", class: "landing-header-logo" do %>
+        <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "landing-header-logo-img" %>
       <% end %>
 
-      <%= link_to "#contacto", class: "bubble-card bubble-card--secondary" do %>
-        <span class="bubble-title">no sos alumna de energia pilates</span>
-        <span class="bubble-subtitle">Conocé el estudio y escribinos para empezar</span>
-      <% end %>
-    </div>
-  </div>
-</section>
+      <nav class="landing-header-nav" aria-label="Navegación principal">
+        <a href="#inicio">home</a>
+        <a href="#tipos-de-clase">tipos de clase</a>
+        <a href="#ubicacion">ubicacion</a>
+        <a href="#sobre-nosotras">sobre nosotras</a>
+        <a href="#nuestro-estudio">nuestro estudio</a>
+      </nav>
 
-<!-- INICIO -->
-<section class="landing-section" aria-label="Inicio - Video">
-  <div class="container">
-    <h2 class="section-title">INICIO</h2>
-
-    <div class="landing-split">
-      <div>
-        <div class="video-placeholder" role="img" aria-label="Video de Belu y Pachi en Reformer">
-          VIDEO DE BELU Y PACHI EN REFOR (placeholder)
-        </div>
-      </div>
-
-      <div>
-        <p class="landing-lead">
-          Buscamos enseñar, transmitir y vivenciar el Método auténtico de Joseph Pilates como un estilo de vida transformando mentes, cuerpos y energías.
-        </p>
-        <p class="landing-quote">
-          Tal como lo dijo Joseph: <em>"Cada momento de nuestra vida puede ser el comienzo de grandes cosas"</em>
-        </p>
-        <p><strong>Y vos, ¿ya elegiste cómo iniciarlo?</strong></p>
+      <div class="landing-header-cta" aria-label="Acceso">
+        <%= link_to "Sos alumna/o de energia pilates?", acceso_path, class: "landing-header-link" %>
+        <%= link_to "No sos alumna/o de energia pilates", "#contacto", class: "landing-header-link" %>
       </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- Conocenos -->
-<section class="landing-section" id="conocenos">
-  <div class="container">
-    <h2 class="section-title">Conocenos un poquito más</h2>
-
-    <div class="landing-split">
-      <div>
-        <p>
+  <main class="landing-main">
+    <!-- Hero -->
+    <section class="landing-hero" id="inicio">
+      <div class="hero-content">
+        <h1 class="hero-title">Bienvenidos a Energía Pilates!</h1>
+        <p class="hero-subtitle">
           Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
         </p>
-        <p>
-          Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
+      </div>
+    </section>
+
+    <!-- INICIO -->
+    <section class="landing-section" aria-label="Inicio - Videos">
+      <div class="container">
+        <h2 class="section-title">INICIO</h2>
+
+        <div class="landing-video-grid" aria-label="Videos">
+          <div class="landing-video">
+            <%= video_tag "energia-pilates/Página web/copy_8B35467E-8683-4E0A-8C7A-9C832F8A0805.mp4", controls: true, preload: "metadata", playsinline: true %>
+          </div>
+          <div class="landing-video">
+            <%= video_tag "energia-pilates/Página web/copy_AC6A67D5-4111-4BD9-8A9D-107A869F04F9.mov", controls: true, preload: "metadata", playsinline: true %>
+          </div>
+          <div class="landing-video">
+            <%= video_tag "energia-pilates/Página web/copy_E69F5A5A-A1A6-48E9-8634-92B3AE2DD6B6.mov", controls: true, preload: "metadata", playsinline: true %>
+          </div>
+        </div>
+
+        <div class="landing-divider"></div>
+
+        <p class="landing-center">
+          Buscamos enseñar, transmitir y vivenciar el Método auténtico de Joseph Pilates como un estilo de vida transformando mentes, cuerpos y energías.
+          <br>
+          Tal como lo dijo Joseph: <em>"Cada momento de nuestra vida puede ser el comienzo de grandes cosas"</em>
+          <br>
+          <strong>Y vos, ¿ya elegiste cómo iniciarlo?</strong>
         </p>
       </div>
-      <div class="media-placeholder" role="img" aria-label="Foto Belu y Pachi en recepción">
-        FOTO BELU Y PACHI EN RECEPCIÓN (placeholder)
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Elegí cómo querés entrenar -->
-<section class="landing-section" id="servicios">
-  <div class="container">
-    <h2 class="section-title">¡Elegí cómo querés Entrenar!</h2>
-    <p class="landing-center">
-      Te ofrecemos una amplia gama de Clases, diseñadas para adaptarse a tus necesidades y objetivos.
-      Selecciona tu forma de entrenamiento y descubrí tu mejor versión con Energía Pilates!
-    </p>
-    <p class="landing-center"><strong>Slogan:</strong> transforma tu cuerpo, mente y energía</p>
+    <!-- NUESTRO ESTUDIO -->
+    <section class="landing-section" id="nuestro-estudio">
+      <div class="container">
+        <h2 class="section-title">Nuestro Estudio</h2>
 
-    <div class="landing-cards">
-      <div class="landing-card">
-        <h3>Clases Online</h3>
-        <p>
-          Entrená sin salir de casa. Explora nuestras opciones de Clases Online y elegí la versión que mejor se acomode a vos.
-        </p>
-        <a class="btn btn-outline-primary" href="#online">Ver opciones online</a>
-      </div>
+        <div class="landing-split">
+          <div>
+            <p class="landing-lead">
+              Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
+            </p>
+            <p>
+              Conocé un poquito más y escribinos para empezar.
+            </p>
+          </div>
 
-      <div class="landing-card">
-        <h3>Clases Presenciales en el Estudio</h3>
-        <p>
-          Vení a nuestro estudio y experimentá nuestras modalidades de Clases Presenciales, diseñadas para brindarte una experiencia única y transformadora.
-        </p>
-        <a class="btn btn-outline-primary" href="#presencial">Ver opciones presenciales</a>
+          <div class="landing-photo-grid" aria-label="Fotos del estudio">
+            <%= image_tag "energia-pilates/Página web/Tezza-9418.jpg", alt: "Energía Pilates - Estudio", loading: "lazy" %>
+            <%= image_tag "energia-pilates/Página web/Copia de IMG_8989.JPG", alt: "Energía Pilates - Estudio", loading: "lazy" %>
+            <%= image_tag "energia-pilates/Página web/Copia de IMG_9204.JPG", alt: "Energía Pilates - Estudio", loading: "lazy" %>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+
+    <!-- TIPOS DE CLASE -->
+    <section class="landing-section" id="tipos-de-clase">
+      <div class="container">
+        <h2 class="section-title">Tipos de clase</h2>
+
+        <div class="types-grid" aria-label="Tipos de clase">
+          <div class="type-card type-card--personalizado">
+            <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 1.png", alt: "Personalizado", class: "type-icon", loading: "lazy" %>
+            <h3>Personalizada</h3>
+            <p>Un entrenamiento mano a mano, totalmente adaptado a tu cuerpo y a tus objetivos.</p>
+          </div>
+
+          <div class="type-card type-card--libre">
+            <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 1.png", alt: "Libre", class: "type-icon", loading: "lazy" %>
+            <h3>Libre</h3>
+            <p>Elegís día y horario según tu rutina. Flexibilidad sin perder calidad.</p>
+          </div>
+
+          <div class="type-card type-card--grupal">
+            <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Grupal", class: "type-icon", loading: "lazy" %>
+            <h3>Grupal</h3>
+            <p>Clases grupales por niveles, cupos reducidos y progreso continuo.</p>
+          </div>
+
+          <div class="type-card type-card--online">
+            <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Online", class: "type-icon", loading: "lazy" %>
+            <h3>Online</h3>
+            <p>Entrená desde casa con la guía de la profe, estés donde estés.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
 <!-- Preguntas Frecuentes (CTA corto) -->
 <section class="landing-cta-section" aria-label="Preguntas frecuentes">
@@ -109,7 +129,7 @@
 </section>
 
 <!-- QUIENES SOMOS -->
-<section class="landing-section" id="quienes-somos">
+<section class="landing-section" id="sobre-nosotras">
   <div class="container">
     <h2 class="section-title">QUIENES SOMOS</h2>
 
@@ -305,7 +325,7 @@
 </section>
 
 <!-- UBICACIÓN + CONTACTO -->
-<section class="landing-section" id="contacto">
+<section class="landing-section" id="ubicacion">
   <div class="container">
     <h2 class="section-title">UBICACIÓN</h2>
 
@@ -331,6 +351,7 @@
 
     <div class="landing-divider"></div>
 
+    <div id="contacto"></div>
     <h2 class="section-title">Contáctanos!</h2>
     <p>Para más información e inscripciones, contáctanos a través de:</p>
     <ul class="landing-list">
@@ -363,6 +384,8 @@
   </div>
 </section>
 
+  </main>
+</div>
 <!-- TESTIMONIOS -->
 <section class="landing-section" id="testimonios">
   <div class="container">
