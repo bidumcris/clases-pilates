@@ -123,27 +123,48 @@
   <div class="container">
     <h2 class="section-title">QUIENES SOMOS</h2>
 
-    <div class="about-content">
-      <div class="about-text">
-        <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
-        <p>
-          Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
-          Nuestra trayectoria profesional ha estado marcada por la danza, la enseñanza y una búsqueda constante de disciplinas que promuevan el bienestar integral.
-        </p>
-        <p>
-          Así descubrimos que el Método Pilates Clásico reúne y sintetiza nuestra profesión transformando no sólo el Cuerpo, sino también la Mente y la Energía.
-        </p>
+    <div class="about-layout">
+      <div class="about-content">
+        <div class="about-text">
+          <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
+          <p>
+            Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
+            Nuestra trayectoria profesional ha estado marcada por la danza, la enseñanza y una búsqueda constante de disciplinas que promuevan el bienestar integral.
+          </p>
+          <p>
+            Así descubrimos que el Método Pilates Clásico reúne y sintetiza nuestra profesión transformando no sólo el Cuerpo, sino también la Mente y la Energía.
+          </p>
+        </div>
+
+        <div class="about-formation">
+          <h3>Nuestra Formación Profesional</h3>
+          <ul class="landing-list">
+            <li>Licenciadas en Folklore mención Danzas en la Universidad Nacional de las Artes - Buenos Aires (2018).</li>
+            <li>Docentes en el área Artística dentro de la educación formal en el nivel primario y secundario.</li>
+            <li>Instructorado del Método Pilates con la Asociación Mutual de Instructores y Profesores, Buenos Aires (2019).</li>
+            <li>Formación en el Método Pilates Clásico con Paulina Tomasini, Córdoba (2022).</li>
+            <li>Formación en el Método Pilates Clásico con Luciana Ischia, Buenos Aires (2024).</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="about-formation">
-        <h3>Nuestra Formación Profesional</h3>
-        <ul class="landing-list">
-          <li>Licenciadas en Folklore mención Danzas en la Universidad Nacional de las Artes - Buenos Aires (2018).</li>
-          <li>Docentes en el área Artística dentro de la educación formal en el nivel primario y secundario.</li>
-          <li>Instructorado del Método Pilates con la Asociación Mutual de Instructores y Profesores, Buenos Aires (2019).</li>
-          <li>Formación en el Método Pilates Clásico con Paulina Tomasini, Córdoba (2022).</li>
-          <li>Formación en el Método Pilates Clásico con Luciana Ischia, Buenos Aires (2024).</li>
-        </ul>
+      <div
+        class="about-slideshow"
+        data-controller="about-slideshow"
+        data-about-slideshow-sources-value='<%= [
+          asset_path("energia-pilates/Página web/Tezza-9418.jpg"),
+          asset_path("energia-pilates/Página web/Copia de IMG_8989.JPG"),
+          asset_path("energia-pilates/Página web/Copia de IMG_9204.JPG")
+        ].to_json %>'
+      >
+        <img
+          data-about-slideshow-target="img"
+          class="about-slideshow-img"
+          src="<%= asset_path("energia-pilates/Página web/Tezza-9418.jpg") %>"
+          alt="Energía Pilates"
+          loading="eager"
+          decoding="async"
+        >
       </div>
     </div>
 
