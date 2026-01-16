@@ -771,6 +771,61 @@ body {
    LANDING PAGE STYLES
    ============================================ */
 
+/* Floating social buttons (solo landing / logged-out layout) */
+.floating-social {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.floating-social-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.floating-social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+}
+
+.floating-social-btn--whatsapp {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+}
+
+.floating-social-btn--instagram {
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+}
+
+.floating-social-icon {
+  display: inline-flex;
+}
+
+@media (max-width: 768px) {
+  .floating-social {
+    right: 1rem;
+    bottom: 1rem;
+    gap: 0.6rem;
+  }
+  .floating-social-btn {
+    width: 48px;
+    height: 48px;
+  }
+}
+
 /* Landing header (fixed) */
 .landing-page {
   padding-top: 96px; /* espacio para el header fijo */
