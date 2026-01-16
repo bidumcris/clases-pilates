@@ -92,50 +92,67 @@
         <h2 class="section-title">Tipos de clase</h2>
 
         <div class="types-grid" aria-label="Tipos de clase">
-          <a class="type-card type-card--formacion" href="#servicio-formacion">
+          <div class="type-card type-card--formacion">
             <div class="service-logos service-logos--compact">
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 1.png", alt: "Formación en Pilates", class: "service-logo", loading: "lazy" %>
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Formación <span class="type-soon">Próximamente</span></h3>
             <p>Formación de instructores en Pilates Clásico.</p>
-          </a>
+          </div>
 
-          <a class="type-card type-card--grupal" href="#servicio-grupal">
+          <div class="type-card type-card--grupal" data-controller="type-expand">
             <div class="service-logos service-logos--compact">
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Pilates Grupal", class: "service-logo", loading: "lazy" %>
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Grupal</h3>
             <p>Clases grupales por niveles, cupos reducidos y progreso continuo.</p>
-          </a>
+            <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
+            <div class="type-more" data-type-expand-target="content" hidden>
+              <p><strong>Niveles:</strong> inicial · basic · intermediate · advanced</p>
+              <p>Cupos reducidos (máx. 8 personas) y progresión por nivel.</p>
+              <p><%= link_to "Días y horarios (WhatsApp)", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary" %></p>
+            </div>
+          </div>
 
-          <a class="type-card type-card--libre" href="#servicio-libre">
+          <div class="type-card type-card--libre" data-controller="type-expand">
             <div class="service-logos service-logos--compact">
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 1.png", alt: "Pilates Libre", class: "service-logo", loading: "lazy" %>
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Libre</h3>
             <p>Elegís día y horario según tu rutina. Flexibilidad sin perder calidad.</p>
-          </a>
+            <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
+            <div class="type-more" data-type-expand-target="content" hidden>
+              <p>Reserva a través de nuestra App, en clases grupales (máx. 8 personas).</p>
+              <p><strong>Horario del estudio:</strong> lun–vie 07:00–11:00 / 15:30–22:00</p>
+              <p><a class="btn btn-outline-primary" href="#contacto">Más detalles</a></p>
+            </div>
+          </div>
 
-          <a class="type-card type-card--online" href="#servicio-online">
+          <div class="type-card type-card--online">
             <div class="service-logos service-logos--compact">
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Pilates Online", class: "service-logo", loading: "lazy" %>
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Online <span class="type-soon">Próximamente</span></h3>
             <p>Clases online para entrenar desde casa.</p>
-          </a>
+          </div>
 
-          <a class="type-card type-card--personalizado" href="#servicio-personalizado">
+          <div class="type-card type-card--personalizado" data-controller="type-expand">
             <div class="service-logos service-logos--compact">
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 1.png", alt: "Pilates Personalizado", class: "service-logo", loading: "lazy" %>
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Personalizada</h3>
             <p>Un entrenamiento mano a mano, totalmente adaptado a tu cuerpo y a tus objetivos.</p>
-          </a>
+            <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
+            <div class="type-more" data-type-expand-target="content" hidden>
+              <p>Clase privada (1 alumno) con enfoque detallado y adaptaciones según necesidades.</p>
+              <p><a class="btn btn-outline-primary" href="#contacto">Más información</a></p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -157,8 +174,8 @@
     <h2 class="section-title">QUIENES SOMOS</h2>
 
     <div class="about-layout">
-      <div class="about-content">
-        <div class="about-text">
+    <div class="about-content">
+      <div class="about-text">
           <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
           <p>
             Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
@@ -212,7 +229,7 @@
 </section>
 
 <!-- SERVICIOS -->
-<section class="landing-section" id="servicios-detalle">
+<section class="landing-section" id="servicios-detalle" hidden aria-hidden="true">
   <div class="container">
     <h2 class="section-title">SERVICIOS</h2>
 
@@ -313,7 +330,7 @@
         <p><a class="btn btn-outline-primary" href="#contacto">Más detalles</a></p>
       </div>
     </details>
-
+      
     <div class="landing-divider"></div>
 
     <div id="servicio-online" class="landing-split">
@@ -447,7 +464,7 @@
         <div style="margin-top: 1rem;">
           <button class="btn btn-primary btn-large" type="submit">Enviar</button>
           <%= link_to "Escribir por WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
-        </div>
+  </div>
         <p class="landing-note">Nota: este formulario abre tu cliente de correo para enviar el mensaje.</p>
       </form>
     </div>
@@ -597,7 +614,7 @@
           También damos la posibilidad de recuperar las clases que el estudio no abre por motivos de feriados nacionales.
           Todo se gestiona mediante nuestro sistema de TomoTurnos.
         </p>
-      </div>
+    </div>
     </details>
   </div>
 </section>
