@@ -819,7 +819,7 @@ body {
 
 .landing-header-nav a {
   color: var(--color-malva);
-  text-decoration: none;
+  text-decoration: none !important;
   font-weight: 700;
   font-size: 1.25rem;
   padding: 0.35rem 0.5rem;
@@ -830,7 +830,7 @@ body {
 .landing-header-nav a:hover,
 .landing-header-nav a:focus,
 .landing-header-nav a:active {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .landing-header-nav a:hover {
@@ -846,7 +846,7 @@ body {
 
 .landing-header-link {
   color: #444;
-  text-decoration: none;
+  text-decoration: none !important;
   font-size: 1.08rem;
   font-weight: 700;
   opacity: 0.95;
@@ -861,7 +861,7 @@ body {
 .landing-header-link:hover,
 .landing-header-link:focus,
 .landing-header-link:active {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .landing-header-link:hover {
