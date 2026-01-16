@@ -773,7 +773,7 @@ body {
 
 /* Landing header (fixed) */
 .landing-page {
-  padding-top: 78px; /* espacio para el header fijo */
+  padding-top: 96px; /* espacio para el header fijo */
 }
 
 .landing-header {
@@ -805,7 +805,7 @@ body {
 }
 
 .landing-header-logo-img {
-  height: 38px;
+  height: 52px;
   width: auto;
   object-fit: contain;
 }
@@ -821,7 +821,7 @@ body {
   color: var(--color-malva);
   text-decoration: none;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   padding: 0.35rem 0.5rem;
   border-radius: 8px;
 }
@@ -840,7 +840,7 @@ body {
 .landing-header-link {
   color: #444;
   text-decoration: none;
-  font-size: 0.88rem;
+  font-size: 1.08rem;
   font-weight: 700;
   opacity: 0.95;
   padding: 0.35rem 0.65rem;
@@ -1849,7 +1849,7 @@ body {
   }
 
   .landing-page {
-    padding-top: 96px;
+    padding-top: 120px;
   }
 
   .landing-header-inner {
