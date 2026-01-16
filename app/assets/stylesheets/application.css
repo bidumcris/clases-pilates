@@ -821,7 +821,7 @@ body {
   color: var(--color-malva);
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   padding: 0.35rem 0.5rem;
   border-radius: 8px;
 }
@@ -840,7 +840,7 @@ body {
 .landing-header-link {
   color: #444;
   text-decoration: none;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 700;
   opacity: 0.95;
   padding: 0.35rem 0.65rem;
