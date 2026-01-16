@@ -59,10 +59,28 @@
             </p>
           </div>
 
-          <div class="landing-photo-grid" aria-label="Fotos del estudio">
-            <%= image_tag "energia-pilates/Página web/jpg/estudio-1.jpg", alt: "Energía Pilates - Estudio", loading: "eager", decoding: "async" %>
-            <%= image_tag "energia-pilates/Página web/jpg/estudio-2.jpg", alt: "Energía Pilates - Estudio", loading: "lazy", decoding: "async" %>
-            <%= image_tag "energia-pilates/Página web/jpg/estudio-3.jpg", alt: "Energía Pilates - Estudio", loading: "lazy", decoding: "async" %>
+          <div
+            class="about-slideshow studio-slideshow"
+            data-controller="about-slideshow"
+            data-about-slideshow-sources-value='<%= [
+              asset_path("energia-pilates/Página web/jpg/estudio-1.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-2.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-3.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-4.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-5.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-6.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-7.jpg")
+            ].to_json %>'
+            aria-label="Fotos del estudio"
+          >
+            <img
+              data-about-slideshow-target="img"
+              class="about-slideshow-img"
+              src="<%= asset_path("energia-pilates/Página web/jpg/estudio-1.jpg") %>"
+              alt="Energía Pilates - Estudio"
+              loading="eager"
+              decoding="async"
+            >
           </div>
         </div>
       </div>
