@@ -790,9 +790,9 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none !important;
-  color: #fff;
+  background: #ffffff;
   box-shadow: 0 12px 26px rgba(0,0,0,0.18);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(127, 88, 143, 0.14);
   backdrop-filter: blur(6px);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
@@ -802,16 +802,10 @@ body {
   box-shadow: 0 16px 34px rgba(0,0,0,0.22);
 }
 
-.floating-social-btn--whatsapp {
-  background: linear-gradient(135deg, #25D366, #128C7E);
-}
-
-.floating-social-btn--instagram {
-  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
-}
-
-.floating-social-icon {
+.floating-social-img {
   display: inline-flex;
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 768px) {
