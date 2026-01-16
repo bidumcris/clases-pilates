@@ -991,9 +991,23 @@ body {
 .hero-content {
   position: relative;
   z-index: 4;
-  text-align: center;
+  text-align: right;
   color: white;
   max-width: 800px;
+}
+
+/* Hero text: arriba a la derecha sobre el video */
+.landing-hero .hero-content {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  left: auto;
+  bottom: auto;
+  max-width: 560px;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
 }
 
 .hero-logo {
@@ -1900,6 +1914,15 @@ body {
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .landing-hero .hero-content {
+    position: relative;
+    top: auto;
+    right: auto;
+    max-width: 800px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.22);
   }
 
   .landing-video-grid {
