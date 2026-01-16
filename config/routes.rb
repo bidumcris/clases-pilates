@@ -79,4 +79,6 @@ Rails.application.routes.draw do
   # Páginas públicas
   get "home", to: "home#index"
   get "acceso", to: "home#acceso", as: :acceso
+
+  post "contacto", to: "contacts#create", as: :contacto
 end

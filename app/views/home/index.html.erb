@@ -447,26 +447,65 @@
       <li><strong>Correo electrónico:</strong> <a href="mailto:energiapilatesr4@gmail.com">energiapilatesr4@gmail.com</a></li>
     </ul>
 
-    <div class="landing-form">
-      <h3 class="landing-h3">Formulario de contacto</h3>
-      <form action="mailto:energiapilatesr4@gmail.com" method="post" enctype="text/plain">
-        <div class="form-row-landing">
-          <label>Nombre
-            <input class="form-control" type="text" name="nombre" required>
-          </label>
-          <label>WhatsApp
-            <input class="form-control" type="text" name="whatsapp">
-          </label>
+    <% if flash[:notice].present? || flash[:alert].present? %>
+      <div class="landing-flash <%= flash[:alert].present? ? "landing-flash--error" : "landing-flash--ok" %>">
+        <%= flash[:alert].presence || flash[:notice] %>
+      </div>
+    <% end %>
+
+    <div class="landing-contact-grid" data-controller="contact-whatsapp" data-contact-whatsapp-phone-value="5493584830778">
+      <div class="landing-contact-card">
+        <h3 class="landing-h3">Escribinos</h3>
+        <p class="landing-note">Respondemos lo antes posible. Si es urgente, escribinos directo por WhatsApp.</p>
+        <div class="landing-contact-actions">
+          <%= link_to "WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary btn-large" %>
+          <%= link_to "Instagram", "https://www.instagram.com/energia.pilates", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
         </div>
-        <label>Mensaje
-          <textarea class="form-control" name="mensaje" rows="5" required></textarea>
-        </label>
-        <div style="margin-top: 1rem;">
-          <button class="btn btn-primary btn-large" type="submit">Enviar</button>
-          <%= link_to "Escribir por WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
-  </div>
-        <p class="landing-note">Nota: este formulario abre tu cliente de correo para enviar el mensaje.</p>
-      </form>
+      </div>
+
+      <div class="landing-form">
+        <h3 class="landing-h3">Formulario</h3>
+
+        <%= form_with url: contacto_path, method: :post, local: true do %>
+          <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="landing-honeypot" aria-hidden="true">
+
+          <div class="form-row-landing">
+            <label>Nombre*
+              <input class="form-control" type="text" name="name" required data-contact-whatsapp-target="name" data-action="input->contact-whatsapp#update">
+            </label>
+            <label>Email
+              <input class="form-control" type="email" name="email" data-contact-whatsapp-target="email" data-action="input->contact-whatsapp#update">
+            </label>
+          </div>
+
+          <div class="form-row-landing">
+            <label>WhatsApp
+              <input class="form-control" type="text" name="whatsapp" placeholder="Ej: 3584..." data-contact-whatsapp-target="whatsapp" data-action="input->contact-whatsapp#update">
+            </label>
+            <label>Motivo
+              <select class="form-control" name="reason" data-contact-whatsapp-target="reason" data-action="change->contact-whatsapp#update">
+                <option value="Consulta general">Consulta general</option>
+                <option value="Clases grupales">Clases grupales</option>
+                <option value="Clases personalizadas">Clases personalizadas</option>
+                <option value="Clases libres">Clases libres</option>
+                <option value="Clases online">Clases online</option>
+                <option value="Formación">Formación</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+          </div>
+
+          <label>Mensaje*
+            <textarea class="form-control" name="message" rows="5" required data-contact-whatsapp-target="message" data-action="input->contact-whatsapp#update"></textarea>
+          </label>
+
+          <div class="landing-form-actions">
+            <button class="btn btn-primary btn-large" type="submit">Enviar por Email</button>
+            <a class="btn btn-outline-primary btn-large" target="_blank" rel="noopener" data-contact-whatsapp-target="link" href="https://wa.me/5493584830778">Enviar por WhatsApp</a>
+          </div>
+          <p class="landing-note">El botón de WhatsApp arma el mensaje con lo que escribiste.</p>
+        <% end %>
+      </div>
     </div>
   </div>
 </section>
