@@ -39,4 +39,14 @@ bun.lockb
 .ruby-lsp/
 .DS_Store
 
+# --- Landing: originales (no trackear) ---
+# Mantener SOLO los derivados que usamos en la web:
+# - app/assets/images/energia-pilates/Página web/mp4/*.mp4
+# - app/assets/images/energia-pilates/Página web/jpg/*.jpg
+/app/assets/images/energia-pilates/Página web/*
+!/app/assets/images/energia-pilates/Página web/mp4/
+!/app/assets/images/energia-pilates/Página web/mp4/*.mp4
+!/app/assets/images/energia-pilates/Página web/jpg/
+!/app/assets/images/energia-pilates/Página web/jpg/*.jpg
+
 

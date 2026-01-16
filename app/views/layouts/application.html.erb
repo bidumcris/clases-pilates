@@ -79,6 +79,16 @@
       <% end %>
 
       <%= yield %>
+
+      <div class="floating-social" aria-label="Accesos rápidos">
+        <%= link_to "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "floating-social-btn floating-social-btn--whatsapp", aria: { label: "WhatsApp" } do %>
+          <%= image_tag "icons/whatsapp.svg", class: "floating-social-img", alt: "", aria: { hidden: true }, loading: "lazy" %>
+        <% end %>
+
+        <%= link_to "https://instagram.com/energia.pilates", target: "_blank", rel: "noopener", class: "floating-social-btn floating-social-btn--instagram", aria: { label: "Instagram" } do %>
+          <%= image_tag "icons/instagram.svg", class: "floating-social-img", alt: "", aria: { hidden: true }, loading: "lazy" %>
+        <% end %>
+      </div>
     <% end %>
   </body>
 </html>

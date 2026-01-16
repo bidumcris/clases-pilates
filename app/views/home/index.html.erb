@@ -1,101 +1,144 @@
-<!-- Hero / Acceso -->
-<section class="landing-hero" id="inicio">
-  <div class="hero-content">
-    <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "hero-logo" %>
-    <h1 class="hero-title">Bienvenidos a Energía Pilates!</h1>
-    <p class="hero-subtitle">
-      Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
-    </p>
-
-    <div class="login-bubbles" aria-label="Acceso">
-      <%= link_to acceso_path, class: "bubble-card bubble-card--primary" do %>
-        <span class="bubble-title">sos alumna de energia pilates</span>
-        <span class="bubble-subtitle">Ingresá para gestionar tu agenda, reservas y créditos</span>
+<div class="landing-page">
+  <header class="landing-header" role="banner">
+    <div class="landing-header-inner">
+      <%= link_to "#inicio", class: "landing-header-logo" do %>
+        <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "landing-header-logo-img" %>
       <% end %>
 
-      <%= link_to "#contacto", class: "bubble-card bubble-card--secondary" do %>
-        <span class="bubble-title">no sos alumna de energia pilates</span>
-        <span class="bubble-subtitle">Conocé el estudio y escribinos para empezar</span>
-      <% end %>
+      <nav class="landing-header-nav" aria-label="Navegación principal">
+        <a href="#inicio">home</a>
+        <a href="#tipos-de-clase">tipos de clase</a>
+        <a href="#ubicacion">ubicacion</a>
+        <a href="#sobre-nosotras">sobre nosotras</a>
+        <a href="#nuestro-estudio">nuestro estudio</a>
+      </nav>
+
+      <div class="landing-header-cta" aria-label="Acceso">
+        <%= link_to "Sos alumna/o de energia pilates?", acceso_path, class: "landing-header-link" %>
+        <%= link_to "No sos alumna/o de energia pilates", "#contacto", class: "landing-header-link" %>
+      </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- INICIO -->
-<section class="landing-section" aria-label="Inicio - Video">
-  <div class="container">
-    <h2 class="section-title">INICIO</h2>
+  <main class="landing-main">
+    <!-- Hero -->
+    <section class="landing-hero" id="inicio">
+      <div
+        class="hero-video"
+        data-controller="hero-video"
+        data-hero-video-sources-value='<%= [
+          asset_path("energia-pilates/Página web/mp4/hero-1.mp4"),
+          asset_path("energia-pilates/Página web/mp4/hero-2.mp4"),
+          asset_path("energia-pilates/Página web/mp4/hero-3.mp4")
+        ].to_json %>'
+        data-hero-video-interval-ms-value="12000"
+      >
+        <video
+          data-hero-video-target="video"
+          muted
+          playsinline
+          autoplay
+          preload="auto"
+        ></video>
+      </div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+    </section>
 
-    <div class="landing-split">
-      <div>
-        <div class="video-placeholder" role="img" aria-label="Video de Belu y Pachi en Reformer">
-          VIDEO DE BELU Y PACHI EN REFOR (placeholder)
+    <!-- NUESTRO ESTUDIO -->
+    <section class="landing-section" id="nuestro-estudio">
+      <div class="container">
+        <h2 class="section-title">Nuestro Estudio</h2>
+
+        <div class="landing-split">
+          <div>
+            <p class="landing-lead">
+              Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
+            </p>
+            <p>
+              Conocé un poquito más y escribinos para empezar.
+            </p>
+          </div>
+
+          <div
+            class="about-slideshow studio-slideshow"
+            data-controller="about-slideshow"
+            data-about-slideshow-sources-value='<%= [
+              asset_path("energia-pilates/Página web/jpg/estudio-1.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-2.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-3.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-4.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-5.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-6.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-7.jpg")
+            ].to_json %>'
+            aria-label="Fotos del estudio"
+          >
+            <img
+              data-about-slideshow-target="img"
+              class="about-slideshow-img"
+              src="<%= asset_path("energia-pilates/Página web/jpg/estudio-1.jpg") %>"
+              alt="Energía Pilates - Estudio"
+              loading="eager"
+              decoding="async"
+            >
+          </div>
         </div>
       </div>
+    </section>
 
-      <div>
-        <p class="landing-lead">
-          Buscamos enseñar, transmitir y vivenciar el Método auténtico de Joseph Pilates como un estilo de vida transformando mentes, cuerpos y energías.
-        </p>
-        <p class="landing-quote">
-          Tal como lo dijo Joseph: <em>"Cada momento de nuestra vida puede ser el comienzo de grandes cosas"</em>
-        </p>
-        <p><strong>Y vos, ¿ya elegiste cómo iniciarlo?</strong></p>
+    <!-- TIPOS DE CLASE -->
+    <section class="landing-section" id="tipos-de-clase">
+      <div class="container">
+        <h2 class="section-title">Tipos de clase</h2>
+
+        <div class="types-grid" aria-label="Tipos de clase">
+          <a class="type-card type-card--formacion" href="#servicio-formacion">
+            <div class="service-logos service-logos--compact">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 1.png", alt: "Formación en Pilates", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
+            <h3>Formación <span class="type-soon">Próximamente</span></h3>
+            <p>Formación de instructores en Pilates Clásico.</p>
+          </a>
+
+          <a class="type-card type-card--grupal" href="#servicio-grupal">
+            <div class="service-logos service-logos--compact">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Pilates Grupal", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
+            <h3>Grupal</h3>
+            <p>Clases grupales por niveles, cupos reducidos y progreso continuo.</p>
+          </a>
+
+          <a class="type-card type-card--libre" href="#servicio-libre">
+            <div class="service-logos service-logos--compact">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 1.png", alt: "Pilates Libre", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
+            <h3>Libre</h3>
+            <p>Elegís día y horario según tu rutina. Flexibilidad sin perder calidad.</p>
+          </a>
+
+          <a class="type-card type-card--online" href="#servicio-online">
+            <div class="service-logos service-logos--compact">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Pilates Online", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
+            <h3>Online <span class="type-soon">Próximamente</span></h3>
+            <p>Clases online para entrenar desde casa.</p>
+          </a>
+
+          <a class="type-card type-card--personalizado" href="#servicio-personalizado">
+            <div class="service-logos service-logos--compact">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 1.png", alt: "Pilates Personalizado", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
+            <h3>Personalizada</h3>
+            <p>Un entrenamiento mano a mano, totalmente adaptado a tu cuerpo y a tus objetivos.</p>
+          </a>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- Conocenos -->
-<section class="landing-section" id="conocenos">
-  <div class="container">
-    <h2 class="section-title">Conocenos un poquito más</h2>
-
-    <div class="landing-split">
-      <div>
-        <p>
-          Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
-        </p>
-        <p>
-          Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
-        </p>
-      </div>
-      <div class="media-placeholder" role="img" aria-label="Foto Belu y Pachi en recepción">
-        FOTO BELU Y PACHI EN RECEPCIÓN (placeholder)
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Elegí cómo querés entrenar -->
-<section class="landing-section" id="servicios">
-  <div class="container">
-    <h2 class="section-title">¡Elegí cómo querés Entrenar!</h2>
-    <p class="landing-center">
-      Te ofrecemos una amplia gama de Clases, diseñadas para adaptarse a tus necesidades y objetivos.
-      Selecciona tu forma de entrenamiento y descubrí tu mejor versión con Energía Pilates!
-    </p>
-    <p class="landing-center"><strong>Slogan:</strong> transforma tu cuerpo, mente y energía</p>
-
-    <div class="landing-cards">
-      <div class="landing-card">
-        <h3>Clases Online</h3>
-        <p>
-          Entrená sin salir de casa. Explora nuestras opciones de Clases Online y elegí la versión que mejor se acomode a vos.
-        </p>
-        <a class="btn btn-outline-primary" href="#online">Ver opciones online</a>
-      </div>
-
-      <div class="landing-card">
-        <h3>Clases Presenciales en el Estudio</h3>
-        <p>
-          Vení a nuestro estudio y experimentá nuestras modalidades de Clases Presenciales, diseñadas para brindarte una experiencia única y transformadora.
-        </p>
-        <a class="btn btn-outline-primary" href="#presencial">Ver opciones presenciales</a>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 <!-- Preguntas Frecuentes (CTA corto) -->
 <section class="landing-cta-section" aria-label="Preguntas frecuentes">
@@ -109,31 +152,52 @@
 </section>
 
 <!-- QUIENES SOMOS -->
-<section class="landing-section" id="quienes-somos">
+<section class="landing-section" id="sobre-nosotras">
   <div class="container">
     <h2 class="section-title">QUIENES SOMOS</h2>
 
-    <div class="about-content">
-      <div class="about-text">
-        <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
-        <p>
-          Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
-          Nuestra trayectoria profesional ha estado marcada por la danza, la enseñanza y una búsqueda constante de disciplinas que promuevan el bienestar integral.
-        </p>
-        <p>
-          Así descubrimos que el Método Pilates Clásico reúne y sintetiza nuestra profesión transformando no sólo el Cuerpo, sino también la Mente y la Energía.
-        </p>
+    <div class="about-layout">
+      <div class="about-content">
+        <div class="about-text">
+          <p class="lead">Somos Pachi y Belu y juntas somos Energía Pilates</p>
+          <p>
+            Hola! Somos dos hermanas gemelas con una profunda conexión con el movimiento y una pasión compartida por el Método Pilates Clásico.
+            Nuestra trayectoria profesional ha estado marcada por la danza, la enseñanza y una búsqueda constante de disciplinas que promuevan el bienestar integral.
+          </p>
+          <p>
+            Así descubrimos que el Método Pilates Clásico reúne y sintetiza nuestra profesión transformando no sólo el Cuerpo, sino también la Mente y la Energía.
+          </p>
+        </div>
+
+        <div class="about-formation">
+          <h3>Nuestra Formación Profesional</h3>
+          <ul class="landing-list">
+            <li>Licenciadas en Folklore mención Danzas en la Universidad Nacional de las Artes - Buenos Aires (2018).</li>
+            <li>Docentes en el área Artística dentro de la educación formal en el nivel primario y secundario.</li>
+            <li>Instructorado del Método Pilates con la Asociación Mutual de Instructores y Profesores, Buenos Aires (2019).</li>
+            <li>Formación en el Método Pilates Clásico con Paulina Tomasini, Córdoba (2022).</li>
+            <li>Formación en el Método Pilates Clásico con Luciana Ischia, Buenos Aires (2024).</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="about-formation">
-        <h3>Nuestra Formación Profesional</h3>
-        <ul class="landing-list">
-          <li>Licenciadas en Folklore mención Danzas en la Universidad Nacional de las Artes - Buenos Aires (2018).</li>
-          <li>Docentes en el área Artística dentro de la educación formal en el nivel primario y secundario.</li>
-          <li>Instructorado del Método Pilates con la Asociación Mutual de Instructores y Profesores, Buenos Aires (2019).</li>
-          <li>Formación en el Método Pilates Clásico con Paulina Tomasini, Córdoba (2022).</li>
-          <li>Formación en el Método Pilates Clásico con Luciana Ischia, Buenos Aires (2024).</li>
-        </ul>
+      <div
+        class="about-slideshow"
+        data-controller="about-slideshow"
+        data-about-slideshow-sources-value='<%= [
+          asset_path("energia-pilates/Página web/Tezza-9418.jpg"),
+          asset_path("energia-pilates/Página web/Copia de IMG_8989.JPG"),
+          asset_path("energia-pilates/Página web/Copia de IMG_9204.JPG")
+        ].to_json %>'
+      >
+        <img
+          data-about-slideshow-target="img"
+          class="about-slideshow-img"
+          src="<%= asset_path("energia-pilates/Página web/Tezza-9418.jpg") %>"
+          alt="Energía Pilates"
+          loading="eager"
+          decoding="async"
+        >
       </div>
     </div>
 
@@ -159,8 +223,8 @@
     </p>
 
     <div class="landing-split" id="presencial">
-      <div class="media-placeholder" role="img" aria-label="Foto clases presenciales">
-        FOTO CLASES PRESENCIALES (placeholder)
+      <div class="service-media" aria-label="Clases presenciales">
+        <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Pilates Grupal", class: "service-logo", loading: "lazy" %>
       </div>
       <div>
         <h3 class="landing-h3">Clases Presenciales por Niveles</h3>
@@ -173,9 +237,13 @@
 
     <h3 class="landing-h3">Elegí tu Clase Ideal</h3>
 
-    <details class="landing-details">
+    <details class="landing-details" id="servicio-grupal">
       <summary><strong>1- Grupal</strong> — Clases grupales por niveles en días y horarios fijos (máx. 8 personas)</summary>
       <div class="details-body">
+        <div class="service-logos">
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Pilates Grupal", class: "service-logo", loading: "lazy" %>
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+        </div>
         <p><strong>Niveles:</strong> inicial · basic · intermediate · advanced</p>
         <p>
           Son clases presenciales diseñadas para entrenar en días y horarios fijos con un enfoque progresivo y personalizado del Pilates Clásico con capacidad máxima para 8 personas por clase.
@@ -192,9 +260,13 @@
       </div>
     </details>
 
-    <details class="landing-details">
+    <details class="landing-details" id="servicio-personalizado">
       <summary><strong>2- Personalizado</strong> — Mano a mano (clase privada) a sala cerrada</summary>
       <div class="details-body">
+        <div class="service-logos">
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 1.png", alt: "Pilates Personalizado", class: "service-logo", loading: "lazy" %>
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+        </div>
         <p>
           Es un trabajo 100% personalizado, al ritmo y nivel de entrenamiento del alumno con un enfoque detallado permitiendo adaptar la clase de manera precisa a las necesidades, objetivos y condiciones físicas de cada persona.
         </p>
@@ -215,9 +287,13 @@
       </div>
     </details>
 
-    <details class="landing-details">
+    <details class="landing-details" id="servicio-libre">
       <summary><strong>3- Libre</strong> — Flexibilidad para entrenar según tu rutina</summary>
       <div class="details-body">
+        <div class="service-logos">
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 1.png", alt: "Pilates Libre", class: "service-logo", loading: "lazy" %>
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+        </div>
         <p>
           Una modalidad flexible para entrenar según tu rutina: elegís día, horario y sala. Reserva a través de nuestra App. Clases grupales (máx. 8 personas).
         </p>
@@ -240,13 +316,17 @@
 
     <div class="landing-divider"></div>
 
-    <div id="online" class="landing-split">
+    <div id="servicio-online" class="landing-split">
       <div>
         <h3 class="landing-h3">4- Online: Energía Pilates Online!</h3>
         <p>
           Ahora llegamos a tu casa con clases de Pilates Clásico en vivo para una experiencia completa de entrenamiento personalizado adaptado a tu ritmo,
           permitiéndote entrenar con la misma calidad y profesionalismo que en la presencialidad junto a la guía y al acompañamiento de la profesora.
         </p>
+        <div class="service-logos">
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Pilates Online", class: "service-logo", loading: "lazy" %>
+          <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+        </div>
 
         <details class="landing-details">
           <summary><strong>Clases privadas y personalizadas en vivo</strong></summary>
@@ -284,9 +364,13 @@
           </div>
         </details>
 
-        <details class="landing-details">
+        <details class="landing-details" id="servicio-formacion">
           <summary><strong>5- Formación</strong></summary>
           <div class="details-body">
+            <div class="service-logos">
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 1.png", alt: "Formación en Pilates", class: "service-logo", loading: "lazy" %>
+              <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
+            </div>
             <p>
               Además de entrenar, en Energía Pilates formamos a futuros instructores en Pilates Clásico.
               Con esta formación vas a vivir un proceso transformador: no solo aprenderás a enseñar Pilates Clásico con fidelidad al método,
@@ -297,15 +381,15 @@
         </details>
       </div>
 
-      <div class="media-placeholder" role="img" aria-label="Foto clases privadas / online">
-        FOTO CLASE PRIVADA / ONLINE (placeholder)
+      <div class="service-media" aria-label="Online y formación">
+        <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Pilates Online", class: "service-logo", loading: "lazy" %>
       </div>
     </div>
   </div>
 </section>
 
 <!-- UBICACIÓN + CONTACTO -->
-<section class="landing-section" id="contacto">
+<section class="landing-section" id="ubicacion">
   <div class="container">
     <h2 class="section-title">UBICACIÓN</h2>
 
@@ -321,16 +405,23 @@
           Cada espacio cuenta con un ambiente climatizado y acogedor, pensado para que te sientas cómodo y motivado clase a clase.
         </p>
         <p>
-          <%= link_to "Google Maps", "https://www.google.com/maps/search/?api=1&query=San%20Mart%C3%ADn%201045%20R%C3%ADo%20Cuarto%20C%C3%B3rdoba", target: "_blank", rel: "noopener", class: "btn btn-outline-primary" %>
+          <%= link_to "Google Maps", "https://www.google.com/maps/place/ENERGIA+PILATES/@-33.1212032,-64.361614,855m/data=!3m2!1e3!4b1!4m6!3m5!1s0x95d20112edaea9cd:0x43cc4de2f1032e63!8m2!3d-33.1212032!4d-64.3590391!16s%2Fg%2F11mx6slp6v?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D", target: "_blank", rel: "noopener", class: "btn btn-outline-primary" %>
         </p>
       </div>
-      <div class="media-placeholder" role="img" aria-label="Imagen de ubicación">
-        IMAGEN DE UBICACIÓN (placeholder)
+      <div class="map-embed" aria-label="Mapa">
+        <iframe
+          title="ENERGIA PILATES - Mapa"
+          src="https://www.google.com/maps?q=-33.1212032,-64.3590391&z=16&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
 
     <div class="landing-divider"></div>
 
+    <div id="contacto"></div>
     <h2 class="section-title">Contáctanos!</h2>
     <p>Para más información e inscripciones, contáctanos a través de:</p>
     <ul class="landing-list">
@@ -363,6 +454,8 @@
   </div>
 </section>
 
+  </main>
+</div>
 <!-- TESTIMONIOS -->
 <section class="landing-section" id="testimonios">
   <div class="container">
