@@ -826,6 +826,13 @@ body {
   border-radius: 8px;
 }
 
+.landing-header-nav a:visited,
+.landing-header-nav a:hover,
+.landing-header-nav a:focus,
+.landing-header-nav a:active {
+  text-decoration: none;
+}
+
 .landing-header-nav a:hover {
   background: rgba(127, 88, 143, 0.10);
 }
@@ -848,6 +855,13 @@ body {
   background: rgba(127, 88, 143, 0.08);
   border: 1px solid rgba(127, 88, 143, 0.14);
   white-space: nowrap;
+}
+
+.landing-header-link:visited,
+.landing-header-link:hover,
+.landing-header-link:focus,
+.landing-header-link:active {
+  text-decoration: none;
 }
 
 .landing-header-link:hover {
