@@ -23,38 +23,30 @@
   <main class="landing-main">
     <!-- Hero -->
     <section class="landing-hero" id="inicio">
+      <div
+        class="hero-video"
+        data-controller="hero-video"
+        data-hero-video-sources-value='<%= [
+          asset_path("energia-pilates/Página web/mp4/hero-1.mp4"),
+          asset_path("energia-pilates/Página web/mp4/hero-2.mp4"),
+          asset_path("energia-pilates/Página web/mp4/hero-3.mp4")
+        ].to_json %>'
+        data-hero-video-interval-ms-value="12000"
+      >
+        <video
+          data-hero-video-target="video"
+          muted
+          playsinline
+          autoplay
+          preload="auto"
+        ></video>
+      </div>
+      <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-content">
         <h1 class="hero-title">Bienvenidos a Energía Pilates!</h1>
         <p class="hero-subtitle">
           Somos un Estudio de Pilates Clásico que brinda clases Presenciales y Online en la ciudad de Río Cuarto, Córdoba.
         </p>
-
-        <div class="landing-video-grid" aria-label="Videos">
-          <div class="landing-video">
-            <%= video_tag "energia-pilates/Página web/copy_8B35467E-8683-4E0A-8C7A-9C832F8A0805.mp4",
-              autoplay: true,
-              muted: true,
-              loop: true,
-              playsinline: true,
-              preload: "auto" %>
-          </div>
-          <div class="landing-video">
-            <%= video_tag "energia-pilates/Página web/copy_AC6A67D5-4111-4BD9-8A9D-107A869F04F9.mov",
-              autoplay: true,
-              muted: true,
-              loop: true,
-              playsinline: true,
-              preload: "auto" %>
-          </div>
-          <div class="landing-video">
-            <%= video_tag "energia-pilates/Página web/copy_E69F5A5A-A1A6-48E9-8634-92B3AE2DD6B6.mov",
-              autoplay: true,
-              muted: true,
-              loop: true,
-              playsinline: true,
-              preload: "auto" %>
-          </div>
-        </div>
       </div>
     </section>
 
