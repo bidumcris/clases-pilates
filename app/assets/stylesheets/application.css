@@ -1824,6 +1824,18 @@ body {
   background: #6f4b7f;
 }
 
+/* Forzar CTA por encima de overrides de admin (.admin-classes .btn-primary) */
+.admin-classes .btn-primary.credits-cta {
+  background: var(--color-malva);
+  color: var(--color-blanco);
+  border-color: var(--color-malva);
+}
+
+.admin-classes .btn-primary.credits-cta:hover {
+  background: #6f4b7f;
+  color: var(--color-blanco);
+}
+
 .credits-filters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
