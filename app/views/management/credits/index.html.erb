@@ -1,132 +1,126 @@
-<div class="admin-classes">
-  <div class="admin-page-header">
-    <h1>Créditos</h1>
-    <%= link_to "Agregar créditos", new_management_credit_path, class: "btn btn-primary" %>
-  </div>
-
-  <div class="admin-section">
-    <h2>Filtros</h2>
-    <%= form_with url: management_credits_path, method: :get, local: true do %>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
-        <div>
-          <label>Alumno (email)</label><br>
-          <%= text_field_tag :email, @email, class: "form-input", placeholder: "Buscar por email (ej: ana@...)" %>
-        </div>
-        <div>
-          <label>Usado</label><br>
-          <%= select_tag :used,
-              options_for_select([["Todos", ""], ["No", "false"], ["Sí", "true"]], params[:used].to_s),
-              class: "form-select" %>
-        </div>
-        <div>
-          <label>
-            <%= check_box_tag :expired, "1", params[:expired] == "1" %>
-            Solo expirados
-          </label>
-        </div>
-        <div>
-          <%= submit_tag "Aplicar", class: "btn btn-primary" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="admin-section">
-    <h2>Acciones</h2>
-    <% if @selected_student %>
-      <p style="margin-bottom: 1rem;">
-        <strong>Alumno:</strong> <%= @selected_student.email %> ·
-        <strong>Créditos disponibles:</strong> <%= @selected_student.credits.available.sum(:amount) %>
-      </p>
-    <% else %>
-      <p style="opacity:.75; margin-bottom: 1rem;">Tip: escribí el email exacto del alumno para ver su saldo y operar más rápido.</p>
-    <% end %>
-
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
-      <div class="card" style="margin:0;">
-        <div class="card-header">Otorgar créditos</div>
-        <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
-          <div class="form-row" style="margin-bottom: 0;">
-            <div class="form-group">
-              <label>Email del alumno</label>
-              <%= text_field_tag :email, @selected_student&.email || @email, class: "form-control", placeholder: "alumno@..." %>
-            </div>
-            <div class="form-group">
-              <label>Cantidad</label>
-              <%= number_field_tag :amount, 1, min: 1, class: "form-control" %>
-            </div>
-          </div>
-          <div class="form-row" style="margin-bottom: 0;">
-            <div class="form-group">
-              <label>Vencimiento</label>
-              <%= date_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d"), class: "form-control" %>
-              <small class="form-hint">Sugerido: fin de mes</small>
-            </div>
-          </div>
-          <div class="form-actions" style="border-top:none; padding-top: 0; margin-top: 1rem;">
-            <%= submit_tag "Otorgar", class: "btn btn-primary" %>
-          </div>
-        <% end %>
-      </div>
-
-      <div class="card" style="margin:0;">
-        <div class="card-header">Quitar créditos</div>
-        <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
-          <div class="form-row" style="margin-bottom: 0;">
-            <div class="form-group">
-              <label>Email del alumno</label>
-              <%= text_field_tag :email, @selected_student&.email || @email, class: "form-control", placeholder: "alumno@..." %>
-            </div>
-            <div class="form-group">
-              <label>Cantidad</label>
-              <%= number_field_tag :amount, 1, min: 1, class: "form-control" %>
-              <small class="form-hint">Se descuenta del saldo disponible, empezando por los que vencen antes.</small>
-            </div>
-          </div>
-          <div class="form-actions" style="border-top:none; padding-top: 0; margin-top: 1rem;">
-            <%= submit_tag "Quitar", class: "btn btn-danger", data: { turbo_confirm: "¿Seguro que querés quitar estos créditos?" } %>
-          </div>
-        <% end %>
-      </div>
+<div class="admin-classes credits-page">
+  <div class="admin-page-header credits-header">
+    <div>
+      <h1>Ver, agregar y quitar créditos</h1>
+      <p class="admin-subtitle" style="margin: .25rem 0 0 0;">Buscá por email y operá rápido con acciones predefinidas.</p>
     </div>
+    <%= link_to "Agregar crédito (manual)", new_management_credit_path, class: "btn btn-primary btn-large credits-cta" %>
   </div>
 
-  <div class="admin-section">
-    <h2>Listado</h2>
-    <% if @credits.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Alumno</th>
-            <th>Cantidad</th>
-            <th>Expira</th>
-            <th>Estado</th>
-            <th>Creado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @credits.each do |credit| %>
+  <%= turbo_frame_tag "credits_panel" do %>
+    <div class="admin-section">
+      <h2>Buscar / Filtrar</h2>
+      <%= form_with url: management_credits_path, method: :get, data: { turbo_frame: "credits_panel" }, class: "credits-filters", data: { controller: "autosubmit", autosubmit_delay_value: 250 } do %>
+        <div class="credits-filters-grid">
+          <div>
+            <label>Alumno (email)</label><br>
+            <%= text_field_tag :email, @email, class: "form-input", placeholder: "Escribí para filtrar…", data: { action: "input->autosubmit#queue" } %>
+          </div>
+          <div>
+            <label>Usado</label><br>
+            <%= select_tag :used,
+                options_for_select([["Todos", ""], ["No", "false"], ["Sí", "true"]], params[:used].to_s),
+                class: "form-select",
+                data: { action: "change->autosubmit#queue" } %>
+          </div>
+          <div class="credits-expired">
+            <label>
+              <%= check_box_tag :expired, "1", params[:expired] == "1", data: { action: "change->autosubmit#queue" } %>
+              Solo expirados
+            </label>
+          </div>
+          <div class="credits-apply">
+            <%= submit_tag "Aplicar", class: "btn btn-outline-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="admin-section">
+      <h2>Panel rápido</h2>
+      <% if @selected_student %>
+        <table class="admin-table credits-quick-table">
+          <thead>
             <tr>
-              <td><%= link_to credit.user.email, management_student_path(credit.user), class: "link" %></td>
-              <td><%= credit.amount %></td>
-              <td><%= credit.expires_at.strftime("%d/%m/%Y") %></td>
-              <td>
-                <% if credit.used? %>
-                  Usado
-                <% elsif credit.expired? %>
-                  Expirado
-                <% else %>
-                  Disponible
-                <% end %>
-              </td>
-              <td><%= credit.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <th>Alumno</th>
+              <th>Créditos disponibles</th>
+              <th>Otorgar</th>
+              <th>Quitar</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>No hay créditos para estos filtros.</p>
-    <% end %>
-  </div>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= link_to @selected_student.email, management_student_path(@selected_student), class: "link" %></td>
+              <td><strong><%= @selected_student.credits.available.sum(:amount) %></strong></td>
+              <td>
+                <div class="credits-actions-inline">
+                  <% [1, 5, 10].each do |n| %>
+                    <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
+                      <%= hidden_field_tag :email, @selected_student.email %>
+                      <%= hidden_field_tag :amount, n %>
+                      <%= hidden_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d") %>
+                      <%= submit_tag "+#{n}", class: "btn btn-sm btn-primary" %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </td>
+              <td>
+                <div class="credits-actions-inline">
+                  <% [1, 5, 10].each do |n| %>
+                    <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
+                      <%= hidden_field_tag :email, @selected_student.email %>
+                      <%= hidden_field_tag :amount, n %>
+                      <%= submit_tag "-#{n}", class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Seguro que querés quitar #{n} crédito(s)?" } %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="credits-hint">Los botones rápidos usan vencimiento fin de mes. Para cargas especiales, usá “Agregar crédito (manual)”.</p>
+      <% else %>
+        <p class="credits-hint">Escribí el email exacto del alumno para habilitar acciones rápidas. Mientras tanto, abajo podés ver el historial filtrado.</p>
+      <% end %>
+    </div>
+
+    <div class="admin-section">
+      <h2>Historial</h2>
+      <% if @credits.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Cantidad</th>
+              <th>Expira</th>
+              <th>Estado</th>
+              <th>Creado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @credits.each do |credit| %>
+              <tr>
+                <td><%= link_to credit.user.email, management_student_path(credit.user), class: "link" %></td>
+                <td><%= credit.amount %></td>
+                <td><%= credit.expires_at.strftime("%d/%m/%Y") %></td>
+                <td>
+                  <% if credit.used? %>
+                    Usado
+                  <% elsif credit.expired? %>
+                    Expirado
+                  <% else %>
+                    Disponible
+                  <% end %>
+                </td>
+                <td><%= credit.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No hay créditos para estos filtros.</p>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 

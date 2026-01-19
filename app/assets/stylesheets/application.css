@@ -1806,6 +1806,56 @@ body {
   margin: 0 auto;
 }
 
+/* Management - Créditos */
+.credits-header {
+  align-items: flex-start;
+}
+
+.credits-cta {
+  white-space: nowrap;
+  font-weight: 800;
+  background: var(--color-malva);
+  color: var(--color-blanco);
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(127, 88, 143, 0.25);
+}
+
+.credits-cta:hover {
+  background: #6f4b7f;
+}
+
+.credits-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.credits-expired {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+}
+
+.credits-apply {
+  display: none;
+}
+
+.credits-quick-table .credits-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.credits-quick-table form {
+  margin: 0;
+}
+
+.credits-hint {
+  margin-top: 0.75rem;
+  opacity: 0.8;
+}
+
 .admin-header {
   text-align: center;
   margin-bottom: 2rem;
