@@ -8,11 +8,12 @@
     <h2>Filtros</h2>
     <%= form_with url: management_credits_path, method: :get, local: true do %>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
-        <div>
+        <div data-controller="searchable-select">
           <label>Alumno</label><br>
           <%= select_tag :user_id,
               options_for_select([["Todos", ""]] + @students.map { |u| ["#{u.email}", u.id] }, params[:user_id].to_s),
-              class: "form-select" %>
+              class: "form-select",
+              data: { searchable_select_target: "select", search_placeholder: "Buscar alumno por email..." } %>
         </div>
         <div>
           <label>Usado</label><br>

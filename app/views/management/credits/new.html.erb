@@ -9,12 +9,12 @@
       <%= render "shared/error_messages", resource: @credit %>
 
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" data-controller="searchable-select">
           <%= f.label :user_id, "Alumno" %>
           <%= f.select :user_id,
               options_from_collection_for_select(@students, :id, :email, @credit.user_id),
               { prompt: "Seleccionar alumno" },
-              { class: "form-control" } %>
+              { class: "form-control", data: { searchable_select_target: "select", search_placeholder: "Buscar alumno por email..." } } %>
         </div>
       </div>
 
