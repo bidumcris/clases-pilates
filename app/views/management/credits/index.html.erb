@@ -15,6 +15,15 @@
           <div>
             <label>Alumno (email)</label><br>
             <%= text_field_tag :email, @email, class: "form-input", placeholder: "Escribí para filtrar…", data: { action: "input->autosubmit#queue" } %>
+            <% if @email.present? && @student_matches.any? %>
+              <div class="credits-suggestions">
+                <% @student_matches.each do |student| %>
+                  <%= link_to student.email, management_credits_path(email: student.email, used: params[:used], expired: params[:expired]),
+                        data: { turbo_frame: "credits_panel" },
+                        class: "credits-suggestion" %>
+                <% end %>
+              </div>
+            <% end %>
           </div>
           <div>
             <label>Usado</label><br>
@@ -38,7 +47,7 @@
 
     <div class="admin-section">
       <h2>Panel rápido</h2>
-      <% if @selected_student %>
+      <% if @email.present? && @student_matches.any? %>
         <table class="admin-table credits-quick-table">
           <thead>
             <tr>
@@ -49,33 +58,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><%= link_to @selected_student.email, management_student_path(@selected_student), class: "link" %></td>
-              <td><strong><%= @selected_student.credits.available.sum(:amount) %></strong></td>
-              <td>
-                <div class="credits-actions-inline">
-                  <% [1, 5, 10].each do |n| %>
-                    <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
-                      <%= hidden_field_tag :email, @selected_student.email %>
-                      <%= hidden_field_tag :amount, n %>
-                      <%= hidden_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d") %>
-                      <%= submit_tag "+#{n}", class: "btn btn-sm btn-primary" %>
+            <% @student_matches.each do |student| %>
+              <tr>
+                <td><%= link_to student.email, management_student_path(student), class: "link" %></td>
+                <td><strong><%= student.credits.available.sum(:amount) %></strong></td>
+                <td>
+                  <div class="credits-actions-inline">
+                    <% [1, 5, 10].each do |n| %>
+                      <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
+                        <%= hidden_field_tag :email, student.email %>
+                        <%= hidden_field_tag :amount, n %>
+                        <%= hidden_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d") %>
+                        <%= submit_tag "+#{n}", class: "btn btn-sm btn-primary" %>
+                      <% end %>
                     <% end %>
-                  <% end %>
-                </div>
-              </td>
-              <td>
-                <div class="credits-actions-inline">
-                  <% [1, 5, 10].each do |n| %>
-                    <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
-                      <%= hidden_field_tag :email, @selected_student.email %>
-                      <%= hidden_field_tag :amount, n %>
-                      <%= submit_tag "-#{n}", class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Seguro que querés quitar #{n} crédito(s)?" } %>
+                  </div>
+                </td>
+                <td>
+                  <div class="credits-actions-inline">
+                    <% [1, 5, 10].each do |n| %>
+                      <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
+                        <%= hidden_field_tag :email, student.email %>
+                        <%= hidden_field_tag :amount, n %>
+                        <%= submit_tag "-#{n}", class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Seguro que querés quitar #{n} crédito(s)?" } %>
+                      <% end %>
                     <% end %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
           </tbody>
         </table>
         <p class="credits-hint">Los botones rápidos usan vencimiento fin de mes. Para cargas especiales, usá “Agregar crédito (manual)”.</p>

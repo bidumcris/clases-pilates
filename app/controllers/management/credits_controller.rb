@@ -11,8 +11,15 @@ class Management::CreditsController < Management::BaseController
     @credits = @credits.where(used: params[:used]) if params[:used].present?
     @credits = @credits.where("expires_at < ?", Date.current) if params[:expired] == "1"
 
-    # Para mostrar saldo rápido si el email es exacto
+    # Para panel rápido: exact match (para acciones rápidas + saldo)
     @selected_student = User.find_by(email: @email.downcase, role: :alumno) if @email.present?
+
+    # Para sugerencias y acciones por fila: matches por substring (limitado)
+    @student_matches = if @email.present?
+      User.where(role: :alumno).where("email ILIKE ?", "%#{@email}%").order(:email).limit(10)
+    else
+      []
+    end
   end
 
   def new

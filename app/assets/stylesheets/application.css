@@ -1843,6 +1843,30 @@ body {
   align-items: end;
 }
 
+.credits-suggestions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.credits-suggestion {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(127, 88, 143, 0.25);
+  background: rgba(127, 88, 143, 0.08);
+  color: var(--color-malva);
+}
+
+.credits-suggestion:hover {
+  background: rgba(127, 88, 143, 0.14);
+  border-color: rgba(127, 88, 143, 0.35);
+}
+
 .credits-expired {
   display: flex;
   align-items: center;
