@@ -47,6 +47,14 @@ Rails.application.routes.draw do
       get "cashbox", to: "cashbox#index", as: :cashbox
       post "cashbox/payments", to: "cashbox#create_payment", as: :cashbox_payments
 
+      # Gestión de Créditos (solo admin)
+      resources :credits, only: [ :index, :new, :create ] do
+        collection do
+          post :grant
+          post :deduct
+        end
+      end
+
       # Gestión de Clases
       resources :classes, only: [ :index, :new, :create, :edit, :update, :destroy ] do
         collection do

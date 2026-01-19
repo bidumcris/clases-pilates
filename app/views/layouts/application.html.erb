@@ -24,6 +24,19 @@
 
   <body>
     <% if user_signed_in? %>
+      <!-- Modal global para confirmaciones (Turbo.config.forms.confirm) -->
+      <div id="confirm-modal" style="display:none;" aria-hidden="true">
+        <div id="confirm-modal-backdrop"></div>
+        <div id="confirm-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+          <h3 id="confirm-modal-title">Confirmar acción</h3>
+          <p id="confirm-modal-message"></p>
+          <div id="confirm-modal-actions">
+            <button type="button" class="confirm-modal-btn confirm-modal-btn--cancel" id="confirm-modal-cancel">Cancelar</button>
+            <button type="button" class="confirm-modal-btn confirm-modal-btn--confirm" id="confirm-modal-confirm">Confirmar</button>
+          </div>
+        </div>
+      </div>
+
       <nav class="navbar">
         <div class="navbar-brand">
           <%= link_to dashboard_path, class: "navbar-logo" do %>

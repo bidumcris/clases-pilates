@@ -1,5 +1,6 @@
 /*
  *= require_self
+ *= stub active_admin
  *= require_tree .
 */
 
@@ -29,6 +30,84 @@ body {
   line-height: 1.6;
   color: #333;
   background-color: var(--color-marfil);
+}
+
+/* Modal de confirmación (Turbo.config.forms.confirm) */
+#confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+#confirm-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(127, 88, 143, 0.18);
+  backdrop-filter: blur(3px);
+}
+
+#confirm-modal-dialog {
+  position: relative;
+  max-width: 520px;
+  margin: 12vh auto 0 auto;
+  background: var(--color-blanco);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid rgba(127, 88, 143, 0.14);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+#confirm-modal-title {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-malva);
+  font-weight: 800;
+}
+
+#confirm-modal-message {
+  margin: 0 0 1.25rem 0;
+  color: #444;
+  line-height: 1.7;
+}
+
+#confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Botones propios del modal (no heredan estilos de admin) */
+.confirm-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 800;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  font: inherit;
+}
+
+.confirm-modal-btn--cancel {
+  background: rgba(127, 88, 143, 0.10);
+  border-color: rgba(127, 88, 143, 0.22);
+  color: var(--color-malva);
+}
+
+.confirm-modal-btn--cancel:hover {
+  background: rgba(127, 88, 143, 0.14);
+}
+
+.confirm-modal-btn--confirm {
+  background: linear-gradient(135deg, var(--color-malva) 0%, var(--color-azul) 100%);
+  color: var(--color-blanco);
+  box-shadow: 0 10px 24px rgba(127, 88, 143, 0.18);
+}
+
+.confirm-modal-btn--confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(127, 88, 143, 0.24);
 }
 
 /* Navbar Logo Image */
@@ -1804,6 +1883,92 @@ body {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+/* Management - Créditos */
+.credits-header {
+  align-items: flex-start;
+}
+
+.credits-cta {
+  white-space: nowrap;
+  font-weight: 800;
+  background: var(--color-malva);
+  color: var(--color-blanco);
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(127, 88, 143, 0.25);
+}
+
+.credits-cta:hover {
+  background: #6f4b7f;
+}
+
+/* Forzar CTA por encima de overrides de admin (.admin-classes .btn-primary) */
+.admin-classes .btn-primary.credits-cta {
+  background: var(--color-malva);
+  color: var(--color-blanco);
+  border-color: var(--color-malva);
+}
+
+.admin-classes .btn-primary.credits-cta:hover {
+  background: #6f4b7f;
+  color: var(--color-blanco);
+}
+
+.credits-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.credits-suggestions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.credits-suggestion {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(127, 88, 143, 0.25);
+  background: rgba(127, 88, 143, 0.08);
+  color: var(--color-malva);
+}
+
+.credits-suggestion:hover {
+  background: rgba(127, 88, 143, 0.14);
+  border-color: rgba(127, 88, 143, 0.35);
+}
+
+.credits-expired {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+}
+
+.credits-apply {
+  display: none;
+}
+
+.credits-quick-table .credits-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.credits-quick-table form {
+  margin: 0;
+}
+
+.credits-hint {
+  margin-top: 0.75rem;
+  opacity: 0.8;
 }
 
 .admin-header {
