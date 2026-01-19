@@ -44,48 +44,6 @@
       <div class="hero-overlay" aria-hidden="true"></div>
     </section>
 
-    <!-- NUESTRO ESTUDIO -->
-    <section class="landing-section" id="nuestro-estudio">
-      <div class="container">
-        <h2 class="section-title">Nuestro Estudio</h2>
-
-        <div class="landing-split">
-          <div>
-            <p class="landing-lead">
-              Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
-            </p>
-            <p>
-              Conocé un poquito más y escribinos para empezar.
-            </p>
-          </div>
-
-          <div
-            class="about-slideshow studio-slideshow"
-            data-controller="about-slideshow"
-            data-about-slideshow-sources-value='<%= [
-              asset_path("energia-pilates/Página web/jpg/estudio-1.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-2.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-3.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-4.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-5.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-6.jpg"),
-              asset_path("energia-pilates/Página web/jpg/estudio-7.jpg")
-            ].to_json %>'
-            aria-label="Fotos del estudio"
-          >
-            <img
-              data-about-slideshow-target="img"
-              class="about-slideshow-img"
-              src="<%= asset_path("energia-pilates/Página web/jpg/estudio-1.jpg") %>"
-              alt="Energía Pilates - Estudio"
-              loading="eager"
-              decoding="async"
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- TIPOS DE CLASE -->
     <section class="landing-section" id="tipos-de-clase">
       <div class="container">
@@ -157,16 +115,110 @@
       </div>
     </section>
 
-<!-- Preguntas Frecuentes (CTA corto) -->
-<section class="landing-cta-section" aria-label="Preguntas frecuentes">
-  <div class="cta-content">
-    <h2 class="cta-title">Preguntas Frecuentes</h2>
-    <p class="cta-subtitle">
-      Si tenés dudas de cómo empezar a entrenar o qué modalidad hacer, visitá esta sección pensada para despejar las dudas más frecuentes.
-    </p>
-    <a class="btn btn-cta-large" href="#preguntas-frecuentes">Ver Más</a>
-  </div>
-</section>
+    <!-- UBICACIÓN + CONTACTO -->
+    <section class="landing-section" id="ubicacion">
+      <div class="container">
+        <h2 class="section-title">UBICACIÓN</h2>
+
+        <div class="landing-split">
+          <div>
+            <h3 class="landing-h3">¿Dónde nos Encontras?</h3>
+            <p>
+              Nuestro Estudio se encuentra ubicado en la calle <strong>San Martín 1045</strong>, Río Cuarto - Córdoba.
+              Una ubicación céntrica con fácil acceso en transporte público y amplias opciones de estacionamiento.
+            </p>
+            <p>
+              Al ingresar a nuestro Estudio, te recibirán salas diseñadas para brindarte la mejor experiencia de entrenamiento.
+              Cada espacio cuenta con un ambiente climatizado y acogedor, pensado para que te sientas cómodo y motivado clase a clase.
+            </p>
+            <p>
+              <%= link_to "Google Maps", "https://www.google.com/maps/place/ENERGIA+PILATES/@-33.1212032,-64.361614,855m/data=!3m2!1e3!4b1!4m6!3m5!1s0x95d20112edaea9cd:0x43cc4de2f1032e63!8m2!3d-33.1212032!4d-64.3590391!16s%2Fg%2F11mx6slp6v?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D", target: "_blank", rel: "noopener", class: "btn btn-outline-primary" %>
+            </p>
+          </div>
+          <div class="map-embed" aria-label="Mapa">
+            <iframe
+              title="ENERGIA PILATES - Mapa"
+              src="https://www.google.com/maps?q=-33.1212032,-64.3590391&z=16&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+        <div class="landing-divider"></div>
+
+        <div id="contacto"></div>
+        <h2 class="section-title">Contáctanos!</h2>
+        <p>Para más información e inscripciones, contáctanos a través de:</p>
+        <ul class="landing-list">
+          <li><strong>Redes sociales:</strong> @energia.pilates</li>
+          <li><strong>WhatsApp:</strong> <%= link_to "3584830778", "https://wa.me/5493584830778", target: "_blank", rel: "noopener" %></li>
+          <li><strong>Correo electrónico:</strong> <a href="mailto:energiapilatesr4@gmail.com">energiapilatesr4@gmail.com</a></li>
+        </ul>
+
+        <% if flash[:notice].present? || flash[:alert].present? %>
+          <div class="landing-flash <%= flash[:alert].present? ? "landing-flash--error" : "landing-flash--ok" %>">
+            <%= flash[:alert].presence || flash[:notice] %>
+          </div>
+        <% end %>
+
+        <div class="landing-contact-grid" data-controller="contact-whatsapp" data-contact-whatsapp-phone-value="5493584830778">
+          <div class="landing-contact-card">
+            <h3 class="landing-h3">Escribinos</h3>
+            <p class="landing-note">Respondemos lo antes posible. Si es urgente, escribinos directo por WhatsApp.</p>
+            <div class="landing-contact-actions">
+              <%= link_to "WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary btn-large" %>
+              <%= link_to "Instagram", "https://www.instagram.com/energia.pilates", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
+            </div>
+          </div>
+
+          <div class="landing-form">
+            <h3 class="landing-h3">Formulario</h3>
+
+            <%= form_with url: contacto_path, method: :post, local: true do %>
+              <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="landing-honeypot" aria-hidden="true">
+
+              <div class="form-row-landing">
+                <label>Nombre*
+                  <input class="form-control" type="text" name="name" required data-contact-whatsapp-target="name" data-action="input->contact-whatsapp#update">
+                </label>
+                <label>Email
+                  <input class="form-control" type="email" name="email" data-contact-whatsapp-target="email" data-action="input->contact-whatsapp#update">
+                </label>
+              </div>
+
+              <div class="form-row-landing">
+                <label>WhatsApp
+                  <input class="form-control" type="text" name="whatsapp" placeholder="Ej: 3584..." data-contact-whatsapp-target="whatsapp" data-action="input->contact-whatsapp#update">
+                </label>
+                <label>Motivo
+                  <select class="form-control" name="reason" data-contact-whatsapp-target="reason" data-action="change->contact-whatsapp#update">
+                    <option value="Consulta general">Consulta general</option>
+                    <option value="Clases grupales">Clases grupales</option>
+                    <option value="Clases personalizadas">Clases personalizadas</option>
+                    <option value="Clases libres">Clases libres</option>
+                    <option value="Clases online">Clases online</option>
+                    <option value="Formación">Formación</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>Mensaje*
+                <textarea class="form-control" name="message" rows="5" required data-contact-whatsapp-target="message" data-action="input->contact-whatsapp#update"></textarea>
+              </label>
+
+              <div class="landing-form-actions">
+                <button class="btn btn-primary btn-large" type="submit">Enviar por Email</button>
+                <a class="btn btn-outline-primary btn-large" target="_blank" rel="noopener" data-contact-whatsapp-target="link" href="https://wa.me/5493584830778">Enviar por WhatsApp</a>
+              </div>
+              <p class="landing-note">El botón de WhatsApp arma el mensaje con lo que escribiste.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </section>
 
 <!-- QUIENES SOMOS -->
 <section class="landing-section" id="sobre-nosotras">
@@ -227,6 +279,48 @@
     </p>
   </div>
 </section>
+
+    <!-- NUESTRO ESTUDIO -->
+    <section class="landing-section" id="nuestro-estudio">
+      <div class="container">
+        <h2 class="section-title">Nuestro Estudio</h2>
+
+        <div class="landing-split">
+          <div>
+            <p class="landing-lead">
+              Te invitamos a descubrir nuestra forma de enseñar: con atención, detalle y un enfoque integral para transformar tu cuerpo, tu mente y tu energía.
+            </p>
+            <p>
+              Conocé un poquito más y escribinos para empezar.
+            </p>
+          </div>
+
+          <div
+            class="about-slideshow studio-slideshow"
+            data-controller="about-slideshow"
+            data-about-slideshow-sources-value='<%= [
+              asset_path("energia-pilates/Página web/jpg/estudio-1.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-2.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-3.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-4.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-5.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-6.jpg"),
+              asset_path("energia-pilates/Página web/jpg/estudio-7.jpg")
+            ].to_json %>'
+            aria-label="Fotos del estudio"
+          >
+            <img
+              data-about-slideshow-target="img"
+              class="about-slideshow-img"
+              src="<%= asset_path("energia-pilates/Página web/jpg/estudio-1.jpg") %>"
+              alt="Energía Pilates - Estudio"
+              loading="eager"
+              decoding="async"
+            >
+          </div>
+        </div>
+      </div>
+    </section>
 
 <!-- SERVICIOS -->
 <section class="landing-section" id="servicios-detalle" hidden aria-hidden="true">
@@ -400,111 +494,6 @@
 
       <div class="service-media" aria-label="Online y formación">
         <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 1.png", alt: "Pilates Online", class: "service-logo", loading: "lazy" %>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- UBICACIÓN + CONTACTO -->
-<section class="landing-section" id="ubicacion">
-  <div class="container">
-    <h2 class="section-title">UBICACIÓN</h2>
-
-    <div class="landing-split">
-      <div>
-        <h3 class="landing-h3">¿Dónde nos Encontras?</h3>
-        <p>
-          Nuestro Estudio se encuentra ubicado en la calle <strong>San Martín 1045</strong>, Río Cuarto - Córdoba.
-          Una ubicación céntrica con fácil acceso en transporte público y amplias opciones de estacionamiento.
-        </p>
-        <p>
-          Al ingresar a nuestro Estudio, te recibirán salas diseñadas para brindarte la mejor experiencia de entrenamiento.
-          Cada espacio cuenta con un ambiente climatizado y acogedor, pensado para que te sientas cómodo y motivado clase a clase.
-        </p>
-        <p>
-          <%= link_to "Google Maps", "https://www.google.com/maps/place/ENERGIA+PILATES/@-33.1212032,-64.361614,855m/data=!3m2!1e3!4b1!4m6!3m5!1s0x95d20112edaea9cd:0x43cc4de2f1032e63!8m2!3d-33.1212032!4d-64.3590391!16s%2Fg%2F11mx6slp6v?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D", target: "_blank", rel: "noopener", class: "btn btn-outline-primary" %>
-        </p>
-      </div>
-      <div class="map-embed" aria-label="Mapa">
-        <iframe
-          title="ENERGIA PILATES - Mapa"
-          src="https://www.google.com/maps?q=-33.1212032,-64.3590391&z=16&output=embed"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </div>
-
-    <div class="landing-divider"></div>
-
-    <div id="contacto"></div>
-    <h2 class="section-title">Contáctanos!</h2>
-    <p>Para más información e inscripciones, contáctanos a través de:</p>
-    <ul class="landing-list">
-      <li><strong>Redes sociales:</strong> @energia.pilates</li>
-      <li><strong>WhatsApp:</strong> <%= link_to "3584830778", "https://wa.me/5493584830778", target: "_blank", rel: "noopener" %></li>
-      <li><strong>Correo electrónico:</strong> <a href="mailto:energiapilatesr4@gmail.com">energiapilatesr4@gmail.com</a></li>
-    </ul>
-
-    <% if flash[:notice].present? || flash[:alert].present? %>
-      <div class="landing-flash <%= flash[:alert].present? ? "landing-flash--error" : "landing-flash--ok" %>">
-        <%= flash[:alert].presence || flash[:notice] %>
-      </div>
-    <% end %>
-
-    <div class="landing-contact-grid" data-controller="contact-whatsapp" data-contact-whatsapp-phone-value="5493584830778">
-      <div class="landing-contact-card">
-        <h3 class="landing-h3">Escribinos</h3>
-        <p class="landing-note">Respondemos lo antes posible. Si es urgente, escribinos directo por WhatsApp.</p>
-        <div class="landing-contact-actions">
-          <%= link_to "WhatsApp", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary btn-large" %>
-          <%= link_to "Instagram", "https://www.instagram.com/energia.pilates", target: "_blank", rel: "noopener", class: "btn btn-outline-primary btn-large" %>
-        </div>
-      </div>
-
-      <div class="landing-form">
-        <h3 class="landing-h3">Formulario</h3>
-
-        <%= form_with url: contacto_path, method: :post, local: true do %>
-          <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="landing-honeypot" aria-hidden="true">
-
-          <div class="form-row-landing">
-            <label>Nombre*
-              <input class="form-control" type="text" name="name" required data-contact-whatsapp-target="name" data-action="input->contact-whatsapp#update">
-            </label>
-            <label>Email
-              <input class="form-control" type="email" name="email" data-contact-whatsapp-target="email" data-action="input->contact-whatsapp#update">
-            </label>
-          </div>
-
-          <div class="form-row-landing">
-            <label>WhatsApp
-              <input class="form-control" type="text" name="whatsapp" placeholder="Ej: 3584..." data-contact-whatsapp-target="whatsapp" data-action="input->contact-whatsapp#update">
-            </label>
-            <label>Motivo
-              <select class="form-control" name="reason" data-contact-whatsapp-target="reason" data-action="change->contact-whatsapp#update">
-                <option value="Consulta general">Consulta general</option>
-                <option value="Clases grupales">Clases grupales</option>
-                <option value="Clases personalizadas">Clases personalizadas</option>
-                <option value="Clases libres">Clases libres</option>
-                <option value="Clases online">Clases online</option>
-                <option value="Formación">Formación</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </label>
-          </div>
-
-          <label>Mensaje*
-            <textarea class="form-control" name="message" rows="5" required data-contact-whatsapp-target="message" data-action="input->contact-whatsapp#update"></textarea>
-          </label>
-
-          <div class="landing-form-actions">
-            <button class="btn btn-primary btn-large" type="submit">Enviar por Email</button>
-            <a class="btn btn-outline-primary btn-large" target="_blank" rel="noopener" data-contact-whatsapp-target="link" href="https://wa.me/5493584830778">Enviar por WhatsApp</a>
-          </div>
-          <p class="landing-note">El botón de WhatsApp arma el mensaje con lo que escribiste.</p>
-        <% end %>
       </div>
     </div>
   </div>
