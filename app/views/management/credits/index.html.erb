@@ -64,19 +64,19 @@
                 <td><strong><%= student.credits.available.sum(:amount) %></strong></td>
                 <td>
                   <div class="credits-actions-inline">
-                    <% [1, 5, 10].each do |n| %>
+                    <% [1, 2, 3].each do |n| %>
                       <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
                         <%= hidden_field_tag :email, student.email %>
                         <%= hidden_field_tag :amount, n %>
                         <%= hidden_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d") %>
-                        <%= submit_tag "+#{n}", class: "btn btn-sm btn-primary" %>
+                        <%= submit_tag "+#{n}", class: "btn btn-sm btn-primary", data: { turbo_confirm: "¿Otorgar #{n} crédito(s) a #{student.email}?" } %>
                       <% end %>
                     <% end %>
                   </div>
                 </td>
                 <td>
                   <div class="credits-actions-inline">
-                    <% [1, 5, 10].each do |n| %>
+                    <% [1, 2, 3].each do |n| %>
                       <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
                         <%= hidden_field_tag :email, student.email %>
                         <%= hidden_field_tag :amount, n %>
