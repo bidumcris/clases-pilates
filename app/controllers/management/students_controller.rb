@@ -77,6 +77,14 @@ class Management::StudentsController < Management::BaseController
   end
 
   def user_params
-    params.require(:user).permit(:role, :level, :class_type, :dni, :phone, :mobile, :birth_date, :email)
+    params.require(:user).permit(
+      :role, :level, :class_type, :dni, :phone, :mobile, :birth_date, :email,
+      :name, :active, :fake_email,
+      :subscription_start, :subscription_end,
+      :emergency_phone, :additional_info,
+      :payment_amount, :debt_amount, :last_payment_date,
+      :monthly_turns, :join_date, :first_payment_date, :payments_count,
+      :normal_view, :param1, :param2, :param3
+    )
   end
 end

@@ -16,11 +16,17 @@
     <h2>Datos</h2>
     <div class="card" style="margin-bottom: 1rem;">
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
+        <div><strong>Nombre:</strong> <%= @user.name.presence || "-" %></div>
+        <div><strong>Activo:</strong> <%= @user.active? ? "Sí" : "No" %></div>
+        <div><strong>Email falso:</strong> <%= @user.fake_email? ? "Sí" : "No" %></div>
         <div><strong>DNI:</strong> <%= @user.dni.presence || "-" %></div>
         <div><strong>Celular:</strong> <%= @user.mobile.presence || "-" %></div>
         <div><strong>Teléfono:</strong> <%= @user.phone.presence || "-" %></div>
+        <div><strong>Tel. emergencia:</strong> <%= @user.emergency_phone.presence || "-" %></div>
         <div><strong>Fecha de nacimiento:</strong> <%= @user.birth_date ? @user.birth_date.strftime("%d/%m/%Y") : "-" %></div>
         <div><strong>Email:</strong> <%= @user.email %></div>
+        <div><strong>Días fijos:</strong> <%= @user.fixed_days_summary.presence || "-" %></div>
+        <div><strong>Info adicional:</strong> <%= @user.additional_info.presence || "-" %></div>
       </div>
     </div>
     <div class="admin-stats">
@@ -33,12 +39,44 @@
         <div class="stat-label">Tipo</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number"><%= @user.credits.available.sum(:amount) %></div>
+        <div class="stat-number"><%= @user.credits_available %></div>
         <div class="stat-label">Créditos disponibles</div>
       </div>
       <div class="stat-card">
         <div class="stat-number"><%= @payments.select(&:completed?).sum(&:amount) %></div>
         <div class="stat-label">Pagos (completados)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.turnos_consumidos_mes_actual %></div>
+        <div class="stat-label">Turnos consumidos (mes)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.monthly_turns.presence || "-" %></div>
+        <div class="stat-label">Turnos del mes (plan)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user.turnos_adeudados_mes_actual.presence || "-" %></div>
+        <div class="stat-label">Turnos adeudados (mes)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>Abono / Pagos (administrativo)</h2>
+    <div class="card" style="margin-bottom: 1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
+        <div><strong>Abono inicio:</strong> <%= @user.subscription_start ? @user.subscription_start.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Abono fin:</strong> <%= @user.subscription_end ? @user.subscription_end.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Importe pago:</strong> <%= @user.payment_amount ? number_to_currency(@user.payment_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></div>
+        <div><strong>Importe deuda:</strong> <%= @user.debt_amount ? number_to_currency(@user.debt_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></div>
+        <div><strong>Fecha pago:</strong> <%= @user.last_payment_date ? @user.last_payment_date.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Fecha ingreso:</strong> <%= @user.join_date ? @user.join_date.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Fecha primer pago:</strong> <%= @user.first_payment_date ? @user.first_payment_date.strftime("%d/%m/%Y") : "-" %></div>
+        <div><strong>Cantidad pagos (manual):</strong> <%= @user.payments_count.presence || "-" %></div>
+        <div><strong>VistaNormal:</strong> <%= @user.normal_view? ? "Sí" : "No" %></div>
+        <div><strong>param1:</strong> <%= @user.param1.presence || "-" %></div>
+        <div><strong>param2:</strong> <%= @user.param2.presence || "-" %></div>
+        <div><strong>param3:</strong> <%= @user.param3.presence || "-" %></div>
       </div>
     </div>
   </div>
