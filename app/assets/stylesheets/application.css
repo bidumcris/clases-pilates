@@ -1075,7 +1075,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('energia-pilates/5. tramas/EP_trama 1.png') repeat;
+  background: url('energia-pilates/tramas/ep_trama_1.png') repeat;
   opacity: 0.1;
   z-index: 3;
 }
@@ -1380,6 +1380,62 @@ body {
   padding: 1.5rem;
   border: 1px solid rgba(127, 88, 143, 0.12);
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.landing-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1rem;
+  align-items: start;
+  margin-top: 1rem;
+}
+
+.landing-contact-card {
+  background: var(--color-blanco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(127, 88, 143, 0.12);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.landing-contact-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.landing-form-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.landing-honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.landing-flash {
+  margin-top: 1rem;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.landing-flash--ok {
+  background: rgba(47, 133, 90, 0.10);
+  border-color: rgba(47, 133, 90, 0.25);
+}
+
+.landing-flash--error {
+  background: rgba(198, 40, 40, 0.10);
+  border-color: rgba(198, 40, 40, 0.25);
 }
 
 .form-row-landing {
@@ -2145,6 +2201,10 @@ body {
   }
 
   .form-row-landing {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-contact-grid {
     grid-template-columns: 1fr;
   }
 }
