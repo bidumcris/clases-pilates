@@ -1,0 +1,41 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Agregar créditos</h1>
+    <%= link_to "Volver", management_credits_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="form-container">
+    <%= form_with model: @credit, url: management_credits_path, local: true, class: "admin-form" do |f| %>
+      <%= render "shared/error_messages", resource: @credit %>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :user_id, "Alumno" %>
+          <%= f.select :user_id,
+              options_from_collection_for_select(@students, :id, :email, @credit.user_id),
+              { prompt: "Seleccionar alumno" },
+              { class: "form-control" } %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :amount, "Cantidad" %>
+          <%= f.number_field :amount, min: 1, class: "form-control", value: @credit.amount || 10 %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :expires_at, "Vencimiento" %>
+          <%= f.date_field :expires_at, class: "form-control", value: @credit.expires_at&.strftime("%Y-%m-%d") %>
+          <small class="form-hint">Sugerido: fin de mes</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Guardar", class: "btn btn-primary btn-large" %>
+        <%= link_to "Cancelar", management_credits_path, class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

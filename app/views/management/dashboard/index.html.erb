@@ -53,6 +53,12 @@
           <h3>Caja</h3>
           <p>Control de pagos por método y período</p>
         <% end %>
+
+        <%= link_to management_credits_path, class: "quick-access-card" do %>
+          <div class="card-icon">🎟️</div>
+          <h3>Créditos</h3>
+          <p>Asignar créditos y ver historial</p>
+        <% end %>
       <% end %>
 
       <%= link_to admin_root_path, class: "quick-access-card" do %>
