@@ -32,6 +32,66 @@
   </div>
 
   <div class="admin-section">
+    <h2>Acciones</h2>
+    <% if @selected_student %>
+      <p style="margin-bottom: 1rem;">
+        <strong>Alumno:</strong> <%= @selected_student.email %> ·
+        <strong>Créditos disponibles:</strong> <%= @selected_student.credits.available.sum(:amount) %>
+      </p>
+    <% else %>
+      <p style="opacity:.75; margin-bottom: 1rem;">Tip: escribí el email exacto del alumno para ver su saldo y operar más rápido.</p>
+    <% end %>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+      <div class="card" style="margin:0;">
+        <div class="card-header">Otorgar créditos</div>
+        <%= form_with url: grant_management_credits_path, method: :post, local: true do %>
+          <div class="form-row" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label>Email del alumno</label>
+              <%= text_field_tag :email, @selected_student&.email || @email, class: "form-control", placeholder: "alumno@..." %>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <%= number_field_tag :amount, 1, min: 1, class: "form-control" %>
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label>Vencimiento</label>
+              <%= date_field_tag :expires_at, Date.current.end_of_month.strftime("%Y-%m-%d"), class: "form-control" %>
+              <small class="form-hint">Sugerido: fin de mes</small>
+            </div>
+          </div>
+          <div class="form-actions" style="border-top:none; padding-top: 0; margin-top: 1rem;">
+            <%= submit_tag "Otorgar", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="card" style="margin:0;">
+        <div class="card-header">Quitar créditos</div>
+        <%= form_with url: deduct_management_credits_path, method: :post, local: true do %>
+          <div class="form-row" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label>Email del alumno</label>
+              <%= text_field_tag :email, @selected_student&.email || @email, class: "form-control", placeholder: "alumno@..." %>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <%= number_field_tag :amount, 1, min: 1, class: "form-control" %>
+              <small class="form-hint">Se descuenta del saldo disponible, empezando por los que vencen antes.</small>
+            </div>
+          </div>
+          <div class="form-actions" style="border-top:none; padding-top: 0; margin-top: 1rem;">
+            <%= submit_tag "Quitar", class: "btn btn-danger", data: { turbo_confirm: "¿Seguro que querés quitar estos créditos?" } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section">
     <h2>Listado</h2>
     <% if @credits.any? %>
       <table class="admin-table">
