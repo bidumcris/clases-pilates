@@ -2,10 +2,12 @@ class Management::CreditsController < Management::BaseController
   before_action :ensure_admin!
 
   def index
-    @students = User.where(role: :alumno).order(:email)
+    @email = params[:email].to_s.strip
 
     @credits = Credit.includes(:user).order(created_at: :desc)
-    @credits = @credits.where(user_id: params[:user_id]) if params[:user_id].present?
+    if @email.present?
+      @credits = @credits.joins(:user).where("users.email ILIKE ?", "%#{@email}%")
+    end
     @credits = @credits.where(used: params[:used]) if params[:used].present?
     @credits = @credits.where("expires_at < ?", Date.current) if params[:expired] == "1"
   end
