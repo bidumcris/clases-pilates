@@ -847,6 +847,87 @@ body {
 }
 
 /* ============================================
+   Responsive: mejoras móviles (Android/iOS)
+   ============================================ */
+
+/* Mejor soporte de notch / safe-area en iOS */
+@supports (padding: max(0px)) {
+  .navbar {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .main-content {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Tablas: scroll horizontal en pantallas chicas */
+.admin-table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin: 1rem auto;
+  }
+
+  .navbar-item,
+  .btn-logout {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-dashboard,
+  .admin-classes,
+  .admin-form-page {
+    padding: 1rem;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .admin-section {
+    padding: 1rem;
+  }
+
+  .calendar-day {
+    min-height: auto;
+  }
+
+  .class-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  #confirm-modal-dialog {
+    width: calc(100% - 2rem);
+    margin: 10vh auto 0 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar-logo-img {
+    max-width: 160px;
+    height: 34px;
+  }
+
+  .dashboard-logo {
+    max-width: 160px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+/* ============================================
    LANDING PAGE STYLES
    ============================================ */
 

@@ -13,9 +13,13 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
+    <%# Favicon / App icons (mini logo) %>
+    <%= favicon_link_tag "energia-pilates/2. isologo-20251231T185945Z-1-001/2. isologo/EP_isologo 1.png", rel: "icon", type: "image/png" %>
+    <%= favicon_link_tag "energia-pilates/2. isologo-20251231T185945Z-1-001/2. isologo/EP_isologo 1.png", rel: "apple-touch-icon", type: "image/png" %>
+    <%# Fallbacks (public/) %>
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <meta name="theme-color" content="#7f588f">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
