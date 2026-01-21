@@ -46,6 +46,11 @@
                     <p class="class-details">
                       <%= pilates_class.room.name %> - <%= pilates_class.instructor.name %>
                     </p>
+                    <% if pilates_class.holiday? %>
+                      <p class="class-details" style="color:#8a4b5c;">
+                        <strong>Feriado</strong><%= pilates_class.holiday_reason.present? ? ": #{pilates_class.holiday_reason}" : "" %>
+                      </p>
+                    <% end %>
                     <p class="class-time">
                       <%= pilates_class.start_time.strftime("%H:%M") %> - <%= pilates_class.end_time.strftime("%H:%M") %>
                     </p>
@@ -62,6 +67,16 @@
                   <div class="class-actions">
                     <%= link_to "Tomar lista", attendance_management_class_path(pilates_class), class: "btn btn-sm btn-outline" %>
                     <% if current_user.admin? %>
+                      <% if pilates_class.holiday? %>
+                        <%= button_to "Quitar feriado", unmark_holiday_management_class_path(pilates_class), method: :post,
+                            class: "btn btn-sm btn-outline",
+                            data: { turbo_confirm: "¿Quitar feriado de esta clase?" } %>
+                      <% else %>
+                        <%= button_to "Marcar feriado", mark_holiday_management_class_path(pilates_class), method: :post,
+                            class: "btn btn-sm btn-outline",
+                            params: { holiday_reason: "Feriado" },
+                            data: { turbo_confirm: "¿Marcar esta clase como feriado? Se cancelarán reservas confirmadas y se otorgará 1 crédito compensatorio." } %>
+                      <% end %>
                       <%= link_to "Editar", edit_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
                       <%= button_to "Eliminar", management_class_path(pilates_class), method: :delete, 
                           class: "btn btn-sm btn-danger", 

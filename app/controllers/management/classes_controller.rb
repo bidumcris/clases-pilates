@@ -4,6 +4,8 @@ class Management::ClassesController < Management::BaseController
   before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :destroy ]
   before_action :set_pilates_class, only: [ :attendance, :update_attendance ]
   before_action :ensure_can_take_attendance!, only: [ :attendance, :update_attendance ]
+  before_action :set_pilates_class, only: [ :mark_holiday, :unmark_holiday ]
+  before_action :ensure_admin!, only: [ :mark_holiday, :unmark_holiday ]
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Date.current
@@ -67,6 +69,25 @@ class Management::ClassesController < Management::BaseController
   def destroy
     @pilates_class.destroy
     redirect_to management_classes_path, notice: "Clase eliminada exitosamente"
+  end
+
+  def mark_holiday
+    reason = params[:holiday_reason].to_s.strip.presence
+    @pilates_class.update!(holiday: true, holiday_reason: reason)
+
+    # Compensación: por cada reserva confirmada otorgar 1 crédito y cancelar la reserva
+    expires_at = Date.current.end_of_month
+    @pilates_class.reservations.where(status: :confirmed).includes(:user).find_each do |reservation|
+      Credit.create!(user: reservation.user, amount: 1, expires_at: expires_at, used: false)
+      reservation.update!(status: :cancelled, attendance_status: :sin_marcar)
+    end
+
+    redirect_to management_classes_path, notice: "Clase marcada como feriado. Se otorgaron créditos compensatorios."
+  end
+
+  def unmark_holiday
+    @pilates_class.update!(holiday: false, holiday_reason: nil)
+    redirect_to management_classes_path, notice: "Clase desmarcada como feriado."
   end
 
   def calendar
@@ -137,6 +158,6 @@ class Management::ClassesController < Management::BaseController
   end
 
   def pilates_class_params
-    params.require(:pilates_class).permit(:name, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity)
+    params.require(:pilates_class).permit(:name, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :holiday, :holiday_reason)
   end
 end

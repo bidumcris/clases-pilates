@@ -4,6 +4,43 @@
     <h1>Bienvenido, <%= current_user.email %></h1>
   </div>
 
+  <!-- Cuota / Suscripción del mes -->
+  <% due_date_default = Date.current.change(day: 10) %>
+  <% fee = @current_subscription_fee %>
+  <% if current_user.payment_amount.present? %>
+    <div class="card">
+      <div class="card-header">Tu cuota</div>
+      <% due_date = fee&.due_date || due_date_default %>
+      <% status = fee&.payment_status || "pending" %>
+      <% amount = fee&.amount || current_user.payment_amount %>
+      <p>
+        Vence el <strong><%= due_date.strftime("%d/%m/%Y") %></strong> ·
+        Monto <strong><%= number_to_currency(amount, unit: "$", separator: ",", delimiter: ".") %></strong>
+        <% if current_user.monthly_turns.present? %>
+          · Plan: <strong><%= current_user.monthly_turns %> turnos/mes</strong>
+        <% end %>
+      </p>
+
+      <% if fee.present? && fee.completed? %>
+        <p><strong>Estado:</strong> al día ✅</p>
+      <% elsif due_date < Date.current %>
+        <p><strong>Estado:</strong> vencida ⚠️</p>
+      <% elsif due_date == Date.current %>
+        <p><strong>Estado:</strong> vence hoy ⚠️</p>
+      <% elsif due_date == Date.current + 1.day %>
+        <p><strong>Estado:</strong> vence mañana ⚠️</p>
+      <% else %>
+        <p><strong>Estado:</strong> pendiente</p>
+      <% end %>
+
+      <% if fee&.checkout_url.present? %>
+        <%= link_to "Pagar ahora", fee.checkout_url, target: "_blank", rel: "noopener", class: "btn btn-primary" %>
+      <% else %>
+        <p style="opacity:0.8;">Si necesitás link de pago, pedilo en el estudio.</p>
+      <% end %>
+    </div>
+  <% end %>
+
   <!-- Créditos Destacados (Urgente - se vencen) -->
   <% expiring_credits = @credits.select { |c| c.expires_at && c.expires_at <= 7.days.from_now && c.amount > 0 } %>
   <% next_expiration = @credits.select { |c| c.expires_at && c.amount > 0 }.map(&:expires_at).compact.min %>

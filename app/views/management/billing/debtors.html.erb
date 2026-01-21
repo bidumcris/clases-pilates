@@ -1,0 +1,90 @@
+<div class="admin-dashboard">
+  <div class="admin-header">
+    <h1>Deudores</h1>
+    <p class="admin-subtitle">Cuotas del mes (vencimiento / pendientes)</p>
+  </div>
+
+  <div class="admin-section">
+    <%= form_with url: management_billing_debtors_path, method: :get, local: true do %>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:end;">
+        <div>
+          <label>Estado</label><br>
+          <%= select_tag :status, options_for_select([["Vencidas", "overdue"], ["Vence mañana", "due_soon"], ["Pendientes", "pending"], ["Todas", "all"]], @status), class: "form-select" %>
+        </div>
+        <div>
+          <label>Buscar (email/nombre)</label><br>
+          <%= text_field_tag :q, @q, class: "form-input", placeholder: "ana@... / Ana" %>
+        </div>
+        <div>
+          <%= submit_tag "Aplicar", class: "btn btn-primary" %>
+        </div>
+        <div>
+          <%= link_to "Volver a Caja", management_cashbox_path, class: "btn btn-outline" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <div class="stat-number"><%= @count %></div>
+      <div class="stat-label">Registros</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number"><%= number_to_currency(@total_amount, unit: "$", separator: ",", delimiter: ".") %></div>
+      <div class="stat-label">Total</div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <% if @payments.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Plan</th>
+            <th>Período</th>
+            <th>Vence</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+            <tr>
+              <td>
+                <strong><%= payment.user.name.presence || payment.user.email %></strong><br>
+                <span style="opacity:0.8;"><%= payment.user.email %></span>
+              </td>
+              <td>
+                <% turns = payment.turns_included || payment.user.monthly_turns %>
+                <%= turns.present? ? "#{turns} turnos/mes" : "-" %>
+              </td>
+              <td>
+                <% if payment.period_start && payment.period_end %>
+                  <%= payment.period_start.strftime("%d/%m") %> → <%= payment.period_end.strftime("%d/%m") %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td><%= payment.due_date ? payment.due_date.strftime("%d/%m/%Y") : "-" %></td>
+              <td><%= number_to_currency(payment.amount, unit: "$", separator: ",", delimiter: ".") %></td>
+              <td><%= payment.payment_status.humanize %></td>
+              <td>
+                <% if payment.checkout_url.present? %>
+                  <%= link_to "Abrir", payment.checkout_url, target: "_blank", rel: "noopener", class: "btn btn-sm btn-outline" %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No hay resultados.</p>
+    <% end %>
+  </div>
+</div>
+

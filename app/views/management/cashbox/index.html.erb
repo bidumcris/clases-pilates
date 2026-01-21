@@ -2,6 +2,9 @@
   <div class="admin-header">
     <h1>Caja</h1>
     <p class="admin-subtitle">Control de pagos por período y método</p>
+    <div style="margin-top: 0.75rem;">
+      <%= link_to "Ver deudores", management_billing_debtors_path, class: "btn btn-outline" %>
+    </div>
   </div>
 
   <div class="admin-section">
@@ -55,6 +58,30 @@
           <%= number_field_tag :amount, nil, step: "0.01", min: "0", class: "form-input" %>
         </div>
         <div>
+          <label>Concepto (solo Mercado Pago)</label><br>
+          <%= text_field_tag :title, nil, class: "form-input", placeholder: "Ej: Cuota Enero" %>
+        </div>
+        <div>
+          <label>Tipo</label><br>
+          <%= select_tag :kind, options_for_select([["Pago manual", "manual"], ["Cuota / abono", "subscription_fee"]], "manual"), class: "form-select" %>
+        </div>
+        <div>
+          <label>Vence (cuota)</label><br>
+          <%= date_field_tag :due_date, Date.current.change(day: 10), class: "form-input" %>
+        </div>
+        <div>
+          <label>Período desde</label><br>
+          <%= date_field_tag :period_start, Date.current.beginning_of_month, class: "form-input" %>
+        </div>
+        <div>
+          <label>Período hasta</label><br>
+          <%= date_field_tag :period_end, Date.current.end_of_month, class: "form-input" %>
+        </div>
+        <div>
+          <label>Turnos incluidos (opcional)</label><br>
+          <%= number_field_tag :turns_included, nil, min: 0, step: 1, class: "form-input", placeholder: "Ej: 8 o 12" %>
+        </div>
+        <div>
           <label>Método</label><br>
           <%= select_tag :payment_method, options_for_select(Payment.payment_methods.keys.map { |k| [k.humanize, k] }), class: "form-select" %>
         </div>
@@ -85,6 +112,7 @@
             <th>Método</th>
             <th>Estado</th>
             <th>Referencia</th>
+            <th>Link</th>
           </tr>
         </thead>
         <tbody>
@@ -96,6 +124,13 @@
               <td><%= payment.payment_method.humanize %></td>
               <td><%= payment.payment_status.humanize %></td>
               <td><%= payment.transaction_id.presence || "-" %></td>
+              <td>
+                <% if payment.checkout_url.present? %>
+                  <%= link_to "Abrir", payment.checkout_url, target: "_blank", rel: "noopener", class: "btn btn-sm btn-outline" %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

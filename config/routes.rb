@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       # Caja (solo admin)
       get "cashbox", to: "cashbox#index", as: :cashbox
       post "cashbox/payments", to: "cashbox#create_payment", as: :cashbox_payments
+      get "billing/debtors", to: "billing#debtors", as: :billing_debtors
 
       # Gestión de Créditos (solo admin)
       resources :credits, only: [ :index, :new, :create ] do
@@ -63,6 +64,8 @@ Rails.application.routes.draw do
         member do
           get :attendance
           patch :update_attendance
+          post :mark_holiday
+          post :unmark_holiday
         end
       end
 
@@ -89,4 +92,7 @@ Rails.application.routes.draw do
   get "acceso", to: "home#acceso", as: :acceso
 
   post "contacto", to: "contacts#create", as: :contacto
+
+  # Webhooks (sin auth)
+  post "webhooks/mercado_pago", to: "webhooks/mercado_pago#receive", as: :webhooks_mercado_pago
 end

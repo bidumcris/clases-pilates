@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_21_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -72,6 +72,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
     t.string "transaction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "provider"
+    t.string "provider_reference"
+    t.string "checkout_url"
+    t.datetime "paid_at"
+    t.jsonb "provider_payload", default: {}, null: false
+    t.integer "kind", default: 0, null: false
+    t.date "due_date"
+    t.date "period_start"
+    t.date "period_end"
+    t.integer "turns_included"
+    t.string "notes"
+    t.index ["due_date"], name: "index_payments_on_due_date"
+    t.index ["kind"], name: "index_payments_on_kind"
+    t.index ["paid_at"], name: "index_payments_on_paid_at"
+    t.index ["provider", "provider_reference"], name: "index_payments_on_provider_and_provider_reference"
+    t.index ["user_id", "kind", "period_start", "period_end"], name: "idx_payments_unique_period", unique: true
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
@@ -86,6 +102,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "class_type", default: 0, null: false
+    t.boolean "holiday", default: false, null: false
+    t.string "holiday_reason"
+    t.index ["holiday"], name: "index_pilates_classes_on_holiday"
     t.index ["instructor_id"], name: "index_pilates_classes_on_instructor_id"
     t.index ["room_id"], name: "index_pilates_classes_on_room_id"
   end
@@ -136,6 +155,24 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
     t.string "phone"
     t.string "mobile"
     t.date "birth_date"
+    t.string "name"
+    t.boolean "active", default: true, null: false
+    t.boolean "fake_email", default: false, null: false
+    t.date "subscription_start"
+    t.date "subscription_end"
+    t.string "emergency_phone"
+    t.text "additional_info"
+    t.decimal "payment_amount", precision: 10, scale: 2
+    t.decimal "debt_amount", precision: 10, scale: 2
+    t.date "last_payment_date"
+    t.integer "monthly_turns"
+    t.date "join_date"
+    t.date "first_payment_date"
+    t.integer "payments_count"
+    t.boolean "normal_view", default: true, null: false
+    t.string "param1"
+    t.string "param2"
+    t.string "param3"
     t.index ["dni"], name: "index_users_on_dni", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
