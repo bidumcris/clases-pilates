@@ -2377,19 +2377,35 @@ body {
   }
 
   .landing-page {
-    padding-top: 120px;
+    /* Header más compacto en mobile */
+    padding-top: 78px;
   }
 
   .landing-header-inner {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    padding: 0.75rem 1rem;
+    grid-template-columns: auto 1fr;
+    justify-items: stretch;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .landing-header-logo-img {
+    height: 40px;
+  }
+
+  /* En mobile el header fijo no debe ocupar media pantalla */
+  .landing-header-nav {
+    display: none;
   }
 
   .landing-header-cta {
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+
+  .landing-header-link {
+    font-size: 0.95rem;
+    padding: 0.25rem 0.55rem;
   }
 
   .landing-hero .hero-content {
@@ -2399,6 +2415,7 @@ body {
     max-width: 800px;
     text-align: center;
     background: rgba(0, 0, 0, 0.22);
+    padding: 0.75rem 0.9rem;
   }
 
   .landing-video-grid {
