@@ -2400,12 +2400,18 @@ body {
 
   .landing-header-cta {
     justify-content: flex-end;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    gap: 0.35rem;
   }
 
   .landing-header-link {
-    font-size: 0.95rem;
-    padding: 0.25rem 0.55rem;
+    font-size: 0.82rem;
+    padding: 0.18rem 0.45rem;
+    border-radius: 14px;
+    line-height: 1.2;
+    white-space: normal;
+    text-align: center;
+    max-width: 52vw;
   }
 
   .landing-hero .hero-content {
