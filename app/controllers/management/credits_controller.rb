@@ -30,6 +30,7 @@ class Management::CreditsController < Management::BaseController
   def create
     @students = User.where(role: :alumno).order(:email)
     @credit = Credit.new(credit_params)
+    @credit.expires_at = Date.current.end_of_month
 
     if @credit.save
       redirect_to management_credits_path, notice: "Créditos agregados"
@@ -42,7 +43,7 @@ class Management::CreditsController < Management::BaseController
   def grant
     user = find_student_by_email!(params[:email])
     amount = params[:amount].to_i
-    expires_at = params[:expires_at].present? ? Date.parse(params[:expires_at]) : Date.current.end_of_month
+    expires_at = Date.current.end_of_month
 
     if amount <= 0
       redirect_to management_credits_path(email: user.email), alert: "La cantidad debe ser mayor a 0"
@@ -55,8 +56,6 @@ class Management::CreditsController < Management::BaseController
     else
       redirect_to management_credits_path(email: user.email), alert: credit.errors.full_messages.join(", ")
     end
-  rescue ArgumentError
-    redirect_to management_credits_path, alert: "Fecha inválida"
   rescue ActiveRecord::RecordNotFound
     redirect_to management_credits_path, alert: "No existe un alumno con ese email"
   end
@@ -105,7 +104,7 @@ class Management::CreditsController < Management::BaseController
   end
 
   def credit_params
-    params.require(:credit).permit(:user_id, :amount, :expires_at, :used)
+    params.require(:credit).permit(:user_id, :amount, :used)
   end
 end
 

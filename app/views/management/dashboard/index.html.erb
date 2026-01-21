@@ -41,12 +41,6 @@
         <p>Ver alumnos, cambiar tipo de clase, agregar créditos</p>
       <% end %>
 
-      <%= link_to management_requests_path, class: "quick-access-card" do %>
-        <div class="card-icon">🔔</div>
-        <h3>Solicitudes</h3>
-        <p>Revisar y aprobar/rechazar solicitudes</p>
-      <% end %>
-
       <% if current_user.admin? %>
         <%= link_to management_cashbox_path, class: "quick-access-card" do %>
           <div class="card-icon">💵</div>
@@ -112,26 +106,6 @@
     <% end %>
   </div>
 
-  <!-- Solicitudes Pendientes -->
-  <% if @pending_requests.any? %>
-    <div class="admin-section">
-      <h2>Solicitudes Pendientes</h2>
-      <div class="requests-list">
-        <% @pending_requests.each do |request| %>
-          <div class="request-card">
-            <div class="request-info">
-              <strong><%= request.user.email %></strong>
-              <p><%= request.pilates_class.name %> - <%= request.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %></p>
-              <span class="request-type"><%= request.request_type.humanize %></span>
-            </div>
-            <div class="request-actions">
-              <%= button_to "Aprobar", approve_management_request_path(request), method: :post, class: "btn btn-success" %>
-              <%= button_to "Rechazar", reject_management_request_path(request), method: :post, class: "btn btn-danger" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+  <%# Bloque "Solicitudes Pendientes" oculto por pedido (la gestión sigue en /management/requests) %>
 </div>
 

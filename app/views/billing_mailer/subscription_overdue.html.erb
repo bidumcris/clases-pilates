@@ -1,0 +1,20 @@
+<p>Hola <%= @user.name.presence || @user.email %>,</p>
+
+<p>
+  Tu <strong>cuota</strong> está vencida. Venció el
+  <strong><%= @payment.due_date.strftime("%d/%m/%Y") %></strong>.
+</p>
+
+<p>
+  Monto: <strong><%= number_to_currency(@payment.amount, unit: "$", separator: ",", delimiter: ".") %></strong>
+</p>
+
+<% if @payment.checkout_url.present? %>
+  <p>
+    Podés pagar desde este link:
+    <a href="<%= @payment.checkout_url %>">Pagar</a>
+  </p>
+<% end %>
+
+<p>Gracias.</p>
+

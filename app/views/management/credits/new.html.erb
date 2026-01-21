@@ -25,9 +25,9 @@
         </div>
 
         <div class="form-group">
-          <%= f.label :expires_at, "Vencimiento" %>
-          <%= f.date_field :expires_at, class: "form-control", value: @credit.expires_at&.strftime("%Y-%m-%d") %>
-          <small class="form-hint">Sugerido: fin de mes</small>
+          <label>Vencimiento</label><br>
+          <input type="text" class="form-control" value="<%= Date.current.end_of_month.strftime('%d/%m/%Y') %>" disabled>
+          <small class="form-hint">Los créditos siempre vencen el último día del mes</small>
         </div>
       </div>
 

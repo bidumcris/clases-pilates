@@ -42,7 +42,7 @@ class Management::StudentsController < Management::BaseController
 
   def add_credits
     amount = params[:amount].to_i
-    expires_at = params[:expires_at] ? Date.parse(params[:expires_at]) : Date.current.end_of_month
+    expires_at = Date.current.end_of_month
 
     credit = @user.credits.create(amount: amount, expires_at: expires_at, used: false)
 

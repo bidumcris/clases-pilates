@@ -73,8 +73,7 @@ class PilatesClass < ApplicationRecord
 
   # Verificar si es un día feriado (esto se puede expandir con un modelo Holiday)
   def holiday?
-    # Por ahora retornamos false, pero se puede integrar con un modelo de feriados
-    false
+    holiday
   end
 
   private
