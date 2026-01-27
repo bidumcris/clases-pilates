@@ -8,8 +8,8 @@
     <%= form_with url: management_students_path, method: :get, local: true do %>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
         <div>
-          <label>Email</label><br>
-          <%= text_field_tag :search, params[:search], class: "form-input", placeholder: "usuario@email.com" %>
+          <label>Nombre o email</label><br>
+          <%= text_field_tag :search, params[:search], class: "form-input", placeholder: "Ej: Ana o ana@..." %>
         </div>
         <div>
           <label>Nivel</label><br>
@@ -36,8 +36,7 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Email</th>
+            <th>Alumno</th>
             <th>Activo</th>
             <th>Nivel</th>
             <th>Tipo</th>
@@ -49,8 +48,10 @@
         <tbody>
           <% @students.each do |student| %>
             <tr>
-              <td><%= student.name.presence || "-" %></td>
-              <td><%= student.email %></td>
+              <td>
+                <strong><%= student.name.presence || student.email %></strong><br>
+                <small style="opacity:.75;"><%= student.email %></small>
+              </td>
               <td><%= student.active? ? "Sí" : "No" %></td>
               <td><%= student.level.humanize %></td>
               <td><%= student.class_type.humanize %></td>

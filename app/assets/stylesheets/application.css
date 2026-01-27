@@ -2057,6 +2057,21 @@ body {
   margin: 0 auto;
 }
 
+/* Botón principal en panel admin: bien legible */
+.admin-dashboard .btn-primary,
+.admin-classes .btn-primary,
+.admin-form-page .btn-primary {
+  background: var(--color-malva);
+  color: var(--color-blanco) !important;
+}
+
+.admin-dashboard .btn-primary:hover,
+.admin-classes .btn-primary:hover,
+.admin-form-page .btn-primary:hover {
+  background: #6f4b7f;
+  color: var(--color-blanco) !important;
+}
+
 /* Management - Créditos */
 .credits-header {
   align-items: flex-start;
@@ -2172,6 +2187,17 @@ body {
   text-align: center;
   color: var(--color-blanco);
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.stat-card--link {
+  display: block;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.stat-card--link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
 }
 
 .stat-number {

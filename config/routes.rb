@@ -64,6 +64,8 @@ Rails.application.routes.draw do
       resources :classes, only: [ :index, :new, :create, :edit, :update, :destroy ] do
         collection do
           get :calendar
+          get :block
+          post :block, action: :create_block
         end
         member do
           get :attendance
@@ -74,7 +76,12 @@ Rails.application.routes.draw do
       end
 
       # Gestión de Alumnos
-      resources :students, only: [ :index, :show, :edit, :update ] do
+      resources :students, only: [ :index, :show, :new, :create, :edit, :update ] do
+        collection do
+          get :debtors
+          get :absences
+          get :birthdays
+        end
         member do
           post :add_credits
           patch :update_class_type

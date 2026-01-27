@@ -1,111 +1,79 @@
 <div class="admin-dashboard">
   <div class="admin-header">
     <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "admin-logo" %>
-    <h1>Panel de Gestión</h1>
-    <p class="admin-subtitle">Administración de clases, alumnos y solicitudes</p>
   </div>
 
   <!-- Estadísticas Rápidas -->
   <div class="admin-stats">
-    <div class="stat-card">
-      <div class="stat-number"><%= @total_students %></div>
+    <%= link_to management_students_path, class: "stat-card stat-card--link" do %>
+      <div class="stat-number"><%= @students_active_count %></div>
       <div class="stat-label">Alumnos</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number"><%= @active_classes_today %></div>
+    <% end %>
+
+    <%= link_to management_classes_path(view: "today"), class: "stat-card stat-card--link" do %>
+      <div class="stat-number"><%= @classes_today_count %></div>
       <div class="stat-label">Clases Hoy</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number"><%= @pending_requests.count %></div>
+    <% end %>
+
+    <%= link_to management_requests_path, class: "stat-card stat-card--link" do %>
+      <div class="stat-number"><%= @pending_requests_count %></div>
       <div class="stat-label">Solicitudes Pendientes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number"><%= @upcoming_classes.count %></div>
-      <div class="stat-label">Próximas Clases</div>
-    </div>
-  </div>
+    <% end %>
 
-  <!-- Accesos Rápidos -->
-  <div class="admin-quick-access">
-    <h2>Accesos Rápidos</h2>
-    <div class="quick-access-grid">
-      <%= link_to management_classes_path, class: "quick-access-card" do %>
-        <div class="card-icon">📅</div>
-        <h3>Gestionar Clases</h3>
-        <p>Crear, editar y eliminar clases por sala y horario</p>
-      <% end %>
-
-      <%= link_to management_students_path, class: "quick-access-card" do %>
-        <div class="card-icon">👥</div>
-        <h3>Gestionar Alumnos</h3>
-        <p>Ver alumnos, cambiar tipo de clase, agregar créditos</p>
-      <% end %>
-
-      <% if current_user.admin? %>
-        <%= link_to management_cashbox_path, class: "quick-access-card" do %>
-          <div class="card-icon">💵</div>
-          <h3>Caja</h3>
-          <p>Control de pagos por método y período</p>
-        <% end %>
-
-        <%= link_to management_credits_path, class: "quick-access-card" do %>
-          <div class="card-icon">🎟️</div>
-          <h3>Créditos</h3>
-          <p>Asignar créditos y ver historial</p>
-        <% end %>
-      <% end %>
-
-      <%= link_to admin_root_path, class: "quick-access-card" do %>
-        <div class="card-icon">📊</div>
-        <h3>Panel Avanzado</h3>
-        <p>Acceso a ActiveAdmin para gestión técnica</p>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- Próximas Clases -->
-  <div class="admin-section">
-    <h2>Próximas Clases</h2>
-    <% if @upcoming_classes.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Fecha/Hora</th>
-            <th>Clase</th>
-            <th>Sala</th>
-            <th>Instructor</th>
-            <th>Nivel</th>
-            <th>Tipo</th>
-            <th>Disponibilidad</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @upcoming_classes.each do |pilates_class| %>
-            <tr>
-              <td><%= pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %></td>
-              <td><%= pilates_class.name %></td>
-              <td><%= pilates_class.room.name %></td>
-              <td><%= pilates_class.instructor.name %></td>
-              <td><span class="badge badge-level"><%= pilates_class.level.humanize %></span></td>
-              <td>
-                <span class="badge <%= pilates_class.privada? ? 'badge-warning' : 'badge-success' %>">
-                  <%= pilates_class.class_type.humanize %>
-                </span>
-              </td>
-              <td><%= pilates_class.available_spots %>/<%= pilates_class.max_capacity %></td>
-              <td>
-                <%= link_to "Editar", edit_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>No hay clases próximas</p>
+    <%= link_to management_classes_path, class: "stat-card stat-card--link" do %>
+      <div class="stat-number"><%= @classes_count %></div>
+      <div class="stat-label">Clases</div>
     <% end %>
   </div>
 
-  <%# Bloque "Solicitudes Pendientes" oculto por pedido (la gestión sigue en /management/requests) %>
+  <!-- Accesos principales -->
+  <div class="admin-quick-access">
+    <h2>Accesos</h2>
+    <div class="quick-access-grid">
+      <% if current_user.admin? %>
+        <%= link_to new_management_class_path, class: "quick-access-card" do %>
+          <div class="card-icon">🗓️</div>
+          <h3>Nueva clase</h3>
+          <p>Crear una clase rápido</p>
+        <% end %>
+
+        <%= link_to management_students_path, class: "quick-access-card" do %>
+          <div class="card-icon">👥</div>
+          <h3>Alumnos</h3>
+          <p>Listado por nombre y ficha completa</p>
+        <% end %>
+
+        <%= link_to new_management_student_path, class: "quick-access-card" do %>
+          <div class="card-icon">➕</div>
+          <h3>Nuevo alumno</h3>
+          <p>Alta rápida en el sistema</p>
+        <% end %>
+
+        <%= link_to debtors_management_students_path, class: "quick-access-card" do %>
+          <div class="card-icon">💰</div>
+          <h3>Deudores</h3>
+          <p>Alumnos con deuda y montos</p>
+        <% end %>
+
+        <%= link_to absences_management_students_path, class: "quick-access-card" do %>
+          <div class="card-icon">📵</div>
+          <h3>Contactar inasistencias</h3>
+          <p>Más de 2 cancelaciones en el mes</p>
+        <% end %>
+
+        <%= link_to birthdays_management_students_path, class: "quick-access-card" do %>
+          <div class="card-icon">🎂</div>
+          <h3>Cumpleaños</h3>
+          <p>Listado para contactar / automatizar</p>
+        <% end %>
+
+        <%= link_to management_cashbox_path, class: "quick-access-card" do %>
+          <div class="card-icon">💵</div>
+          <h3>Caja</h3>
+          <p>Pagos por período y método</p>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>
 

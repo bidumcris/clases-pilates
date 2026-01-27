@@ -86,9 +86,11 @@ class PilatesClass < ApplicationRecord
     level_str = level.present? ? level.humanize : nil
     date_str = I18n.l(start_time.to_date, format: "%d/%m")
     time_str = start_time.strftime("%H:%M")
+    tag_str = tags.to_s.strip.presence
 
     parts = [type]
     parts << level_str if level_str.present?
+    parts << "(#{tag_str})" if tag_str.present?
     parts << "- #{instructor.name}"
     parts << "- #{date_str} #{time_str}"
 

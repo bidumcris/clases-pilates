@@ -1,20 +1,17 @@
 class Management::DashboardController < Management::BaseController
   def index
-    upcoming = PilatesClass.upcoming.order(start_time: :asc)
-    if current_user.instructor?
-      instructor = current_user.instructor_profile
-      upcoming = instructor ? upcoming.where(instructor_id: instructor.id) : upcoming.none
-    end
-    @upcoming_classes = upcoming.limit(10)
+    # Conteos para dashboard de administradoras
+    @students_active_count = User.where(role: :alumno, active: true).count
 
-    @pending_requests = Request.pending_approval.limit(10)
-    reservations = Reservation.confirmed.includes(:user, :pilates_class).order(created_at: :desc)
+    today_range = Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
+    classes_scope = PilatesClass.all
     if current_user.instructor?
       instructor = current_user.instructor_profile
-      reservations = instructor ? reservations.joins(:pilates_class).where(pilates_classes: { instructor_id: instructor.id }) : reservations.none
+      classes_scope = instructor ? classes_scope.where(instructor_id: instructor.id) : classes_scope.none
     end
-    @recent_reservations = reservations.limit(10)
-    @total_students = User.where(role: :alumno).count
-    @active_classes_today = PilatesClass.where("DATE(start_time) = ?", Date.current).count
+
+    @classes_today_count = classes_scope.where(start_time: today_range).count
+    @pending_requests_count = Request.pending_approval.count
+    @classes_count = classes_scope.upcoming.count
   end
 end

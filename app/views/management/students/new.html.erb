@@ -1,0 +1,112 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Nuevo alumno</h1>
+    <%= link_to "Volver", management_students_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="form-container">
+    <%= form_with model: @user, url: management_students_path, scope: :user, local: true, class: "admin-form" do |f| %>
+      <%= render "shared/error_messages", resource: @user %>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :name, "Nombre y apellido" %>
+          <%= f.text_field :name, class: "form-control", placeholder: "Ej: Ana Pérez" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :email, "Email" %>
+          <%= f.email_field :email, class: "form-control", placeholder: "ana@..." %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :password, "Contraseña" %>
+          <%= f.password_field :password, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :password_confirmation, "Confirmar contraseña" %>
+          <%= f.password_field :password_confirmation, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :level, "Nivel" %>
+          <%= f.select :level, options_for_select(User.levels.keys.map { |k| [k.humanize, k] }, @user.level), {}, { class: "form-control" } %>
+        </div>
+        <div class="form-group">
+          <%= f.label :class_type, "Tipo de clase" %>
+          <%= f.select :class_type, options_for_select(User.class_types.keys.map { |k| [k.humanize, k] }, @user.class_type), {}, { class: "form-control" } %>
+        </div>
+        <div class="form-group">
+          <%= f.label :active, "Activo" %><br>
+          <%= f.check_box :active %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :dni, "DNI" %>
+          <%= f.text_field :dni, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :mobile, "Celular" %>
+          <%= f.text_field :mobile, class: "form-control", placeholder: "+54 ..." %>
+        </div>
+        <div class="form-group">
+          <%= f.label :phone, "Teléfono" %>
+          <%= f.text_field :phone, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :birth_date, "Fecha de nacimiento" %>
+          <%= f.date_field :birth_date, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :join_date, "Fecha de ingreso" %>
+          <%= f.date_field :join_date, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :subscription_start, "Alta del servicio" %>
+          <%= f.date_field :subscription_start, class: "form-control" %>
+          <small class="form-hint">Si el alumno entra a mitad de mes, poné esta fecha.</small>
+        </div>
+        <div class="form-group">
+          <%= f.label :subscription_end, "Fin del servicio (mes)" %>
+          <%= f.date_field :subscription_end, class: "form-control" %>
+          <small class="form-hint">Normalmente es el último día del mes.</small>
+        </div>
+      </div>
+
+      <div class="admin-section" style="margin-top: 1.5rem;">
+        <h2>Plan / Pagos (opcional)</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <%= f.label :monthly_turns, "Turnos del mes (plan)" %>
+            <%= f.number_field :monthly_turns, class: "form-control", min: 0 %>
+          </div>
+          <div class="form-group">
+            <%= f.label :payment_amount, "Importe mensual" %>
+            <%= f.number_field :payment_amount, class: "form-control", step: "0.01", min: 0 %>
+          </div>
+          <div class="form-group">
+            <%= f.label :debt_amount, "Deuda" %>
+            <%= f.number_field :debt_amount, class: "form-control", step: "0.01", min: 0 %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Crear alumno", class: "btn btn-primary btn-large" %>
+        <%= link_to "Cancelar", management_students_path, class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
