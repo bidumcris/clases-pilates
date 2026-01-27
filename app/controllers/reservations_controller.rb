@@ -8,11 +8,20 @@ class ReservationsController < ApplicationController
   def create
     @pilates_class = PilatesClass.find(params[:pilates_class_id])
 
+    week_start = Date.current.beginning_of_week(:monday)
+    week_end = week_start + 6.days
+    allowed_range = week_start.beginning_of_day..week_end.end_of_day
+
+    unless @pilates_class.start_time.in_time_zone.between?(allowed_range.begin, allowed_range.end)
+      redirect_to agenda_path, alert: "Solo podés reservar clases de la semana actual."
+      return
+    end
+
     # Verificar si tiene créditos disponibles
     available_credit = current_user.credits.available.first
 
     unless available_credit
-      redirect_to creditos_path, alert: "No tienes créditos disponibles"
+      redirect_to creditos_path, alert: "No tienes recuperos disponibles"
       return
     end
 
@@ -38,7 +47,7 @@ class ReservationsController < ApplicationController
       # Usar 1 crédito
       available_credit.use!(1)
       respond_to do |format|
-        format.html { redirect_to agenda_path, notice: "Clase reservada exitosamente. Se utilizó 1 crédito." }
+        format.html { redirect_to agenda_path, notice: "Clase reservada exitosamente. Se utilizó 1 recupero." }
         format.turbo_stream
       end
     else

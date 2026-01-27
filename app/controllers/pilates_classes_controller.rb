@@ -2,16 +2,17 @@ class PilatesClassesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    # Calendario semanal - obtener inicio de semana
-    @date = params[:date] ? Date.parse(params[:date]) : Date.current
+    # Agenda semanal (recuperos): mostrar SOLO la semana actual.
+    # Ignoramos el parámetro `date` para evitar navegación por mes/semanas futuras.
+    @date = Date.current
     @week_start = @date.beginning_of_week(:monday)
-    # Por ahora ocultamos fines de semana en la agenda (solo Lunes a Viernes)
-    @week_end = @week_start + 4.days
+    @week_end = @week_start + 6.days
+    range = @week_start.beginning_of_day..@week_end.end_of_day
 
     # Filtrar clases según nivel y tipo de usuario (sin filtrar por sala - mostrar todas)
     @classes = PilatesClass.upcoming.for_user(current_user)
     # Mostrar todas las clases de la semana
-    @classes = @classes.where("DATE(start_time) >= ? AND DATE(start_time) <= ?", @week_start, @week_end)
+    @classes = @classes.where(start_time: range)
 
     # Agrupar por día y luego por hora
     @classes_by_day = @classes.group_by { |c| c.start_time.to_date }
@@ -19,14 +20,17 @@ class PilatesClassesController < ApplicationController
 
   def show
     @pilates_class = PilatesClass.find(params[:id])
-    if @pilates_class.start_time.to_date.saturday? || @pilates_class.start_time.to_date.sunday?
-      redirect_to agenda_path(date: @pilates_class.start_time.to_date.to_s),
-                  alert: "La agenda no está disponible los sábados y domingos."
+    week_start = Date.current.beginning_of_week(:monday)
+    week_end = week_start + 6.days
+    allowed_range = week_start.beginning_of_day..week_end.end_of_day
+
+    unless @pilates_class.start_time.in_time_zone.between?(allowed_range.begin, allowed_range.end)
+      redirect_to agenda_path, alert: "Solo podés ver y reservar clases de la semana actual."
       return
     end
+
     if current_user.alumno? && @pilates_class.level != current_user.level
-      redirect_to agenda_path(date: @pilates_class.start_time.to_date.to_s),
-                  alert: "Esta clase no está disponible para tu nivel."
+      redirect_to agenda_path, alert: "Esta clase no está disponible para tu nivel."
       return
     end
     @can_reserve = current_user.can_reserve_class?(@pilates_class)

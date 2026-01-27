@@ -4,10 +4,15 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # En Rails 8, si hay schema cache viejo, los enums pueden fallar al boot.
+  # Declaramos el tipo explícito para que sea robusto.
+  attribute :billing_status, :integer
+
   enum :role, { alumno: 0, instructor: 1, admin: 2 }
   # Nivel SOLO para alumnos (el rol admin vive en `role`)
   enum :level, { inicial: 0, basic: 1, intermediate: 2, advanced: 3 }
   enum :class_type, { grupal: 0, privada: 1 }
+  enum :billing_status, { abonado: 0, pendiente: 1, deudor: 2 }
 
   has_many :reservations, dependent: :destroy
   has_many :credits, dependent: :destroy
@@ -40,6 +45,7 @@ class User < ApplicationRecord
       active
       additional_info
       birth_date
+      billing_status
       class_type
       created_at
       debt_amount
@@ -106,6 +112,26 @@ class User < ApplicationRecord
 
   def fixed_days_summary
     fixed_slots.active.order(:day_of_week, :hour).map(&:full_description).join(" · ")
+  end
+
+  # Ej: "Lunes y Miércoles 18hs · Viernes 10hs"
+  def fixed_days_compact_summary
+    slots = fixed_slots.active.order(:hour, :day_of_week)
+    return "" if slots.empty?
+
+    slots.group_by(&:hour).map do |hour, hour_slots|
+      days = hour_slots.map(&:day_name)
+      days_str =
+        case days.length
+        when 0 then ""
+        when 1 then days.first
+        when 2 then "#{days[0]} y #{days[1]}"
+        else
+          "#{days[0..-2].join(', ')} y #{days[-1]}"
+        end
+
+      "#{days_str} #{hour}hs"
+    end.join(" · ")
   end
 
   def current_month_reservations_scope

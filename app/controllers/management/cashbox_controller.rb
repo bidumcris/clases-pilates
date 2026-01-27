@@ -15,6 +15,25 @@ class Management::CashboxController < Management::BaseController
     @totals_by_method = completed.group_by(&:payment_method).transform_values { |ps| ps.sum(&:amount) }
     @total_completed = completed.sum(&:amount)
     @count_completed = completed.count
+
+    # Integración por sala: ocupación de clases (no dinero).
+    classes_in_range = PilatesClass.where(start_time: range)
+    @classes_count_by_room = classes_in_range.group(:room_id).count
+    @capacity_sum_by_room = classes_in_range.group(:room_id).sum(:max_capacity)
+
+    reservations_in_range =
+      Reservation
+        .joins(:pilates_class)
+        .where(status: :confirmed, pilates_classes: { start_time: range })
+
+    @reservations_count_by_room = reservations_in_range.group("pilates_classes.room_id").count
+    @present_count_by_room =
+      reservations_in_range
+        .where(attendance_status: Reservation.attendance_statuses[:presente])
+        .group("pilates_classes.room_id")
+        .count
+
+    @rooms = Room.order(:name)
   rescue Date::Error
     redirect_to management_cashbox_path, alert: "Fechas inválidas"
   end

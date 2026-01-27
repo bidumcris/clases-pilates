@@ -31,7 +31,25 @@ end
 
 # Crear Instructores
 puts "Creando instructores..."
-def find_or_create_user!(email:, password:, role:, level: :basic, class_type: :grupal, dni: nil, mobile: nil, phone: nil)
+def find_or_create_user!(
+  email:,
+  password:,
+  role:,
+  level: :basic,
+  class_type: :grupal,
+  dni: nil,
+  mobile: nil,
+  phone: nil,
+  name: nil,
+  join_date: nil,
+  subscription_start: nil,
+  subscription_end: nil,
+  monthly_turns: nil,
+  payment_amount: nil,
+  debt_amount: nil,
+  last_payment_date: nil,
+  billing_status: nil
+)
   user = User.find_or_initialize_by(email: email)
   user.password = password if user.new_record?
   user.password_confirmation = password if user.new_record?
@@ -41,6 +59,15 @@ def find_or_create_user!(email:, password:, role:, level: :basic, class_type: :g
   user.dni = dni if dni.present?
   user.mobile = mobile if mobile.present?
   user.phone = phone if phone.present?
+  user.name = name if name.present?
+  user.join_date = join_date if join_date.present?
+  user.subscription_start = subscription_start if subscription_start.present?
+  user.subscription_end = subscription_end if subscription_end.present?
+  user.monthly_turns = monthly_turns if monthly_turns.present?
+  user.payment_amount = payment_amount if payment_amount.present?
+  user.debt_amount = debt_amount if debt_amount.present?
+  user.last_payment_date = last_payment_date if last_payment_date.present?
+  user.billing_status = billing_status if billing_status.present?
   user.save!
   user
 end
@@ -92,58 +119,136 @@ instructor3.save!
 
 # Crear Usuarios de prueba
 puts "Creando usuarios..."
-user_inicial = User.find_or_create_by!(email: "inicial@test.com") do |u|
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :alumno
-  u.level = :inicial
-  u.class_type = :grupal
-  u.dni = "30000001"
-  u.mobile = "+54 11 7000 0001"
-  u.birth_date = Date.new(1995, 1, 10)
-end
+month_start = Date.current.beginning_of_month
+month_end = Date.current.end_of_month
 
-user_basic = User.find_or_create_by!(email: "basico@test.com") do |u|
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :alumno
-  u.level = :basic
-  u.class_type = :grupal
-  u.dni = "30000002"
-  u.mobile = "+54 11 7000 0002"
-  u.birth_date = Date.new(1992, 6, 22)
-end
+user_inicial = find_or_create_user!(
+  email: "inicial@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :inicial,
+  class_type: :grupal,
+  dni: "30000001",
+  mobile: "+54 11 7000 0001",
+  name: "Alumno Inicial",
+  join_date: month_start - 2.months,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 8,
+  payment_amount: 30000,
+  billing_status: :pendiente
+)
+user_inicial.update!(birth_date: Date.new(1995, 1, 10)) if user_inicial.birth_date.blank?
 
-user_intermediate = User.find_or_create_by!(email: "intermedio@test.com") do |u|
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :alumno
-  u.level = :intermediate
-  u.class_type = :grupal
-  u.dni = "30000003"
-  u.mobile = "+54 11 7000 0003"
-  u.birth_date = Date.new(1989, 11, 5)
-end
+user_basic = find_or_create_user!(
+  email: "basico@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :basic,
+  class_type: :grupal,
+  dni: "30000002",
+  mobile: "+54 11 7000 0002",
+  name: "Alumno Basic",
+  join_date: month_start - 5.months,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 12,
+  payment_amount: 42000,
+  last_payment_date: Date.current - 2.days,
+  billing_status: :abonado
+)
+user_basic.update!(birth_date: Date.new(1992, 6, 22)) if user_basic.birth_date.blank?
 
-user_advanced = User.find_or_create_by!(email: "avanzado@test.com") do |u|
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :alumno
-  u.level = :advanced
-  u.class_type = :grupal
-  u.dni = "30000004"
-  u.mobile = "+54 11 7000 0004"
-end
+user_intermediate = find_or_create_user!(
+  email: "intermedio@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :intermediate,
+  class_type: :grupal,
+  dni: "30000003",
+  mobile: "+54 11 7000 0003",
+  name: "Alumno Intermedio",
+  join_date: month_start - 1.year,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 16,
+  payment_amount: 52000,
+  billing_status: :pendiente
+)
+user_intermediate.update!(birth_date: Date.new(1989, 11, 5)) if user_intermediate.birth_date.blank?
+
+user_advanced = find_or_create_user!(
+  email: "avanzado@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :advanced,
+  class_type: :grupal,
+  dni: "30000004",
+  mobile: "+54 11 7000 0004",
+  name: "Alumno Avanzado",
+  join_date: month_start - 10.months,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 20,
+  payment_amount: 60000,
+  debt_amount: 15000,
+  billing_status: :deudor
+)
 
 # Usuario con clase privada (patología/lesión)
-user_privada = User.find_or_create_by!(email: "privada@test.com") do |u|
-  u.password = "password123"
-  u.password_confirmation = "password123"
-  u.role = :alumno
-  u.level = :basic
-  u.class_type = :privada
-  u.dni = "30000005"
-  u.mobile = "+54 11 7000 0005"
+user_privada = find_or_create_user!(
+  email: "privada@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :basic,
+  class_type: :privada,
+  dni: "30000005",
+  mobile: "+54 11 7000 0005",
+  name: "Alumno Privada",
+  join_date: month_start - 3.months,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 8,
+  payment_amount: 70000,
+  billing_status: :pendiente
+)
+
+# Alumno que arranca "medio mes" (para probar fecha de ingreso y cuotas parciales)
+user_medio_mes = find_or_create_user!(
+  email: "medio_mes@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :basic,
+  class_type: :grupal,
+  dni: "30000006",
+  mobile: "+54 11 7000 0006",
+  name: "Alumno Medio Mes",
+  join_date: month_start + 14.days,
+  subscription_start: month_start + 14.days,
+  subscription_end: month_end,
+  monthly_turns: 6,
+  payment_amount: 24000,
+  billing_status: :pendiente
+)
+
+# Permite cargar emails reales (sin commitearlos). Ej:
+# SEED_REAL_EMAILS="tu@mail.com,amiga@mail.com" bin/rails db:seed
+real_emails = ENV["SEED_REAL_EMAILS"].to_s.split(",").map { |e| e.strip.downcase }.reject(&:blank?).uniq
+real_students = real_emails.map.with_index do |email, i|
+  find_or_create_user!(
+    email: email,
+    password: ENV["SEED_REAL_PASSWORD"].presence || "password123",
+    role: :alumno,
+    level: (i.even? ? :basic : :intermediate),
+    class_type: :grupal,
+    name: "Alumno #{email.split('@').first.to_s.tr('.', ' ').split.map(&:capitalize).join(' ')}",
+    join_date: month_start - (i % 6).months,
+    subscription_start: month_start,
+    subscription_end: month_end,
+    monthly_turns: (i.even? ? 12 : 16),
+    payment_amount: (i.even? ? 42000 : 52000),
+    billing_status: :pendiente
+  )
 end
 
 # Crear Admin
@@ -165,20 +270,49 @@ end
 
 # Crear Créditos para usuarios (mensuales)
 puts "Creando créditos..."
-[ user_inicial, user_basic, user_intermediate, user_advanced, user_privada ].each do |user|
+seed_students = [ user_inicial, user_basic, user_intermediate, user_advanced, user_privada, user_medio_mes ] + real_students
+seed_students.each do |user|
   # Créditos para el mes actual (vencen al final del mes actual)
   current_month_end = Date.current.end_of_month
   Credit.find_or_create_by!(user: user, expires_at: current_month_end) do |c|
-    c.amount = 10
+    c.amount = user.monthly_turns.presence || 10
     c.used = false
   end
 
   # Créditos para el mes siguiente (vencen al final del mes siguiente)
   next_month_end = Date.current.next_month.end_of_month
   Credit.find_or_create_by!(user: user, expires_at: next_month_end) do |c|
-    c.amount = 8
+    c.amount = [ (user.monthly_turns.presence || 10) - 2, 4 ].max
     c.used = false
   end
+end
+
+# Pagos / Caja: generar movimientos realistas y cuotas del mes
+puts "Creando pagos de ejemplo..."
+due_day = 10
+seed_students.each do |user|
+  # Cuota del mes actual
+  Payment.find_or_create_by!(user: user, kind: :subscription_fee, period_start: month_start, period_end: month_end) do |p|
+    p.amount = user.payment_amount.presence || 30000
+    p.payment_method = :transferencia
+    p.due_date = month_start.change(day: due_day)
+    p.turns_included = user.monthly_turns
+    p.notes = "Cuota mensual (seed)"
+    p.payment_status = (user.billing_status.to_s == "abonado") ? :completed : :pending
+    p.paid_at = (p.payment_status == "completed") ? Time.current : nil
+  end
+
+  # Extra: algún pago manual / efectivo para ver métodos
+  next unless user.email.in?(["basico@test.com", "avanzado@test.com"])
+
+  Payment.create!(
+    user: user,
+    kind: :manual,
+    amount: 5000,
+    payment_method: :efectivo,
+    payment_status: :completed,
+    transaction_id: "seed-#{SecureRandom.hex(3)}"
+  )
 end
 
 # Crear Clases de Pilates
@@ -281,6 +415,50 @@ end
         pc.max_capacity = 1 # Clases privadas: 1 alumno
       end
     end
+  end
+end
+
+# Crear turnos fijos + clases repetidas del mes para que el dashboard muestre "clases fijas"
+puts "Creando turnos fijos..."
+fixed_definitions = [
+  { user: user_basic, days: [1, 3], hour: 18, level: :basic, room: room2, instructor: instructor1 }, # Lun/Mié 18
+  { user: user_intermediate, days: [2, 4], hour: 19, level: :intermediate, room: room3, instructor: instructor2 }, # Mar/Jue 19
+  { user: user_advanced, days: [1, 3], hour: 17, level: :advanced, room: room2, instructor: instructor3 } # Lun/Mié 17
+].select { |h| h[:user].present? }
+
+fixed_definitions.each do |fd|
+  fd[:days].each do |dow|
+    FixedSlot.find_or_create_by!(user: fd[:user], day_of_week: dow, hour: fd[:hour]) do |fs|
+      fs.status = :active
+      fs.room = fd[:room]
+      fs.instructor = fd[:instructor]
+      fs.level = fd[:level].to_s
+    end
+  end
+end
+
+puts "Creando clases del mes para los turnos fijos..."
+fixed_definitions.each do |fd|
+  (month_start..month_end).each do |date|
+    next unless fd[:days].include?(date.wday)
+
+    start_time = Time.zone.parse("#{date} #{fd[:hour]}:00")
+    end_time = start_time + 1.hour
+    next unless room_available?(room: fd[:room], start_time: start_time, end_time: end_time)
+
+    PilatesClass.create!(
+      name: "Clase #{fd[:level].to_s.capitalize} - #{date.strftime('%d/%m')} #{fd[:hour]}:00",
+      start_time: start_time,
+      end_time: end_time,
+      room: fd[:room],
+      instructor: fd[:instructor],
+      level: fd[:level],
+      class_type: :grupal,
+      max_capacity: fd[:room].capacity.presence || 10
+    )
+  rescue ActiveRecord::RecordInvalid
+    # Si ya existe por otra seed/validación de superposición, seguimos.
+    next
   end
 end
 
