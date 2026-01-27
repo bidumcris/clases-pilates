@@ -83,6 +83,7 @@ class Management::StudentsController < Management::BaseController
       :subscription_start, :subscription_end,
       :emergency_phone, :additional_info,
       :payment_amount, :debt_amount, :last_payment_date,
+      :billing_status,
       :monthly_turns, :join_date, :first_payment_date, :payments_count,
       :normal_view, :param1, :param2, :param3
     )

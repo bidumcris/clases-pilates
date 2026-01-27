@@ -93,6 +93,21 @@
         </div>
         <div class="form-row">
           <div class="form-group">
+            <%= f.label :billing_status, "Pago" %>
+            <%= f.select :billing_status,
+              options_for_select(
+                [
+                  ["Abonado", "abonado"],
+                  ["Pendiente", "pendiente"],
+                  ["Deudor", "deudor"]
+                ],
+                @user.billing_status
+              ),
+              {},
+              { class: "form-control" } %>
+            <small class="form-hint">Esto es un estado manual para que el alumno lo vea en su dashboard.</small>
+          </div>
+          <div class="form-group">
             <%= f.label :payment_amount, "Importe pago" %>
             <%= f.number_field :payment_amount, class: "form-control", step: "0.01", min: 0 %>
           </div>

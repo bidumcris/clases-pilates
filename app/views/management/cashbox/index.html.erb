@@ -46,6 +46,41 @@
   </div>
 
   <div class="admin-section">
+    <h2>Uso por sala (clases / ocupación)</h2>
+    <p class="admin-subtitle" style="margin-top: -0.5rem;">Basado en reservas confirmadas dentro del período filtrado.</p>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Sala</th>
+          <th>Clases</th>
+          <th>Capacidad total</th>
+          <th>Reservas</th>
+          <th>Presentes</th>
+          <th>Ocupación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @rooms.each do |room| %>
+          <% classes_count = @classes_count_by_room[room.id].to_i %>
+          <% capacity_sum = @capacity_sum_by_room[room.id].to_i %>
+          <% reservations_count = @reservations_count_by_room[room.id].to_i %>
+          <% present_count = @present_count_by_room[room.id].to_i %>
+          <% occ = capacity_sum.positive? ? ((reservations_count.to_f / capacity_sum) * 100).round : 0 %>
+          <tr>
+            <td><%= room.name %></td>
+            <td><%= classes_count %></td>
+            <td><%= capacity_sum %></td>
+            <td><%= reservations_count %></td>
+            <td><%= present_count %></td>
+            <td><%= occ %>%</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="admin-section">
     <h2>Registrar pago</h2>
     <%= form_with url: management_cashbox_payments_path, method: :post, local: true do %>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">

@@ -1,22 +1,17 @@
 <div class="agenda-page">
   <h1>Ver Agenda</h1>
 
-  <!-- Navegación Semanal -->
+  <!-- Semana actual (recuperos) -->
   <div class="calendar-navigation">
-    <%= link_to agenda_path(date: (@week_start - 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } do %>
-      ← Semana Anterior
-    <% end %>
-    
-    <div class="week-display">
-      <h2>
-        <%= I18n.l(@week_start, format: "%d de %B") %> - 
+    <div class="week-display" style="width: 100%; text-align: center;">
+      <h2 style="margin: 0;">
+        <%= I18n.l(@week_start, format: "%d de %B") %> -
         <%= I18n.l(@week_end, format: "%d de %B de %Y") %>
       </h2>
+      <p style="margin: .35rem 0 0 0; opacity: .75;">
+        Solo podés ver y reservar clases de la semana actual.
+      </p>
     </div>
-    
-    <%= link_to agenda_path(date: (@week_start + 7.days).to_s), class: "btn btn-outline", data: { turbo_frame: "calendar" } do %>
-      Semana Siguiente →
-    <% end %>
   </div>
 
   <!-- Calendario Semanal con Turbo Frame -->
@@ -55,7 +50,7 @@
                     </div>
                     
                     <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? %>
-                      <%= button_to "Reservar (1 crédito)", reservations_path, 
+                      <%= button_to "Reservar (1 recupero)", reservations_path,
                           params: { pilates_class_id: pilates_class.id },
                           method: :post,
                           class: "btn btn-success btn-reserve",

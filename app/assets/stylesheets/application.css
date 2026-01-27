@@ -221,6 +221,76 @@ body {
   margin: 0;
 }
 
+.dashboard-welcome {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: center;
+}
+
+.dashboard-kicker {
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--color-malva);
+  opacity: 0.95;
+}
+
+.dashboard-fixed-summary {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #222;
+}
+
+.dashboard-level-row,
+.dashboard-payment-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dashboard-level-label,
+.dashboard-payment-label {
+  font-weight: 700;
+  color: #333;
+}
+
+.dashboard-level-value {
+  font-weight: 900;
+  color: var(--color-malva);
+}
+
+.payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.payment-status-badge--abonado {
+  background: rgba(46, 125, 50, 0.14);
+  border-color: rgba(46, 125, 50, 0.28);
+  color: #1b5e20;
+}
+
+.payment-status-badge--pendiente {
+  background: rgba(255, 179, 0, 0.16);
+  border-color: rgba(255, 179, 0, 0.32);
+  color: #8a5a00;
+}
+
+.payment-status-badge--deudor {
+  background: rgba(198, 40, 40, 0.14);
+  border-color: rgba(198, 40, 40, 0.28);
+  color: #b71c1c;
+}
+
 .credits-alert {
   background: linear-gradient(135deg, var(--color-lila) 0%, var(--color-celeste) 100%);
   color: var(--color-blanco);
@@ -843,6 +913,11 @@ body {
 
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Dashboard (alumno) - ocultar accesos rápidos en mobile */
+  .dashboard-quick-access-card {
+    display: none;
   }
 }
 
@@ -1630,6 +1705,18 @@ body {
   margin-bottom: 4rem;
 }
 
+.acceso-kicker {
+  display: inline-block;
+  margin: 0 0 0.85rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(127, 88, 143, 0.10);
+  border: 1px solid rgba(127, 88, 143, 0.16);
+  color: var(--color-malva);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .acceso-logo {
   max-width: 250px;
   height: auto;
@@ -1700,18 +1787,21 @@ body {
 .tab-button {
   flex: 1;
   padding: 1rem;
-  background: none;
+  background: rgba(248, 243, 235, 0.85); /* marfil */
   border: none;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 600;
-  color: #999;
+  color: var(--color-malva);
   border-bottom: 3px solid transparent;
   transition: all 0.3s;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .tab-button.active {
-  color: var(--color-malva);
+  color: var(--color-marfil);
+  background: var(--color-malva);
   border-bottom-color: var(--color-malva);
 }
 
@@ -2339,9 +2429,14 @@ body {
   }
   
   .login-section-content {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
   }
+
+  /* En mobile: primero el login, luego beneficios */
+  .login-forms { order: 1; }
+  .login-info { order: 2; }
   
   .section-title {
     font-size: 2rem;
@@ -2370,6 +2465,11 @@ body {
 
   .acceso-subtitle {
     font-size: 1.125rem;
+  }
+
+  .acceso-kicker {
+    font-size: 0.9rem;
+    margin-bottom: 0.65rem;
   }
 
   .landing-login-section {

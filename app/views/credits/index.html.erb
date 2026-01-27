@@ -1,5 +1,5 @@
 <div class="credits-page">
-  <h1>Créditos</h1>
+  <h1>Recuperos de clases</h1>
 
   <div class="card">
     <div class="card-header">Resumen</div>
@@ -19,19 +19,19 @@
     </div>
   </div>
 
-  <!-- Créditos por mes -->
+  <!-- Recuperos por mes -->
   <% @credits_by_month.each do |month, credits| %>
     <div class="card">
       <div class="card-header">
-        Créditos que expiran en <%= month.strftime("%B %Y") %>
+        Recuperos que vencen en <%= month.strftime("%B %Y") %>
       </div>
       <ul style="list-style: none; padding: 0;">
         <% credits.each do |credit| %>
           <li style="padding: 0.75rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
             <div>
-              <strong><%= credit.amount %> crédito(s)</strong>
+              <strong><%= credit.amount %> recupero(s)</strong>
               <p style="margin: 0.25rem 0; color: #666;">
-                Expira: <%= credit.expires_at.strftime("%d/%m/%Y") %>
+                Vence: <%= credit.expires_at.strftime("%d/%m/%Y") %>
               </p>
             </div>
             <div>
@@ -51,7 +51,7 @@
 
   <% if @credits_by_month.empty? %>
     <div class="card">
-      <p>No tienes créditos registrados</p>
+      <p>No tienes recuperos registrados</p>
     </div>
   <% end %>
 </div>
