@@ -3,14 +3,50 @@
     <h1>Gestión de Clases</h1>
     <% if current_user.admin? %>
       <%= link_to "Nueva Clase", new_management_class_path, class: "btn btn-primary" %>
+      <%= link_to "Bloquear", block_management_classes_path, class: "btn btn-outline" %>
       <%= link_to "Panel Avanzado (ActiveAdmin)", admin_root_path, class: "btn btn-outline" %>
+    <% end %>
+  </div>
+
+  <!-- Vista: Semana / Solo hoy -->
+  <div class="admin-section" style="padding: 1rem;">
+    <%= form_with url: management_classes_path, method: :get, local: true do %>
+      <div style="display:flex; gap: .75rem; flex-wrap: wrap; align-items: end;">
+        <div>
+          <label>Vista</label><br>
+          <%= select_tag :view,
+            options_for_select([["Semana", "week"], ["Solo hoy", "today"]], @view_mode),
+            class: "form-select" %>
+        </div>
+
+        <div>
+          <label>Sala</label><br>
+          <%= select_tag :room_id,
+            options_for_select([["Todas", ""]] + @rooms.map { |r| [r.admin_display_name, r.id] }, @room_id.to_s),
+            class: "form-select" %>
+        </div>
+
+        <%# En modo semana, permitimos elegir fecha de referencia %>
+        <% if @view_mode == "week" %>
+          <div>
+            <label>Semana de</label><br>
+            <%= date_field_tag :date, @date, class: "form-input" %>
+          </div>
+        <% end %>
+
+        <div>
+          <%= submit_tag "Ver", class: "btn btn-primary" %>
+        </div>
+      </div>
     <% end %>
   </div>
 
   <!-- Navegación Semanal -->
   <div class="calendar-navigation">
-    <%= link_to management_classes_path(date: (@week_start - 7.days).to_s), class: "btn btn-outline" do %>
-      ← Semana Anterior
+    <% if @view_mode == "week" %>
+      <%= link_to management_classes_path(date: (@week_start - 7.days).to_s, view: "week"), class: "btn btn-outline" do %>
+        ← Semana Anterior
+      <% end %>
     <% end %>
     
     <div class="week-display">
@@ -20,8 +56,10 @@
       </h2>
     </div>
     
-    <%= link_to management_classes_path(date: (@week_start + 7.days).to_s), class: "btn btn-outline" do %>
-      Semana Siguiente →
+    <% if @view_mode == "week" %>
+      <%= link_to management_classes_path(date: (@week_start + 7.days).to_s, view: "week"), class: "btn btn-outline" do %>
+        Semana Siguiente →
+      <% end %>
     <% end %>
   </div>
 
@@ -63,6 +101,12 @@
                     <p class="class-capacity">
                       <%= pilates_class.available_spots %>/<%= pilates_class.max_capacity %> disponibles
                     </p>
+                    <% booked = @booked_counts[pilates_class.id].to_i %>
+                    <% if booked <= 2 %>
+                      <p class="class-details" style="color:#8a4b5c;">
+                        ⚠️ Solo <strong><%= booked %></strong> anotados
+                      </p>
+                    <% end %>
                   </div>
                   <div class="class-actions">
                     <%= link_to "Tomar lista", attendance_management_class_path(pilates_class), class: "btn btn-sm btn-outline" %>

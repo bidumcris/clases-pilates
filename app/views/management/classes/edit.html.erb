@@ -18,6 +18,10 @@
 
       <div class="form-row">
         <div class="form-group">
+          <%= f.label :tags, "Etiqueta / Grupo (opcional)" %>
+          <%= f.text_field :tags, class: "form-control", placeholder: "Ej: teens, pre pilates" %>
+        </div>
+        <div class="form-group">
           <%= f.label :level, "Nivel" %>
           <%= f.select :level, options_for_select([
             ['Inicial', 'inicial'],
@@ -39,7 +43,7 @@
       <div class="form-row">
         <div class="form-group">
           <%= f.label :room_id, "Sala" %>
-          <%= f.select :room_id, options_from_collection_for_select(@rooms, :id, :name, @pilates_class.room_id), 
+          <%= f.select :room_id, options_from_collection_for_select(@rooms, :id, :admin_display_name, @pilates_class.room_id),
               {}, { class: "form-control" } %>
         </div>
 
@@ -65,9 +69,12 @@
 
       <div class="form-row">
         <div class="form-group">
-          <%= f.label :max_capacity, "Cupo" %>
-          <%= f.number_field :max_capacity, class: "form-control", min: 1 %>
-          <small class="form-hint">Si es privada, el sistema fuerza cupo = 1</small>
+          <%= f.label :max_capacity, "Cupo máximo" %>
+          <%= f.select :max_capacity,
+            options_for_select([["(Usar cupo de la sala)", ""], ["7", 7], ["8", 8], ["10", 10], ["12", 12], ["15", 15]], @pilates_class.max_capacity),
+            {},
+            { class: "form-control" } %>
+          <small class="form-hint">En grupales suele ser 7 u 8 según el nivel. Si es privada, el sistema fuerza cupo = 1.</small>
         </div>
       </div>
 

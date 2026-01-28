@@ -13,6 +13,20 @@ class Room < ApplicationRecord
   validates :room_type, presence: true
   validates :capacity, presence: true, numericality: { greater_than: 0 }
 
+  def label
+    case room_type
+    when "planta_alta_privadas" then "Reformer"
+    when "planta_baja_mat_accesorios" then "Mat y Accesorios"
+    when "circuito" then "Circuito"
+    else
+      room_type.to_s.humanize
+    end
+  end
+
+  def admin_display_name
+    "#{label} — #{name}"
+  end
+
   # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.
   def self.ransackable_attributes(_auth_object = nil)
     %w[

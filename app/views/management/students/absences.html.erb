@@ -1,0 +1,46 @@
+<div class="admin-dashboard">
+  <div class="admin-page-header" style="display:flex; gap: 1rem; align-items: center; justify-content: space-between;">
+    <div>
+      <h1 style="margin:0;">Contactar inasistencias</h1>
+      <p style="margin:.25rem 0 0 0; opacity:.8;">Más de <%= @min_cancellations %> cancelaciones en el mes</p>
+    </div>
+    <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
+      <%= link_to "← Volver", management_root_path, class: "btn btn-outline" %>
+      <%= link_to "Alumnos", management_students_path, class: "btn btn-outline" %>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <% if @students.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Celular</th>
+            <th>Cancelaciones (mes)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @students.each do |student| %>
+            <% canc = @cancellations_by_user_id[student.id].to_i %>
+            <tr>
+              <td>
+                <strong><%= student.name.presence || student.email %></strong><br>
+                <small style="opacity:.75;"><%= student.email %></small>
+              </td>
+              <td><%= student.mobile.presence || "-" %></td>
+              <td><strong><%= canc %></strong></td>
+              <td style="display:flex; gap:.5rem; flex-wrap: wrap;">
+                <%= link_to "Ver ficha", management_student_path(student), class: "btn btn-sm btn-outline" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No hay alumnos con más de <%= @min_cancellations %> cancelaciones este mes.</p>
+    <% end %>
+  </div>
+</div>
+

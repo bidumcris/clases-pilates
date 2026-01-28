@@ -1,0 +1,48 @@
+<div class="admin-dashboard">
+  <div class="admin-page-header" style="display:flex; gap: 1rem; align-items: center; justify-content: space-between;">
+    <div>
+      <h1 style="margin:0;">Deudores</h1>
+      <p style="margin:.25rem 0 0 0; opacity:.8;">Alumnos con deuda registrada</p>
+    </div>
+    <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
+      <%= link_to "← Volver", management_root_path, class: "btn btn-outline" %>
+      <%= link_to "Alumnos", management_students_path, class: "btn btn-outline" %>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <% if @students.any? %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Celular</th>
+            <th>Importe mensual</th>
+            <th>Deuda</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @students.each do |student| %>
+            <tr>
+              <td>
+                <strong><%= student.name.presence || student.email %></strong><br>
+                <small style="opacity:.75;"><%= student.email %></small>
+              </td>
+              <td><%= student.mobile.presence || "-" %></td>
+              <td><%= student.payment_amount ? number_to_currency(student.payment_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></td>
+              <td><strong><%= number_to_currency(student.debt_amount, unit: "$", separator: ",", delimiter: ".") %></strong></td>
+              <td style="display:flex; gap:.5rem; flex-wrap: wrap;">
+                <%= link_to "Ver ficha", management_student_path(student), class: "btn btn-sm btn-outline" %>
+                <%= link_to "Editar", edit_management_student_path(student), class: "btn btn-sm btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No hay alumnos con deuda.</p>
+    <% end %>
+  </div>
+</div>
+

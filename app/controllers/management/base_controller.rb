@@ -7,7 +7,7 @@ class Management::BaseController < ApplicationController
   def ensure_admin_or_instructor
     unless current_user.admin? || current_user.instructor?
       flash[:alert] = "No tienes acceso a esta sección"
-      redirect_to dashboard_path
+      redirect_to dashboard_path and return
     end
   end
 
@@ -15,6 +15,6 @@ class Management::BaseController < ApplicationController
     return if current_user.admin?
 
     flash[:alert] = "Solo administradores pueden realizar esta acción"
-    redirect_to management_root_path
+    redirect_to management_root_path and return
   end
 end

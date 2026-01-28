@@ -1,0 +1,72 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Bloquear clases</h1>
+    <%= link_to "Volver", management_classes_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="form-container">
+    <div class="admin-section" style="margin-bottom: 1rem;">
+      <p style="margin:0; opacity:.85;">
+        Esto marca las clases afectadas como “feriado/bloqueo”, cancela reservas confirmadas y otorga <strong>1 recupero</strong> por alumno (vence al fin del mes de la clase).
+      </p>
+    </div>
+
+    <%= form_with url: block_management_classes_path, method: :post, local: true, class: "admin-form" do %>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fecha</label>
+          <%= date_field_tag :date, @block_date, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <label>Motivo (opcional)</label>
+          <%= text_field_tag :reason, "Bloqueo", class: "form-control", placeholder: "Ej: Mantenimiento / Evento" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Alcance</label><br>
+          <label style="display:inline-flex; gap:.4rem; align-items:center; margin-right: 1rem;">
+            <%= radio_button_tag :scope, "all", true %> Todas las salas
+          </label>
+          <label style="display:inline-flex; gap:.4rem; align-items:center;">
+            <%= radio_button_tag :scope, "one", false %> Una sala
+          </label>
+          <div style="margin-top: .5rem;">
+            <%= select_tag :room_id, options_from_collection_for_select(@rooms, :id, :name), include_blank: "Seleccionar sala", class: "form-control" %>
+            <small class="form-hint">Si elegís “Una sala”, seleccioná cuál.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Modo</label><br>
+          <label style="display:inline-flex; gap:.4rem; align-items:center; margin-right: 1rem;">
+            <%= radio_button_tag :mode, "full_day", true %> Bloquear todo el día
+          </label>
+          <label style="display:inline-flex; gap:.4rem; align-items:center;">
+            <%= radio_button_tag :mode, "time_range", false %> Elegir horario
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Inicio (si elegís horario)</label>
+          <%= time_field_tag :start_time, "08:00", class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <label>Fin (si elegís horario)</label>
+          <%= time_field_tag :end_time, "22:00", class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= submit_tag "Aplicar bloqueo", class: "btn btn-primary btn-large", data: { turbo_confirm: "¿Aplicar bloqueo? Se cancelarán reservas confirmadas y se otorgará 1 recupero por alumno." } %>
+        <%= link_to "Cancelar", management_classes_path, class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
