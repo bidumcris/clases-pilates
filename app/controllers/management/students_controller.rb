@@ -1,6 +1,6 @@
 class Management::StudentsController < Management::BaseController
-  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :update_class_type ]
-  before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :add_credits, :update_class_type, :debtors, :absences, :birthdays ]
+  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type ]
+  before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type, :debtors, :absences, :birthdays ]
 
   def index
     @students = User.where(role: :alumno).order(created_at: :desc)
@@ -70,12 +70,60 @@ class Management::StudentsController < Management::BaseController
     amount = params[:amount].to_i
     expires_at = Date.current.end_of_month
 
-    credit = @user.credits.create(amount: amount, expires_at: expires_at, used: false)
-
-    if credit.persisted?
-      redirect_to management_student_path(@user), notice: "#{amount} créditos agregados exitosamente"
+    granted = Credit.grant_capped(user: @user, amount: amount, expires_at: expires_at)
+    if granted > 0
+      redirect_to management_student_path(@user), notice: "Recuperos otorgados (+#{granted})."
     else
-      redirect_to management_student_path(@user), alert: "Error al agregar créditos"
+      redirect_to management_student_path(@user), alert: "El alumno ya alcanzó el máximo mensual de recuperos (3)."
+    end
+  end
+
+  # POST /management/students/:id/grant_recoveries
+  def grant_recoveries
+    amount = params[:amount].to_i
+    expires_at = Date.current.end_of_month
+
+    if amount <= 0
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "La cantidad debe ser mayor a 0"
+      return
+    end
+
+    granted = Credit.grant_capped(user: @user, amount: amount, expires_at: expires_at)
+    if granted > 0
+      redirect_back fallback_location: edit_management_student_path(@user), notice: "Recuperos otorgados (+#{granted})."
+    else
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "El alumno ya alcanzó el máximo mensual de recuperos (3)."
+    end
+  end
+
+  # POST /management/students/:id/deduct_recoveries
+  def deduct_recoveries
+    amount_to_deduct = params[:amount].to_i
+
+    if amount_to_deduct <= 0
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "La cantidad debe ser mayor a 0"
+      return
+    end
+
+    remaining = amount_to_deduct
+
+    Credit.transaction do
+      credits = @user.credits.available_this_month.order(expires_at: :asc, created_at: :asc).lock
+      credits.each do |credit|
+        break if remaining <= 0
+
+        use_now = [remaining, credit.amount].min
+        credit.use!(use_now)
+        remaining -= use_now
+      end
+
+      raise ActiveRecord::Rollback if remaining > 0
+    end
+
+    if remaining > 0
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "No alcanza el saldo de recuperos disponibles para descontar #{amount_to_deduct}."
+    else
+      redirect_back fallback_location: edit_management_student_path(@user), notice: "Recuperos descontados (-#{amount_to_deduct})."
     end
   end
 
@@ -140,7 +188,8 @@ class Management::StudentsController < Management::BaseController
       :payment_amount, :debt_amount, :last_payment_date,
       :billing_status,
       :monthly_turns, :join_date, :first_payment_date, :payments_count,
-      :normal_view, :param1, :param2, :param3
+      :normal_view, :param1, :param2, :param3,
+      weekly_days: []
     )
   end
 
@@ -150,7 +199,8 @@ class Management::StudentsController < Management::BaseController
       :name, :dni, :phone, :mobile, :birth_date,
       :level, :class_type, :active,
       :join_date, :subscription_start, :subscription_end,
-      :payment_amount, :debt_amount, :monthly_turns
+      :payment_amount, :debt_amount, :monthly_turns,
+      weekly_days: []
     )
   end
 end

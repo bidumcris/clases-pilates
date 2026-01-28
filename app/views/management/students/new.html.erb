@@ -100,6 +100,21 @@
             <%= f.number_field :debt_amount, class: "form-control", step: "0.01", min: 0 %>
           </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Días por semana</label>
+            <div style="display:flex; gap:.75rem; flex-wrap: wrap; margin-top:.5rem;">
+              <% User::WEEKDAY_OPTIONS.each do |label, value| %>
+                <label style="display:flex; align-items:center; gap:.35rem;">
+                  <%= f.check_box :weekly_days, { multiple: true }, value, nil %>
+                  <span><%= label %></span>
+                </label>
+              <% end %>
+            </div>
+            <small class="form-hint">Ej: 2 veces/semana → Lunes y Miércoles. 3 veces/semana → Lunes, Miércoles y Viernes.</small>
+          </div>
+        </div>
       </div>
 
       <div class="form-actions">

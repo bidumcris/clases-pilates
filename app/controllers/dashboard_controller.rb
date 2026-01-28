@@ -4,8 +4,10 @@ class DashboardController < ApplicationController
   def index
     @user = current_user
     @reservations = current_user.reservations.upcoming.limit(5)
-    @credits = current_user.credits.available
-    @requests = current_user.requests.pending_approval
+    # Recuperos: son mensuales (no se acumulan entre meses)
+    @credits = current_user.credits.available_this_month
+    @recoveries_this_month_total = @credits.sum(:amount)
+    @recoveries_monthly_cap = 3
 
     # Clases fijas del mes (para alumnos con turnos fijos)
     month_start = Date.current.beginning_of_month

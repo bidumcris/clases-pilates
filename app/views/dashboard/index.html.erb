@@ -158,15 +158,17 @@
       </div>
     <% end %>
 
-    <!-- Solicitudes Pendientes -->
+    <!-- Recuperos -->
     <div class="card">
-      <div class="card-header">Solicitudes Pendientes</div>
-      <% if @requests.any? %>
-        <p><%= @requests.count %> solicitudes pendientes de aprobación</p>
-        <%= link_to "Ver solicitudes", requests_path, class: "btn btn-primary" %>
-      <% else %>
-        <p>No tienes solicitudes pendientes</p>
-      <% end %>
+      <div class="card-header">Recuperos</div>
+      <p>
+        Tenés <strong><%= @recoveries_this_month_total.to_i %></strong> recuperos disponibles este mes.
+        <span style="opacity:.8;">(máximo <%= @recoveries_monthly_cap %> por mes)</span>
+      </p>
+      <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
+        <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
+        <%= link_to "Ver recuperos", creditos_path, class: "btn btn-outline" %>
+      </div>
     </div>
   </div>
 

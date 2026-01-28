@@ -1,11 +1,17 @@
 class Credit < ApplicationRecord
   belongs_to :user
 
+  MONTHLY_AVAILABLE_CAP = 3
+
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :expires_at, presence: true
   validate :expires_at_in_future
 
   scope :available, -> { where(used: false).where("amount > 0").where("expires_at >= ?", Date.current) }
+  scope :available_this_month, -> {
+    available.where("EXTRACT(MONTH FROM expires_at) = ? AND EXTRACT(YEAR FROM expires_at) = ?",
+                    Date.current.month, Date.current.year)
+  }
   scope :used, -> { where(used: true) }
   scope :expired, -> { where("expires_at < ?", Date.current) }
   scope :by_expiration_month, ->(date) {
@@ -57,6 +63,22 @@ class Credit < ApplicationRecord
       expires_at: expires_at,
       used: false
     )
+  end
+
+  # Otorgar recuperos con tope mensual (saldo disponible) por mes de expiración.
+  # Devuelve la cantidad efectivamente otorgada (0 si ya alcanzó el tope).
+  def self.grant_capped(user:, amount:, expires_at:, cap: MONTHLY_AVAILABLE_CAP)
+    amount = amount.to_i
+    return 0 if amount <= 0
+
+    current_available =
+      user.credits.available.where(expires_at: expires_at).sum(:amount)
+
+    allowed = [amount, cap - current_available].min
+    return 0 if allowed <= 0
+
+    create!(user: user, amount: allowed, expires_at: expires_at, used: false)
+    allowed
   end
 
   # Obtener el mes de expiración

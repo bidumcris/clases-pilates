@@ -14,6 +14,15 @@ class User < ApplicationRecord
   enum :class_type, { grupal: 0, privada: 1 }
   enum :billing_status, { abonado: 0, pendiente: 1, deudor: 2 }
 
+  # Postgres EXTRACT(DOW): domingo=0 ... sábado=6
+  WEEKDAY_OPTIONS = [
+    ["Lunes", 1],
+    ["Martes", 2],
+    ["Miércoles", 3],
+    ["Jueves", 4],
+    ["Viernes", 5]
+  ].freeze
+
   has_many :reservations, dependent: :destroy
   has_many :credits, dependent: :destroy
   has_many :requests, dependent: :destroy
@@ -107,11 +116,17 @@ class User < ApplicationRecord
 
   # --- Helpers para panel de alumnos ---
   def credits_available
-    credits.available.sum(:amount)
+    credits.available_this_month.sum(:amount)
   end
 
   def fixed_days_summary
     fixed_slots.active.order(:day_of_week, :hour).map(&:full_description).join(" · ")
+  end
+
+  def weekly_days_labels
+    return [] if weekly_days.blank?
+    map = WEEKDAY_OPTIONS.to_h.invert
+    weekly_days.map { |d| map[d.to_i] }.compact
   end
 
   # Ej: "Lunes y Miércoles 18hs · Viernes 10hs"

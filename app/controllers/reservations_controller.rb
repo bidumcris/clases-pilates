@@ -9,7 +9,8 @@ class ReservationsController < ApplicationController
     @pilates_class = PilatesClass.find(params[:pilates_class_id])
 
     week_start = Date.current.beginning_of_week(:monday)
-    week_end = week_start + 6.days
+    # Agenda semanal (recuperos): solo lunes a viernes
+    week_end = week_start + 4.days
     allowed_range = week_start.beginning_of_day..week_end.end_of_day
 
     unless @pilates_class.start_time.in_time_zone.between?(allowed_range.begin, allowed_range.end)
@@ -18,7 +19,7 @@ class ReservationsController < ApplicationController
     end
 
     # Verificar si tiene créditos disponibles
-    available_credit = current_user.credits.available.first
+    available_credit = current_user.credits.available_this_month.first
 
     unless available_credit
       redirect_to creditos_path, alert: "No tienes recuperos disponibles"
