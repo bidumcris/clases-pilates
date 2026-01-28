@@ -127,6 +127,38 @@ class Management::StudentsController < Management::BaseController
     end
   end
 
+  # POST /management/students/:id/send_whatsapp_test
+  def send_whatsapp_test
+    unless @user.whatsapp_opt_in?
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "El alumno no tiene opt-in de WhatsApp."
+      return
+    end
+
+    to = @user.mobile_e164_ar
+    if to.blank?
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "El alumno no tiene un número válido para WhatsApp."
+      return
+    end
+
+    client = Whatsapp::Client.new
+    unless client.enabled?
+      redirect_back fallback_location: edit_management_student_path(@user), alert: "WhatsApp Cloud API no está configurado en el servidor."
+      return
+    end
+
+    template = ENV.fetch("WHATSAPP_TEMPLATE_TEST", "subscription_due_soon")
+    client.send_template(
+      to: to,
+      template_name: template,
+      language: ENV.fetch("WHATSAPP_TEMPLATE_LANGUAGE", "es_AR"),
+      variables: [@user.name.presence || "alumna/o", Date.current.strftime("%d/%m"), (@user.payment_amount || 0).to_s]
+    )
+
+    redirect_back fallback_location: edit_management_student_path(@user), notice: "WhatsApp de prueba enviado (si el template está configurado)."
+  rescue => e
+    redirect_back fallback_location: edit_management_student_path(@user), alert: "Error enviando WhatsApp: #{e.message}"
+  end
+
   def update_class_type
     if @user.update(class_type: params[:class_type])
       redirect_to management_student_path(@user), notice: "Tipo de clase actualizado exitosamente"
@@ -188,6 +220,7 @@ class Management::StudentsController < Management::BaseController
       :payment_amount, :debt_amount, :last_payment_date,
       :billing_status,
       :monthly_turns, :join_date, :first_payment_date, :payments_count,
+      :whatsapp_opt_in, :whatsapp_opt_in_at, :whatsapp_opt_in_source,
       :normal_view, :param1, :param2, :param3,
       weekly_days: []
     )

@@ -86,6 +86,7 @@ Rails.application.routes.draw do
           post :add_credits
           post :grant_recoveries
           post :deduct_recoveries
+          post :send_whatsapp_test
           patch :update_class_type
         end
       end
@@ -108,4 +109,6 @@ Rails.application.routes.draw do
 
   # Webhooks (sin auth)
   post "webhooks/mercado_pago", to: "webhooks/mercado_pago#receive", as: :webhooks_mercado_pago
+  get "webhooks/whatsapp", to: "webhooks/whatsapp#verify", as: :webhooks_whatsapp_verify
+  post "webhooks/whatsapp", to: "webhooks/whatsapp#receive", as: :webhooks_whatsapp
 end
