@@ -3,7 +3,8 @@ class CreditsController < ApplicationController
 
   def index
     @credits = current_user.credits.order(expires_at: :asc)
-    @available_credits = @credits.available
+    # Recuperos son mensuales (no se acumulan)
+    @available_credits = @credits.available_this_month
     @expired_credits = @credits.expired
     @used_credits = @credits.where(used: true)
 

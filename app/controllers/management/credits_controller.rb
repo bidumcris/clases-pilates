@@ -50,11 +50,11 @@ class Management::CreditsController < Management::BaseController
       return
     end
 
-    credit = Credit.new(user: user, amount: amount, expires_at: expires_at, used: false)
-    if credit.save
-      redirect_to management_credits_path(email: user.email), notice: "Créditos otorgados"
+    granted = Credit.grant_capped(user: user, amount: amount, expires_at: expires_at)
+    if granted > 0
+      redirect_to management_credits_path(email: user.email), notice: "Créditos otorgados (+#{granted})."
     else
-      redirect_to management_credits_path(email: user.email), alert: credit.errors.full_messages.join(", ")
+      redirect_to management_credits_path(email: user.email), alert: "El alumno ya alcanzó el máximo mensual de recuperos (3)."
     end
   rescue ActiveRecord::RecordNotFound
     redirect_to management_credits_path, alert: "No existe un alumno con ese email"

@@ -216,9 +216,10 @@ class Management::ClassesController < Management::BaseController
     classes.each do |klass|
       klass.update!(holiday: true, holiday_reason: reason)
 
-      expires_at = klass.start_time.in_time_zone.to_date.end_of_month
+      # Recuperos son mensuales: siempre vencen a fin del mes actual
+      expires_at = Date.current.end_of_month
       klass.reservations.where(status: :confirmed).includes(:user).find_each do |reservation|
-        Credit.create!(user: reservation.user, amount: 1, expires_at: expires_at, used: false)
+        Credit.grant_capped(user: reservation.user, amount: 1, expires_at: expires_at)
         reservation.update!(status: :cancelled, attendance_status: :sin_marcar)
       end
     end

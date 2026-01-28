@@ -40,7 +40,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-number"><%= @user.credits_available %></div>
-        <div class="stat-label">Créditos disponibles</div>
+        <div class="stat-label">Recuperos disponibles</div>
       </div>
       <div class="stat-card">
         <div class="stat-number"><%= @payments.select(&:completed?).sum(&:amount) %></div>
@@ -113,7 +113,7 @@
   </div>
 
   <div class="admin-section">
-    <h2>Créditos</h2>
+    <h2>Recuperos</h2>
     <% if @credits.any? %>
       <table class="admin-table">
         <thead>
@@ -142,7 +142,7 @@
         </tbody>
       </table>
     <% else %>
-      <p>No hay créditos.</p>
+      <p>No hay recuperos.</p>
     <% end %>
   </div>
 

@@ -6,7 +6,8 @@ class PilatesClassesController < ApplicationController
     # Ignoramos el parámetro `date` para evitar navegación por mes/semanas futuras.
     @date = Date.current
     @week_start = @date.beginning_of_week(:monday)
-    @week_end = @week_start + 6.days
+    # Ocultar sábado y domingo: solo lunes a viernes
+    @week_end = @week_start + 4.days
     range = @week_start.beginning_of_day..@week_end.end_of_day
 
     # Filtrar clases según nivel y tipo de usuario (sin filtrar por sala - mostrar todas)
@@ -21,7 +22,7 @@ class PilatesClassesController < ApplicationController
   def show
     @pilates_class = PilatesClass.find(params[:id])
     week_start = Date.current.beginning_of_week(:monday)
-    week_end = week_start + 6.days
+    week_end = week_start + 4.days
     allowed_range = week_start.beginning_of_day..week_end.end_of_day
 
     unless @pilates_class.start_time.in_time_zone.between?(allowed_range.begin, allowed_range.end)

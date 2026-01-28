@@ -84,6 +84,8 @@ Rails.application.routes.draw do
         end
         member do
           post :add_credits
+          post :grant_recoveries
+          post :deduct_recoveries
           patch :update_class_type
         end
       end
