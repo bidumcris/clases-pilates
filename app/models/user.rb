@@ -40,11 +40,31 @@ class User < ApplicationRecord
 
   # Valores por defecto
   after_initialize :set_defaults, if: :new_record?
+  before_validation :sync_whatsapp_opt_in_timestamp
 
   def set_defaults
     self.role ||= :alumno
     self.level ||= :inicial
     self.class_type ||= :grupal
+  end
+
+  def whatsapp_opt_in?
+    !!whatsapp_opt_in
+  end
+
+  def mobile_e164_ar
+    return nil if mobile.blank?
+    Whatsapp::Phone.normalize_ar(mobile)
+  end
+
+  private
+
+  def sync_whatsapp_opt_in_timestamp
+    return unless respond_to?(:whatsapp_opt_in)
+
+    if whatsapp_opt_in? && whatsapp_opt_in_at.blank?
+      self.whatsapp_opt_in_at = Time.current
+    end
   end
 
   # Ransack (ActiveAdmin) requires explicit allowlists in recent versions.

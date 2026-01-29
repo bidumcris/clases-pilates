@@ -80,6 +80,28 @@
       </div>
 
       <div class="admin-section" style="margin-top: 1.5rem;">
+        <h2>WhatsApp (consentimiento)</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <%= f.label :whatsapp_opt_in, "Aceptó WhatsApp" %><br>
+            <%= f.check_box :whatsapp_opt_in %>
+            <small class="form-hint">Solo se envían mensajes si el alumno dio consentimiento (opt-in).</small>
+          </div>
+          <div class="form-group">
+            <%= f.label :whatsapp_opt_in_source, "Origen del consentimiento" %>
+            <%= f.text_field :whatsapp_opt_in_source, class: "form-control", placeholder: "Ej: recepción / formulario / WhatsApp" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :whatsapp_opt_in_at, "Fecha opt-in" %>
+            <%= f.datetime_local_field :whatsapp_opt_in_at, class: "form-control", value: @user.whatsapp_opt_in_at&.strftime('%Y-%m-%dT%H:%M') %>
+          </div>
+        </div>
+        <p style="margin:.35rem 0 0 0; opacity:.8;">
+          Número normalizado: <strong><%= @user.mobile_e164_ar.presence || "-" %></strong>
+        </p>
+      </div>
+
+      <div class="admin-section" style="margin-top: 1.5rem;">
         <h2>Abono / Pagos (administrativo)</h2>
         <div class="form-row">
           <div class="form-group">
@@ -201,6 +223,19 @@
           <p style="margin:.75rem 0 0 0; opacity:.75;">
             Tip: estos recuperos se reinician cada mes.
           </p>
+        </div>
+      </div>
+
+      <div class="admin-section" style="margin-top: 1.5rem;">
+        <h2>WhatsApp (prueba)</h2>
+        <div class="card" style="padding: 1rem;">
+          <p style="margin:0 0 .75rem 0; opacity:.8;">
+            Envía un mensaje de prueba usando un template (requiere opt-in y configuración del servidor).
+          </p>
+          <%= button_to "Enviar WhatsApp de prueba", send_whatsapp_test_management_student_path(@user),
+            method: :post,
+            class: "btn btn-primary",
+            data: { turbo_confirm: "¿Enviar WhatsApp de prueba a #{@user.email}?" } %>
         </div>
       </div>
     <% end %>

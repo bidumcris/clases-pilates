@@ -52,6 +52,8 @@ gem "solid_cable"
 # Local env vars convenience (para deploy con `.env`)
 gem "dotenv-rails"
 
+# Email delivery (Brevo) se configura por SMTP (sin gem extra)
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
