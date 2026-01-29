@@ -57,12 +57,17 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
-  # --- Email delivery (SendGrid) ---
+  # --- Email delivery (Brevo SMTP) ---
   config.action_mailer.raise_delivery_errors = ENV.fetch("MAILER_RAISE_DELIVERY_ERRORS", "0") == "1"
-  config.action_mailer.delivery_method = :sendgrid_actionmailer
-  config.action_mailer.sendgrid_actionmailer_settings = {
-    api_key: ENV.fetch("SENDGRID_API_KEY"),
-    raise_delivery_errors: ENV.fetch("MAILER_RAISE_DELIVERY_ERRORS", "0") == "1"
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: ENV.fetch("BREVO_SMTP_ADDRESS", "smtp-relay.brevo.com"),
+    port: Integer(ENV.fetch("BREVO_SMTP_PORT", "587")),
+    domain: ENV.fetch("MAILER_HOST", "example.com"),
+    user_name: ENV.fetch("BREVO_SMTP_USERNAME"),
+    password: ENV.fetch("BREVO_SMTP_PASSWORD"),
+    authentication: :login,
+    enable_starttls_auto: true
   }
 
   # Set host to be used by links generated in mailer templates.

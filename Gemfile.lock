@@ -339,7 +339,6 @@ GEM
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    ruby_http_client (3.6.0)
     rubyzip (3.2.2)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -358,11 +357,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sendgrid-actionmailer (3.2.0)
-      mail (~> 2.7)
-      sendgrid-ruby (~> 6.4)
-    sendgrid-ruby (6.7.0)
-      ruby_http_client (~> 3.4)
     simple_calendar (3.1.0)
       rails (>= 6.1)
     solid_cable (3.0.12)
@@ -454,7 +448,6 @@ DEPENDENCIES
   rubocop-rails-omakase
   sass-rails
   selenium-webdriver
-  sendgrid-actionmailer
   simple_calendar
   solid_cable
   solid_cache
