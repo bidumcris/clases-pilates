@@ -25,9 +25,9 @@
           <%= f.label :level, "Nivel" %>
           <%= f.select :level, options_for_select([
             ['Inicial', 'inicial'],
-            ['Básico', 'basic'],
+            ['Basic', 'basic'],
             ['Intermedio', 'intermediate'],
-            ['Avanzado', 'advanced']
+            ['Pre avanzado', 'advanced']
           ], @pilates_class.level), {}, { class: "form-control" } %>
         </div>
 

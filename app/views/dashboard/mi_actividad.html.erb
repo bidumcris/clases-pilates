@@ -1,19 +1,15 @@
 <div class="mi-actividad">
-  <h1>MIS CLASES - Turnos del Mes</h1>
+  <h1>MIS CLASES</h1>
 
-  <!-- Selector de mes -->
-  <div style="margin-bottom: 1.5rem;">
-    <%= form_with url: mi_actividad_path, method: :get, local: true, data: { turbo_frame: "reservations" } do |f| %>
-      <%= f.month_field :date, value: @date.strftime("%Y-%m"), class: "form-input" %>
-      <%= f.submit "Ver mes", class: "btn btn-primary" %>
-    <% end %>
-  </div>
+  <p style="margin-bottom: 1rem; opacity: .85;">
+    Solo podés ver y gestionar turnos de la <strong>semana actual</strong> (lun–vie).
+  </p>
 
-  <!-- Reservas del mes con Turbo Frame -->
+  <!-- Reservas de la semana actual (sin selector: no se permite ver otras semanas) -->
   <%= turbo_frame_tag "reservations" do %>
     <div class="card">
       <div class="card-header">
-        Turnos de <%= @date.strftime("%B %Y") %>
+        Semana del <%= I18n.l(@week_start, format: "%d/%m") %> al <%= I18n.l(@week_end, format: "%d/%m/%Y") %>
       </div>
       
       <% if @reservations.any? %>
@@ -45,7 +41,8 @@
           <% end %>
         </ul>
       <% else %>
-        <p>No tienes turnos reservados para este mes</p>
+        <p>No tenés turnos reservados para esta semana.</p>
+        <p><%= link_to "Ir al calendario para reservar", agenda_path, class: "btn btn-primary", data: { turbo_frame: "_top" } %></p>
       <% end %>
     </div>
   <% end %>

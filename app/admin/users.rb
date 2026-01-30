@@ -90,7 +90,7 @@ ActiveAdmin.register User do
       f.input :email
       f.input :password, hint: "Dejar en blanco si no quieres cambiarlo"
       f.input :password_confirmation
-      f.input :level, as: :select, collection: User.levels.keys.map { |k| [ k.humanize, k ] }, hint: "Nivel del alumno (inicial, básico, intermedio, avanzado)"
+      f.input :level, as: :select, collection: User.levels.keys.map { |k| [ I18n.t("level_labels.#{k}", default: k.to_s.humanize), k ] }, hint: "Nivel del alumno (inicial, basic, intermedio, pre avanzado)"
       f.input :class_type, as: :select, collection: User.class_types.keys.map { |k| [ k.humanize, k ] }, hint: "Grupal: clases normales. Privada: para alumnos con patología o lesión"
     end
     f.actions

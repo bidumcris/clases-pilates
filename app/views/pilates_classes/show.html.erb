@@ -9,7 +9,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
       <div>
         <h3 style="margin-bottom: 0.5rem;">Información</h3>
-        <p><strong>Nivel:</strong> <%= @pilates_class.level.humanize %></p>
+        <p><strong>Nivel:</strong> <%= level_label(@pilates_class.level) %></p>
         <p><strong>Sala:</strong> <%= @pilates_class.room.name %></p>
       </div>
 
@@ -69,8 +69,8 @@
         <div class="alert alert-error">
           No tienes el nivel necesario para reservar esta clase.
           <br>
-          Tu nivel: <strong><%= current_user.level.humanize %></strong> | 
-          Nivel requerido: <strong><%= @pilates_class.level.humanize %></strong>
+          Tu nivel: <strong><%= level_label(current_user.level) %></strong> | 
+          Nivel requerido: <strong><%= level_label(@pilates_class.level) %></strong>
         </div>
       <% end %>
     </div>

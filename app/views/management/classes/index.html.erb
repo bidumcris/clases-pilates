@@ -93,7 +93,7 @@
                       <%= pilates_class.start_time.strftime("%H:%M") %> - <%= pilates_class.end_time.strftime("%H:%M") %>
                     </p>
                     <p class="class-level">
-                      Nivel: <strong><%= pilates_class.level.humanize %></strong>
+                      Nivel: <strong><%= level_label(pilates_class.level) %></strong>
                       <span class="class-type-badge <%= pilates_class.privada? ? 'badge-warning' : 'badge-success' %>">
                         <%= pilates_class.class_type.humanize %>
                       </span>

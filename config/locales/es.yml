@@ -1,4 +1,10 @@
 es:
+  level_labels:
+    inicial: "Inicial"
+    basic: "Basic"
+    intermediate: "Intermedio"
+    advanced: "Pre avanzado"
+
   date:
     formats:
       default: "%d de %B de %Y"
