@@ -54,11 +54,13 @@
           <% elsif current_user.instructor? %>
             <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
           <% else %>
-            <%= link_to "Mi Panel", dashboard_path, class: "navbar-item" %>
-            <%= link_to "MIS CLASES", mi_actividad_path, class: "navbar-item" %>
-            <%= link_to "Ver Agenda", agenda_path, class: "navbar-item" %>
-            <%= link_to "Recuperos", creditos_path, class: "navbar-item" %>
-            <%= link_to "Solicitudes", requests_path, class: "navbar-item" %>
+            <div class="navbar-items-desktop">
+              <%= link_to "Mi Panel", dashboard_path, class: "navbar-item" %>
+              <%= link_to "MIS CLASES", mi_actividad_path, class: "navbar-item" %>
+              <%= link_to "Ver Agenda", agenda_path, class: "navbar-item" %>
+              <%= link_to "Recuperos", creditos_path, class: "navbar-item" %>
+              <%= link_to "Solicitudes", requests_path, class: "navbar-item" %>
+            </div>
           <% end %>
           <div class="navbar-user">
             <span><%= current_user.email %></span>

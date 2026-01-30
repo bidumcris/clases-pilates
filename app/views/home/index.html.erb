@@ -5,17 +5,24 @@
         <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "landing-header-logo-img" %>
       <% end %>
 
-      <nav class="landing-header-nav" aria-label="Navegación principal">
-        <a href="#inicio">home</a>
-        <a href="#tipos-de-clase">tipos de clase</a>
-        <a href="#ubicacion">ubicacion</a>
-        <a href="#sobre-nosotras">sobre nosotras</a>
-        <a href="#nuestro-estudio">nuestro estudio</a>
-      </nav>
+      <div class="landing-header-right" data-controller="landing-nav">
+        <nav id="landing-nav-menu" class="landing-header-nav" aria-label="Navegación principal" data-landing-nav-target="menu">
+          <a href="#inicio">home</a>
+          <a href="#tipos-de-clase">tipos de clase</a>
+          <a href="#ubicacion">ubicacion</a>
+          <a href="#sobre-nosotras">sobre nosotras</a>
+          <a href="#nuestro-estudio">nuestro estudio</a>
+        </nav>
 
-      <div class="landing-header-cta" aria-label="Acceso">
-        <%= link_to "Sos alumna/o de energia pilates?", acceso_path, class: "landing-header-link" %>
-        <%= link_to "No sos alumna/o de energia pilates", "#contacto", class: "landing-header-link" %>
+        <div class="landing-header-cta-wrap">
+          <div class="landing-header-cta" aria-label="Acceso">
+            <%= link_to "Sos alumna/o de energia pilates?", acceso_path, class: "landing-header-link" %>
+            <%= link_to "No sos alumna/o de energia pilates", "#contacto", class: "landing-header-link" %>
+          </div>
+          <button type="button" class="landing-header-menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="landing-nav-menu" data-landing-nav-target="toggle" data-action="click->landing-nav#toggle">
+          <i aria-hidden="true" role="presentation" class="landing-header-menu-toggle__icon eicon-menu-bar"></i>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -56,7 +63,7 @@
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/formación/EP_formación 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Formación <span class="type-soon">Próximamente</span></h3>
-            <p>Formación de instructores en Pilates Clásico.</p>
+            <p>Formación de instructores en Pilates Clásico. Integra teoría, práctica y acompañamiento personalizado, garantizando un proceso de aprendizaje cercano, profesional y auténtico con fidelidad al método, desarrollando una mirada integral y profesional.</p>
           </div>
 
           <div class="type-card type-card--grupal" data-controller="type-expand">
@@ -65,11 +72,11 @@
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Grupal</h3>
-            <p>Clases grupales por niveles, cupos reducidos y progreso continuo.</p>
+            <p>Clases grupales por niveles en días y horarios fijos.</p>
             <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
             <div class="type-more" data-type-expand-target="content" hidden>
-              <p><strong>Niveles:</strong> inicial · basic · intermediate · advanced</p>
-              <p>Cupos reducidos (máx. 8 personas) y progresión por nivel.</p>
+              <p>Cupo reducidos (Max 8 personas). .</p>
+              <p><strong>Niveles:</strong> Inicial · Basic · Intermedio · Pre avanzado</p>
               <p><%= link_to "Días y horarios (WhatsApp)", "https://wa.me/5493584830778", target: "_blank", rel: "noopener", class: "btn btn-primary" %></p>
             </div>
           </div>
@@ -80,11 +87,16 @@
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/libre/EP_libre 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Libre</h3>
-            <p>Elegís día y horario según tu rutina. Flexibilidad sin perder calidad.</p>
+            <p>Una modalidad flexible, para entrenar, según tu rutina:</p>
             <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
             <div class="type-more" data-type-expand-target="content" hidden>
-              <p>Reserva a través de nuestra App, en clases grupales (máx. 8 personas).</p>
-              <p><strong>Horario del estudio:</strong> lun–vie 07:00–11:00 / 15:30–22:00</p>
+              <ul>
+                <li>Elegí día, horario y sala.</li>
+                <li>Reserva a través de nuestro sistema.</li>
+                <li>Clases grupales (máx 8 personas).</li>
+                <li>Libertad, sin perder calidad, ni acompañamiento.</li>
+              </ul>
+              <p class="type-more-hidden" hidden><strong>Horario del estudio:</strong> lun–vie 07:00–11:00 / 15:30–22:00</p>
               <p><a class="btn btn-outline-primary" href="#contacto">Más detalles</a></p>
             </div>
           </div>
@@ -95,7 +107,12 @@
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/online/EP_online 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Online <span class="type-soon">Próximamente</span></h3>
-            <p>Clases online para entrenar desde casa.</p>
+            <p>Entrenamiento individual, en vivo, guiado paso a paso:</p>
+            <ul>
+              <li>Adaptado a tu nivel y objetivos</li>
+              <li>Acompañamiento cercano. Estés donde estés</li>
+              <li>Ideal si no puedes asistir de forma presencial</li>
+            </ul>
           </div>
 
           <div class="type-card type-card--personalizado" data-controller="type-expand">
@@ -104,10 +121,12 @@
               <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/personalizado/EP_personalizado 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
             </div>
             <h3>Personalizada</h3>
-            <p>Un entrenamiento mano a mano, totalmente adaptado a tu cuerpo y a tus objetivos.</p>
+            <p>Es un mano a mano entre la alumno y la profesora, a sala cerrada en el día, y en el horario que se elija
+</p>
             <button type="button" class="btn btn-outline-primary type-more-btn" data-type-expand-target="button" data-action="type-expand#toggle">Ver más</button>
             <div class="type-more" data-type-expand-target="content" hidden>
-              <p>Clase privada (1 alumno) con enfoque detallado y adaptaciones según necesidades.</p>
+              <p>Es un trabajo 100% personalizado al ritmo y nivel de entrenamiento del alumno .
+               <p>Ideal para objetivos particulares y procesos individualizados.</p>
               <p><a class="btn btn-outline-primary" href="#contacto">Más información</a></p>
             </div>
           </div>
@@ -355,14 +374,14 @@
           <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 1.png", alt: "Pilates Grupal", class: "service-logo", loading: "lazy" %>
           <%= image_tag "energia-pilates/3. submarcas-20251231T190023Z-1-001/3. submarcas/grupal/EP_grupal 4.png", alt: "", class: "service-mark", aria: { hidden: true }, loading: "lazy" %>
         </div>
-        <p><strong>Niveles:</strong> inicial · basic · intermediate · advanced</p>
+        <p><strong>Niveles:</strong> Inicial · Basic · Intermedio · Pre avanzado</p>
         <p>
           Son clases presenciales diseñadas para entrenar en días y horarios fijos con un enfoque progresivo y personalizado del Pilates Clásico con capacidad máxima para 8 personas por clase.
         </p>
         <p><strong>Clases Grupales por Niveles</strong></p>
         <ul class="landing-list">
           <li><strong>Nivel Inicial:</strong> Para quienes nunca hicieron Pilates. Aprenden la técnica desde cero y la base de los ejercicios. Entrenan en la Sala de Reformer y Mat y Accesorios.</li>
-          <li><strong>Nivel Basic:</strong> Para alumnos con al menos 3 meses de entrenamiento continuo y que ya conocen las series y ejercicios iniciales, logrando independencia en las clases. Entrenan en la Sala de Reformer y Mat y Accesorios.</li>
+          <li><strong>Nivel Basic</strong>: Para alumnos con al menos 3 meses de entrenamiento continuo y que ya conocen las series y ejercicios iniciales, logrando independencia en las clases. Entrenan en la Sala de Reformer y Mat y Accesorios.</li>
           <li><strong>Nivel Intermedio:</strong> Para alumnos con al menos 6 meses de entrenamiento constante, con independencia y buen ritmo. Avanzan en nuevas series y ejercicios, utilizando nuevos equipos. Entrenan en la sala de Mat y accesorios y en Circuito.</li>
         </ul>
         <p>

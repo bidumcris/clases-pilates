@@ -83,7 +83,7 @@ class PilatesClass < ApplicationRecord
     return unless start_time && instructor
 
     type = class_type.present? ? class_type.humanize : "Clase"
-    level_str = level.present? ? level.humanize : nil
+    level_str = level.present? ? I18n.t("level_labels.#{level}", default: level.to_s.humanize) : nil
     date_str = I18n.l(start_time.to_date, format: "%d/%m")
     time_str = start_time.strftime("%H:%M")
     tag_str = tags.to_s.strip.presence

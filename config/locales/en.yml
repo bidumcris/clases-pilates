@@ -29,3 +29,9 @@
 
 en:
   hello: "Hello world"
+
+  level_labels:
+    inicial: "Inicial"
+    basic: "Basic"
+    intermediate: "Intermedio"
+    advanced: "Pre avanzado"

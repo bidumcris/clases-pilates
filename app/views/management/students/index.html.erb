@@ -53,7 +53,7 @@
                 <small style="opacity:.75;"><%= student.email %></small>
               </td>
               <td><%= student.active? ? "Sí" : "No" %></td>
-              <td><%= student.level.humanize %></td>
+              <td><%= level_label(student.level) %></td>
               <td><%= student.class_type.humanize %></td>
               <td><%= student.credits_available %></td>
               <td><%= student.debt_amount ? number_to_currency(student.debt_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></td>

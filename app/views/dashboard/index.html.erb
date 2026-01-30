@@ -14,9 +14,24 @@
       </div>
       <div class="dashboard-payment-row">
         <span class="dashboard-payment-label">Pago:</span>
-        <span class="payment-status-badge payment-status-badge--<%= current_user.billing_status %>">
-          <%= current_user.billing_status.to_s.humanize %>
-        </span>
+        <%= form_with url: update_billing_status_path, method: :patch, local: true, class: "dashboard-billing-form" do |f| %>
+          <%= f.select :billing_status,
+            options_for_select(
+              [
+                [ "Abonado", "abonado" ],
+                [ "Pendiente", "pendiente" ],
+                [ "Deudor", "deudor" ]
+              ],
+              current_user.billing_status
+            ),
+            {},
+            {
+              class: "payment-status-select payment-status-select--#{current_user.billing_status}",
+              disabled: !current_user.admin?,
+              name: "billing_status",
+              onchange: current_user.admin? ? "this.form.submit()" : nil
+            } %>
+        <% end %>
       </div>
     </div>
   </div>
@@ -96,7 +111,7 @@
           </div>
         <% end %>
         <div class="credits-actions">
-          <%= link_to "Ver Agenda y Reservar", agenda_path, class: "btn btn-primary btn-large" %>
+          <%= link_to "Ver más", agenda_path, class: "btn btn-primary btn-large" %>
           <%= link_to "Ver todos los recuperos", creditos_path, class: "btn btn-outline-white" %>
         </div>
       </div>
@@ -108,20 +123,17 @@
     <div class="card">
       <div class="card-header">Próximas Clases</div>
       <% if @fixed_classes_month.present? %>
-        <ul class="reservations-list">
+        <ul class="fixed-classes-month-list">
           <% @fixed_classes_month.each do |klass| %>
-            <li class="reservation-item">
-              <div>
-                <strong><%= klass.name %></strong>
-                <p class="reservation-details">
-                  <%= klass.start_time.strftime("%d/%m/%Y %H:%M") %> -
-                  <%= klass.room.name %>
-                </p>
-              </div>
+            <% day_name = I18n.t("date.day_names")[klass.start_time.wday].capitalize %>
+            <li class="fixed-class-month-item">
+              <div class="fixed-class-day-time"><%= day_name %> <%= klass.start_time.day %>/<%= klass.start_time.month %> a las <%= klass.start_time.hour %>hs</div>
+              <div class="fixed-class-sala">Sala: <%= klass.room.name %></div>
+              <div class="fixed-class-nivel">Nivel <%= level_label(klass.level) %></div>
             </li>
           <% end %>
         </ul>
-        <%= link_to "Ver más", mi_actividad_path(date: Date.current.strftime("%Y-%m")), class: "btn btn-outline" %>
+        <%= link_to "Ver más", agenda_path, class: "btn btn-primary" %>
       <% elsif @reservations.any? %>
         <ul class="reservations-list">
           <% @reservations.limit(5).each do |reservation| %>
@@ -136,10 +148,10 @@
             </li>
           <% end %>
         </ul>
-        <%= link_to "Ver más", mi_actividad_path, class: "btn btn-outline" %>
+        <%= link_to "Ver más", agenda_path, class: "btn btn-primary" %>
       <% else %>
         <p>No tienes reservas próximas</p>
-        <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
+        <%= link_to "Ver más", agenda_path, class: "btn btn-primary" %>
       <% end %>
     </div>
 
@@ -160,13 +172,13 @@
 
     <!-- Recuperos -->
     <div class="card">
-      <div class="card-header">Recuperos</div>
+      <div class="card-header">RECUPERA TUS CLASES</div>
       <p>
         Tenés <strong><%= @recoveries_this_month_total.to_i %></strong> recuperos disponibles este mes.
         <span style="opacity:.8;">(máximo <%= @recoveries_monthly_cap %> por mes)</span>
       </p>
       <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
-        <%= link_to "Ver Agenda", agenda_path, class: "btn btn-primary" %>
+        <%= link_to "Ir al calendario", agenda_path, class: "btn btn-primary" %>
         <%= link_to "Ver recuperos", creditos_path, class: "btn btn-outline" %>
       </div>
     </div>

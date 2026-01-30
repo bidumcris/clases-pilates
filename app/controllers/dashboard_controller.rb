@@ -1,6 +1,18 @@
 class DashboardController < ApplicationController
   before_action :authenticate_user!
 
+  def update_billing_status
+    unless current_user.admin?
+      redirect_to dashboard_path, alert: "No autorizado" and return
+    end
+    status = params[:billing_status]
+    unless User.billing_statuses.key?(status)
+      redirect_to dashboard_path, alert: "Estado inválido" and return
+    end
+    current_user.update!(billing_status: status)
+    redirect_to dashboard_path, notice: "Estado de pago actualizado"
+  end
+
   def index
     @user = current_user
     @reservations = current_user.reservations.upcoming.limit(5)
@@ -47,7 +59,14 @@ class DashboardController < ApplicationController
 
   def mi_actividad
     @user = current_user
-    @date = params[:date] ? Date.parse(params[:date]) : Date.current
-    @reservations = current_user.reservations.by_month(@date)
+    # Solo semana actual (lun–vie): no permitir ver ni agendar fuera de esta semana
+    @date = Date.current
+    @week_start = @date.beginning_of_week(:monday)
+    @week_end = @week_start + 4.days
+    range = @week_start.beginning_of_day..@week_end.end_of_day
+    @reservations = current_user.reservations
+      .joins(:pilates_class)
+      .where(pilates_classes: { start_time: range })
+      .order("pilates_classes.start_time ASC")
   end
 end

@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   authenticate :user do
     # Dashboard principal
     get "dashboard", to: "dashboard#index", as: :dashboard
+    patch "dashboard/billing_status", to: "dashboard#update_billing_status", as: :update_billing_status
 
     # Mi Actividad - Turnos del mes
     get "mi_actividad", to: "dashboard#mi_actividad", as: :mi_actividad
