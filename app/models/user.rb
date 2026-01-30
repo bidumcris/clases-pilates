@@ -57,6 +57,48 @@ class User < ApplicationRecord
     Whatsapp::Phone.normalize_ar(mobile)
   end
 
+  def can_reserve_class?(pilates_class)
+    return false if pilates_class.nil?
+
+    # Verificar nivel (por ahora, estrictamente el mismo nivel)
+    return false unless pilates_class.level == level
+
+    # Verificar tipo de clase
+    if privada?
+      pilates_class.privada?
+    else
+      pilates_class.grupal?
+    end
+  end
+
+  # Ej: "Lunes y Miércoles 18hs · Viernes 10hs"
+  def fixed_days_compact_summary
+    slots = fixed_slots.active.order(:hour, :day_of_week)
+    return "" if slots.empty?
+
+    slots.group_by(&:hour).map do |hour, hour_slots|
+      days = hour_slots.map(&:day_name)
+      days_str =
+        case days.length
+        when 0 then ""
+        when 1 then days.first
+        when 2 then "#{days[0]} y #{days[1]}"
+        else
+          "#{days[0..-2].join(', ')} y #{days[-1]}"
+        end
+
+      "#{days_str} #{hour}hs"
+    end.join(" · ")
+  end
+
+  def admin?
+    role == "admin"
+  end
+
+  def instructor?
+    role == "instructor"
+  end
+
   private
 
   def sync_whatsapp_opt_in_timestamp
@@ -106,28 +148,6 @@ class User < ApplicationRecord
     %w[credits payments requests reservations]
   end
 
-  def admin?
-    role == "admin"
-  end
-
-  def instructor?
-    role == "instructor"
-  end
-
-  def can_reserve_class?(pilates_class)
-    return false if pilates_class.nil?
-
-    # Verificar nivel (por ahora, estrictamente el mismo nivel)
-    return false unless pilates_class.level == level
-
-    # Verificar tipo de clase
-    if privada?
-      pilates_class.privada?
-    else
-      pilates_class.grupal?
-    end
-  end
-
   # Niveles permitidos según el nivel del usuario
   def allowed_levels
     # Por ahora, estrictamente el mismo nivel
@@ -147,26 +167,6 @@ class User < ApplicationRecord
     return [] if weekly_days.blank?
     map = WEEKDAY_OPTIONS.to_h.invert
     weekly_days.map { |d| map[d.to_i] }.compact
-  end
-
-  # Ej: "Lunes y Miércoles 18hs · Viernes 10hs"
-  def fixed_days_compact_summary
-    slots = fixed_slots.active.order(:hour, :day_of_week)
-    return "" if slots.empty?
-
-    slots.group_by(&:hour).map do |hour, hour_slots|
-      days = hour_slots.map(&:day_name)
-      days_str =
-        case days.length
-        when 0 then ""
-        when 1 then days.first
-        when 2 then "#{days[0]} y #{days[1]}"
-        else
-          "#{days[0..-2].join(', ')} y #{days[-1]}"
-        end
-
-      "#{days_str} #{hour}hs"
-    end.join(" · ")
   end
 
   def current_month_reservations_scope
