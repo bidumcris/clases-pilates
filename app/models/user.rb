@@ -99,6 +99,35 @@ class User < ApplicationRecord
     role == "instructor"
   end
 
+  def credits_available
+    credits.available_this_month.sum(:amount)
+  end
+
+  def fixed_days_summary
+    fixed_slots.active.order(:day_of_week, :hour).map(&:full_description).join(" · ")
+  end
+
+  def current_month_reservations_scope
+    start_date = Date.current.beginning_of_month
+    end_date = Date.current.end_of_month
+    reservations.joins(:pilates_class)
+                .where(status: :confirmed)
+                .where(pilates_classes: { start_time: start_date.beginning_of_day..end_date.end_of_day })
+  end
+
+  def turnos_consumidos_mes_actual
+    current_month_reservations_scope.where(attendance_status: :presente).count
+  end
+
+  def turnos_del_mes
+    monthly_turns
+  end
+
+  def turnos_adeudados_mes_actual
+    return nil unless monthly_turns.present?
+    [monthly_turns - turnos_consumidos_mes_actual, 0].max
+  end
+
   private
 
   def sync_whatsapp_opt_in_timestamp
@@ -155,38 +184,9 @@ class User < ApplicationRecord
   end
 
   # --- Helpers para panel de alumnos ---
-  def credits_available
-    credits.available_this_month.sum(:amount)
-  end
-
-  def fixed_days_summary
-    fixed_slots.active.order(:day_of_week, :hour).map(&:full_description).join(" · ")
-  end
-
   def weekly_days_labels
     return [] if weekly_days.blank?
     map = WEEKDAY_OPTIONS.to_h.invert
     weekly_days.map { |d| map[d.to_i] }.compact
-  end
-
-  def current_month_reservations_scope
-    start_date = Date.current.beginning_of_month
-    end_date = Date.current.end_of_month
-    reservations.joins(:pilates_class)
-                .where(status: :confirmed)
-                .where(pilates_classes: { start_time: start_date.beginning_of_day..end_date.end_of_day })
-  end
-
-  def turnos_consumidos_mes_actual
-    current_month_reservations_scope.where(attendance_status: :presente).count
-  end
-
-  def turnos_del_mes
-    monthly_turns
-  end
-
-  def turnos_adeudados_mes_actual
-    return nil unless monthly_turns.present?
-    [monthly_turns - turnos_consumidos_mes_actual, 0].max
   end
 end

@@ -89,6 +89,7 @@ Rails.application.routes.draw do
           post :deduct_recoveries
           post :send_whatsapp_test
           patch :update_class_type
+          patch :update_billing_status
         end
       end
 

@@ -1,6 +1,6 @@
 class Management::StudentsController < Management::BaseController
-  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type ]
-  before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type, :debtors, :absences, :birthdays ]
+  before_action :set_user, only: [ :show, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type, :update_billing_status ]
+  before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :add_credits, :grant_recoveries, :deduct_recoveries, :update_class_type, :update_billing_status, :debtors, :absences, :birthdays ]
 
   def index
     @students = User.where(role: :alumno).order(created_at: :desc)
@@ -64,6 +64,15 @@ class Management::StudentsController < Management::BaseController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def update_billing_status
+    status = params[:billing_status]
+    unless User.billing_statuses.key?(status)
+      redirect_to management_student_path(@user), alert: "Estado inválido" and return
+    end
+    @user.update!(billing_status: status)
+    redirect_to management_student_path(@user), notice: "Estado de pago actualizado"
   end
 
   def add_credits

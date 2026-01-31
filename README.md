@@ -67,7 +67,8 @@ Después de ejecutar `rails db:seed`:
 - **Usuario Básico**: `basico@test.com` / `password123`
 - **Usuario Intermedio**: `intermedio@test.com` / `password123`
 - **Usuario Avanzado**: `avanzado@test.com` / `password123`
-- **Administrador**: `admin@pilates.com` / `admin123`
+- **Administrador**: `admin@pilates.com` / `clear
+`
 
 ## 📋 Rutas Principales
 

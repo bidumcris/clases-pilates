@@ -50,9 +50,13 @@
         </div>
         <div class="navbar-menu">
           <% if current_user.admin? %>
-            <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
+            <div class="navbar-items-desktop">
+              <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
+            </div>
           <% elsif current_user.instructor? %>
-            <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
+            <div class="navbar-items-desktop">
+              <%= link_to "Gestión", management_root_path, class: "navbar-item" %>
+            </div>
           <% else %>
             <div class="navbar-items-desktop">
               <%= link_to "Mi Panel", dashboard_path, class: "navbar-item" %>
