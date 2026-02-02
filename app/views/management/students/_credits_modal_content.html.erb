@@ -1,0 +1,24 @@
+<div class="credits-modal-card">
+  <p class="credits-modal-intro">Agrega o quita recuperos del cliente.</p>
+
+  <ul class="credits-modal-list list-group">
+    <% @rooms.each do |room| %>
+      <% credits_for_room = @credits.select { |c| c.room_id == room.id } %>
+      <% amount = credits_for_room.sum(&:amount) %>
+      <% first_credit = credits_for_room.min_by { |c| c.expires_at } %>
+      <li class="credits-modal-list-item list-group-item">
+        <div class="credits-modal-row">
+          <% if amount.positive? && first_credit %>
+            <%= button_to "−", deduct_credit_management_student_path(@user), method: :post, params: { credit_id: first_credit.id }, class: "btn btn-sm btn-success credits-modal-btn-spin", data: { turbo: false }, title: "Quitar 1" %>
+          <% else %>
+            <span class="credits-modal-btn-placeholder">−</span>
+          <% end %>
+          <span class="credits-modal-amount"><%= amount %></span>
+          <%= button_to "+", grant_recoveries_management_student_path(@user), method: :post, params: { amount: 1, room_id: room.id }, class: "btn btn-sm btn-success credits-modal-btn-spin", data: { turbo: false }, title: "Agregar 1" %>
+          <span class="credits-modal-vence">vence <strong><%= first_credit ? I18n.l(first_credit.expires_at, format: :short) : "—" %></strong></span>
+          <span class="credits-modal-room label label-primary"><%= room.label %> — <%= room.name %></span>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>

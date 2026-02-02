@@ -75,57 +75,22 @@
         
         <% if day_classes.any? %>
           <% day_classes.group_by { |c| c.start_time.hour }.each do |hour, classes_at_hour| %>
-            <div class="hour-block">
-              <div class="hour-label"><%= hour %>:00</div>
+            <div class="hour-block hour-block--compact">
+              <div class="hour-label"><%= "%02d" % hour %></div>
               <% classes_at_hour.each do |pilates_class| %>
-                <div class="class-item admin-class-item">
-                  <div class="class-info">
-                    <strong><%= pilates_class.name %></strong>
-                    <p class="class-details">
-                      <%= pilates_class.room.name %> - <%= pilates_class.instructor.name %>
-                    </p>
-                    <% if pilates_class.holiday? %>
-                      <p class="class-details" style="color:#8a4b5c;">
-                        <strong>Feriado</strong><%= pilates_class.holiday_reason.present? ? ": #{pilates_class.holiday_reason}" : "" %>
-                      </p>
-                    <% end %>
-                    <p class="class-time">
-                      <%= pilates_class.start_time.strftime("%H:%M") %> - <%= pilates_class.end_time.strftime("%H:%M") %>
-                    </p>
-                    <p class="class-level">
-                      Nivel: <strong><%= level_label(pilates_class.level) %></strong>
-                      <span class="class-type-badge <%= pilates_class.privada? ? 'badge-warning' : 'badge-success' %>">
-                        <%= pilates_class.class_type.humanize %>
-                      </span>
-                    </p>
-                    <p class="class-capacity">
-                      <%= pilates_class.available_spots %>/<%= pilates_class.max_capacity %> disponibles
-                    </p>
-                    <% booked = @booked_counts[pilates_class.id].to_i %>
-                    <% if booked <= 2 %>
-                      <p class="class-details" style="color:#8a4b5c;">
-                        ⚠️ Solo <strong><%= booked %></strong> anotados
-                      </p>
-                    <% end %>
-                  </div>
-                  <div class="class-actions">
-                    <%= link_to "Tomar lista", attendance_management_class_path(pilates_class), class: "btn btn-sm btn-outline" %>
-                    <% if current_user.admin? %>
-                      <% if pilates_class.holiday? %>
-                        <%= button_to "Quitar feriado", unmark_holiday_management_class_path(pilates_class), method: :post,
-                            class: "btn btn-sm btn-outline",
-                            data: { turbo_confirm: "¿Quitar feriado de esta clase?" } %>
-                      <% else %>
-                        <%= button_to "Marcar feriado", mark_holiday_management_class_path(pilates_class), method: :post,
-                            class: "btn btn-sm btn-outline",
-                            params: { holiday_reason: "Feriado" },
-                            data: { turbo_confirm: "¿Marcar esta clase como feriado? Se cancelarán reservas confirmadas y se otorgará 1 crédito compensatorio." } %>
-                      <% end %>
-                      <%= link_to "Editar", edit_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
-                      <%= button_to "Eliminar", management_class_path(pilates_class), method: :delete, 
-                          class: "btn btn-sm btn-danger", 
-                          data: { confirm: "¿Estás seguro de eliminar esta clase?" } %>
-                    <% end %>
+                <% occupied = pilates_class.max_capacity - pilates_class.available_spots %>
+                <% percent = pilates_class.max_capacity.positive? ? (occupied.to_f / pilates_class.max_capacity * 100).round : 0 %>
+                <div class="class-capacity-mini"
+                     data-controller="class-modal"
+                     data-class-modal-url-value="<%= modal_management_class_path(pilates_class) %>"
+                     data-action="click->class-modal#open"
+                     role="button"
+                     tabindex="0"
+                     aria-label="Ver clase <%= pilates_class.name %>">
+                  <span class="class-capacity-mini-label"><%= pilates_class.privada? ? "Clase personalizada" : level_label(pilates_class.level) %></span>
+                  <div class="class-capacity-progress class-capacity-progress--mini" role="progressbar" aria-valuenow="<%= occupied %>" aria-valuemin="0" aria-valuemax="<%= pilates_class.max_capacity %>">
+                    <div class="class-capacity-progress-bar class-capacity-progress-bar--<%= percent >= 100 ? 'full' : (percent >= 75 ? 'warning' : 'ok') %>" style="width: <%= [percent, 100].min %>%;"></div>
+                    <span class="class-capacity-progress-text"><%= occupied %>/<%= pilates_class.max_capacity %></span>
                   </div>
                 </div>
               <% end %>
@@ -136,5 +101,19 @@
         <% end %>
       </div>
     <% end %>
+  </div>
+
+  <!-- Modal: detalle de clase al hacer clic en la barra -->
+  <div id="class-modal" class="class-modal" data-controller="class-modal" data-class-modal-url-value="" aria-hidden="true">
+    <div class="class-modal-backdrop" data-action="click->class-modal#close"></div>
+    <div class="class-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="class-modal-title">
+      <div class="class-modal-header">
+        <h2 id="class-modal-title" class="class-modal-title">Clase</h2>
+        <button type="button" class="class-modal-close" aria-label="Cerrar" data-action="click->class-modal#close">&times;</button>
+      </div>
+      <div class="class-modal-body" data-class-modal-target="body">
+        <!-- Contenido cargado por JS -->
+      </div>
+    </div>
   </div>
 </div>

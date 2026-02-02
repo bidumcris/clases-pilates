@@ -1,7 +1,7 @@
 class Management::ClassesController < Management::BaseController
-  before_action :set_pilates_class, only: [ :edit, :update, :destroy, :attendance, :update_attendance, :mark_holiday, :unmark_holiday ]
+  before_action :set_pilates_class, only: [ :edit, :update, :destroy, :attendance, :update_attendance, :mark_holiday, :unmark_holiday, :cancel_reservation, :modal ]
   before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :destroy ]
-  before_action :ensure_can_take_attendance!, only: [ :attendance, :update_attendance ]
+  before_action :ensure_can_take_attendance!, only: [ :attendance, :update_attendance, :cancel_reservation ]
   before_action :ensure_admin!, only: [ :mark_holiday, :unmark_holiday ]
   before_action :ensure_admin!, only: [ :block, :create_block ]
 
@@ -85,7 +85,7 @@ class Management::ClassesController < Management::BaseController
 
   def mark_holiday
     reason = params[:holiday_reason].to_s.strip.presence
-    apply_block_to_classes!([@pilates_class], reason: reason.presence || "Feriado")
+    apply_block_to_classes!([ @pilates_class ], reason: reason.presence || "Feriado")
     redirect_to management_classes_path, notice: "Clase marcada como feriado. Se otorgó 1 recupero a los alumnos afectados."
   end
 
@@ -170,6 +170,28 @@ class Management::ClassesController < Management::BaseController
     redirect_to attendance_management_class_path(@pilates_class), notice: "Lista actualizada"
   rescue ActiveRecord::RecordInvalid => e
     redirect_to attendance_management_class_path(@pilates_class), alert: e.record.errors.full_messages.join(", ")
+  end
+
+  def modal
+    @booked_count = @pilates_class.reservations.where(status: :confirmed).count
+    @class_in_future = @pilates_class.start_time > Time.current
+    if @class_in_future
+      @activos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
+    else
+      @cancelados = @pilates_class.reservations.where(status: :cancelled).includes(:user).order(created_at: :asc)
+      @atendidos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
+    end
+    render partial: "management/classes/class_modal_content", layout: false
+  end
+
+  def cancel_reservation
+    reservation = @pilates_class.reservations.find_by(id: params[:reservation_id])
+    if reservation&.confirmed?
+      reservation.update!(status: :cancelled, attendance_status: :sin_marcar)
+      redirect_to management_classes_path, notice: "Turno cancelado."
+    else
+      redirect_to management_classes_path, alert: "No se pudo cancelar el turno."
+    end
   end
 
   private

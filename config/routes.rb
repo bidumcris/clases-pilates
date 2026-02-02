@@ -48,6 +48,9 @@ Rails.application.routes.draw do
       root "dashboard#index"
       get "dashboard", to: "dashboard#index", as: :dashboard
 
+      # Asistencia (panel administradoras)
+      get "asistencia", to: "attendance#index", as: :attendance
+
       # Caja (solo admin)
       get "cashbox", to: "cashbox#index", as: :cashbox
       post "cashbox/payments", to: "cashbox#create_payment", as: :cashbox_payments
@@ -73,6 +76,8 @@ Rails.application.routes.draw do
           patch :update_attendance
           post :mark_holiday
           post :unmark_holiday
+          delete "reservations/:reservation_id", action: :cancel_reservation, as: :cancel_reservation
+          get :modal
         end
       end
 
@@ -84,7 +89,10 @@ Rails.application.routes.draw do
           get :birthdays
         end
         member do
+          get :abonos_modal
+          get :credits_modal
           post :add_credits
+          post :deduct_credit
           post :grant_recoveries
           post :deduct_recoveries
           post :send_whatsapp_test

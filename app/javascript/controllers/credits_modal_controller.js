@@ -1,0 +1,45 @@
+import { Controller } from "@hotwired/stimulus"
+
+// Abre/cierra el modal de Administrar recuperos y carga el contenido vía fetch.
+export default class extends Controller {
+  static values = { url: String }
+
+  open(event) {
+    const url = this.urlValue
+    if (!url) return
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    const modal = document.getElementById("credits-modal")
+    const body = modal?.querySelector("[data-credits-modal-target=\"body\"]")
+    if (!modal || !body) return
+
+    body.innerHTML = "<p class=\"text-muted\">Cargando…</p>"
+    modal.setAttribute("aria-hidden", "false")
+    modal.classList.add("credits-modal--open")
+
+    fetch(url, { headers: { Accept: "text/html" } })
+      .then((r) => {
+        if (!r.ok) throw new Error("Error al cargar")
+        return r.text()
+      })
+      .then((html) => {
+        body.innerHTML = html
+      })
+      .catch(() => {
+        body.innerHTML = "<p class=\"text-danger\">No se pudo cargar.</p>"
+      })
+  }
+
+  close(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    const modal = document.getElementById("credits-modal")
+    if (!modal) return
+    modal.setAttribute("aria-hidden", "true")
+    modal.classList.remove("credits-modal--open")
+  }
+}
