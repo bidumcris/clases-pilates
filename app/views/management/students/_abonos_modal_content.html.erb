@@ -1,0 +1,41 @@
+<div class="abonos-modal-card">
+  <p class="abonos-modal-field"><strong>Cliente:</strong> <%= @user.name.presence || @user.email %></p>
+
+  <% active_slots = @user.fixed_slots.select(&:active?) %>
+  <% if active_slots.any? %>
+    <p class="abonos-modal-field"><strong>Días fijos:</strong></p>
+    <ul class="abonos-modal-list">
+      <% active_slots.sort_by { |s| [ s.day_of_week, s.hour ] }.each do |slot| %>
+        <li><%= slot.room.label %> - <%= slot.room.name %>: <%= slot.day_name %> <%= "%02d" % slot.hour %>:00hs (<%= level_label(slot.level) %>)</li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <p class="abonos-modal-field"><strong>Abono actual:</strong></p>
+  <p class="abonos-modal-abono">
+    <% if @user.last_payment_date.present? %>
+      [Generado el <%= I18n.l(@user.last_payment_date, format: "%d/%m") %>]:
+    <% end %>
+    <% if @user.subscription_start.present? && @user.subscription_end.present? %>
+      Vigencia <%= I18n.l(@user.subscription_start, format: "%a %d/%m") %> a <%= I18n.l(@user.subscription_end, format: "%a %d/%m") %>,
+    <% end %>
+    <% if @user.payment_amount.to_f.positive? %>
+      Importe: <%= number_to_currency(@user.payment_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>
+    <% end %>
+    <% if @user.debt_amount.to_f.positive? %>
+      <strong>[DEBE <%= number_to_currency(@user.debt_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>]</strong>
+    <% else %>
+      [Al día]
+    <% end %>
+  </p>
+
+  <div class="abonos-modal-actions">
+    <button type="button" class="btn btn-sm btn-warning" title="Modificar abono">Modificar</button>
+    <button type="button" class="btn btn-sm btn-danger" title="Cancelar pago">Cancelar Pago</button>
+    <button type="button" class="btn btn-sm btn-primary" title="Finalizar">Finalizar</button>
+  </div>
+
+  <p class="abonos-modal-note">
+    Si deseas cargar un nuevo abono primero debes saldar la deuda actual del cliente (Modificando el abono) y luego si aún no te la ha pagado puedes trasladarla al nuevo abono con el recargo correspondiente.
+  </p>
+</div>

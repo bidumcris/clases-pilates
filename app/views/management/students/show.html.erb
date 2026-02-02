@@ -1,203 +1,207 @@
-<div class="admin-dashboard">
-  <div class="admin-page-header" style="display:flex; gap: 1rem; align-items: center; justify-content: space-between;">
-    <div>
-      <h1 style="margin:0;">Ficha de alumno</h1>
-      <p style="margin:.25rem 0 0 0; opacity:.8;"><%= @user.email %></p>
-    </div>
-    <div style="display:flex; gap:.5rem; flex-wrap: wrap;">
-      <%= link_to "← Volver", management_students_path, class: "btn btn-outline" %>
-      <% if current_user.admin? %>
-        <%= link_to "Editar", edit_management_student_path(@user), class: "btn btn-primary" %>
-      <% end %>
-    </div>
+<div class="admin-dashboard admin-resumen-cuenta" data-controller="tabs">
+  <div class="admin-resumen-cuenta__back" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <%= link_to "← Volver a alumnos", management_students_path, class: "btn btn-outline" %>
+    <% if current_user.admin? %>
+      <%= link_to "Editar alumna", edit_management_student_path(@user), class: "btn btn-outline" %>
+    <% end %>
   </div>
 
-  <div class="admin-section">
-    <h2>Datos</h2>
-    <div class="card" style="margin-bottom: 1rem;">
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
-        <div><strong>Nombre:</strong> <%= @user.name.presence || "-" %></div>
-        <div><strong>Activo:</strong> <%= @user.active? ? "Sí" : "No" %></div>
-        <div><strong>Email falso:</strong> <%= @user.fake_email? ? "Sí" : "No" %></div>
-        <div><strong>DNI:</strong> <%= @user.dni.presence || "-" %></div>
-        <div><strong>Celular:</strong> <%= @user.mobile.presence || "-" %></div>
-        <div><strong>Teléfono:</strong> <%= @user.phone.presence || "-" %></div>
-        <div><strong>Tel. emergencia:</strong> <%= @user.emergency_phone.presence || "-" %></div>
-        <div><strong>Fecha de nacimiento:</strong> <%= @user.birth_date ? @user.birth_date.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Email:</strong> <%= @user.email %></div>
-        <div><strong>Días fijos:</strong> <%= @user.fixed_days_summary.presence || "-" %></div>
-        <div><strong>Info adicional:</strong> <%= @user.additional_info.presence || "-" %></div>
-      </div>
-    </div>
-    <div class="admin-stats">
-      <div class="stat-card">
-        <div class="stat-number"><%= level_label(@user.level) %></div>
-        <div class="stat-label">Nivel</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @user.class_type.humanize %></div>
-        <div class="stat-label">Tipo</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @user.credits_available %></div>
-        <div class="stat-label">Recuperos disponibles</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @payments.select(&:completed?).sum(&:amount) %></div>
-        <div class="stat-label">Pagos (completados)</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @user.turnos_consumidos_mes_actual %></div>
-        <div class="stat-label">Turnos consumidos (mes)</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @user.monthly_turns.presence || "-" %></div>
-        <div class="stat-label">Turnos del mes (plan)</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number"><%= @user.turnos_adeudados_mes_actual.presence || "-" %></div>
-        <div class="stat-label">Turnos adeudados (mes)</div>
-      </div>
-    </div>
-  </div>
+  <h1 class="admin-resumen-cuenta__title"><%= @user.name.presence || @user.email %></h1>
 
-  <div class="admin-section">
-    <h2>Abono / Pagos (administrativo)</h2>
-    <div class="card" style="margin-bottom: 1rem;">
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 1rem;">
-        <% if current_user.admin? %>
-          <div style="grid-column: 1 / -1;">
-            <strong>Pago (estado):</strong>
-            <%= form_with url: update_billing_status_management_student_path(@user), method: :patch, local: true, style: "display: inline-block; margin-left: 0.5rem;" do |f| %>
-              <%= f.select :billing_status,
-                options_for_select(
-                  [ [ "Abonado", "abonado" ], [ "Pendiente", "pendiente" ], [ "Deudor", "deudor" ] ],
-                  @user.billing_status
-                ),
-                {},
-                {
-                  class: "payment-status-select payment-status-select--#{@user.billing_status}",
-                  name: "billing_status",
-                  onchange: "this.form.submit()"
-                } %>
+  <% if current_user.admin? %>
+    <div class="admin-section admin-resumen-cuenta__panel">
+      <h2 class="admin-resumen-cuenta__panel-title">Acciones de administrador</h2>
+      <div class="admin-resumen-cuenta__actions">
+        <%= button_to "Suspender", management_student_path(@user), method: :patch, params: { user: { active: false } }, form: { data: { turbo_confirm: "¿Suspender a esta alumna? No podrá reservar hasta que la reactives." } }, class: "btn btn-danger btn-sm" %>
+        <%= link_to "Pagar", management_cashbox_path, class: "btn btn-success btn-sm", title: "Ir a Caja para registrar pago" %>
+        <%= link_to "Ver notificaciones", management_requests_path, class: "btn btn-info btn-sm", title: "Ver solicitudes" %>
+      </div>
+    </div>
+  <% end %>
+
+  <ul class="admin-resumen-cuenta__tabs nav nav-tabs" role="tablist">
+    <li><button type="button" class="nav-link active" data-tabs-target="button" data-action="click->tabs#switch" role="tab">Mi actividad</button></li>
+    <li><button type="button" class="nav-link" data-tabs-target="button" data-action="click->tabs#switch" role="tab">Créditos</button></li>
+    <li><button type="button" class="nav-link" data-tabs-target="button" data-action="click->tabs#switch" role="tab">Solicitudes</button></li>
+  </ul>
+
+  <div class="admin-resumen-cuenta__tab-content" data-tabs-target="content">
+    <div class="tab-pane active">
+      <%# Filtro período %>
+      <div class="admin-resumen-cuenta__period-filter">
+        <%= form_with url: management_student_path(@user), method: :get, local: true, class: "admin-resumen-cuenta__period-form" do |f| %>
+          <label for="period" class="visually-hidden">Período</label>
+          <select name="period" id="period" class="form-select" onchange="this.form.submit()">
+            <% @periods.each do |h| %>
+              <% opt_val = "#{h[:period_start].strftime('%Y-%m')}" %>
+              <option value="<%= opt_val %>" <%= "selected" if @selected_period && h[:period_start] == @selected_period[:period_start] %>>
+                Período <%= h[:period_start].strftime('%d/%m') %> al <%= h[:period_end].strftime('%d/%m') %> — <%= number_to_currency(h[:amount], unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>
+              </option>
+            <% end %>
+          </select>
+        <% end %>
+      </div>
+
+      <div class="admin-resumen-cuenta__two-cols">
+        <div class="admin-resumen-cuenta__col admin-resumen-cuenta__col--left">
+          <h2 class="admin-resumen-cuenta__col-title">Turnos del mes</h2>
+          <% if @turnos_mes.any? %>
+            <ul class="admin-resumen-cuenta__turnos-list list-group">
+              <% @turnos_mes.each do |reservation| %>
+                <% pc = reservation.pilates_class %>
+                <li class="admin-resumen-cuenta__turno list-group-item list-group-item-info">
+                  <div class="admin-resumen-cuenta__turno-fecha">
+                    <%= pc.start_time.strftime("%a %d/%m") %> <%= pc.start_time.strftime("%H") %>:00hs
+                  </div>
+                  <div class="admin-resumen-cuenta__turno-desc">
+                    <strong>Turno fijo</strong>
+                    <span class="admin-resumen-cuenta__turno-estado"><%= reservation.status == "confirmed" ? "Activo" : reservation.status.humanize %></span>
+                    <span class="label label-success"><%= pc.room.name %> — <%= level_label(pc.level) %></span>
+                  </div>
+                  <% if current_user.admin? && reservation.status == "confirmed" && pc.start_time > Time.current %>
+                    <%= button_to "Cancelar", cancel_reservation_management_class_path(pc, reservation_id: reservation.id), method: :delete, form: { data: { turbo_confirm: "¿Cancelar este turno?" } }, class: "btn btn-xs btn-outline btn-danger" %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="admin-resumen-cuenta__empty">No hay turnos en este período.</p>
+          <% end %>
+        </div>
+
+        <div class="admin-resumen-cuenta__col admin-resumen-cuenta__col--right">
+          <% if @turnos_renovacion.any? %>
+            <div class="admin-resumen-cuenta__block">
+              <h2 class="admin-resumen-cuenta__col-title">Período de renovación</h2>
+              <p class="admin-resumen-cuenta__hint"><em>Renueva el abono en tu última clase o antes del vencimiento.</em></p>
+              <ul class="admin-resumen-cuenta__turnos-list list-group">
+                <% @turnos_renovacion.first(8).each do |klass| %>
+                  <li class="list-group-item list-group-item-warning">
+                    <span class="admin-resumen-cuenta__turno-fecha"><%= klass.start_time.strftime("%a %d/%m") %> <%= klass.start_time.strftime("%H") %>:00hs</span>
+                    <span class="label label-success"><%= klass.room.name %> — <%= level_label(klass.level) %></span>
+                  </li>
+                <% end %>
+              </ul>
+              <% if @turnos_renovacion.size > 8 %><p class="admin-resumen-cuenta__more">+ <%= @turnos_renovacion.size - 8 %> más</p><% end %>
+            </div>
+          <% end %>
+
+          <% if @turnos_fuera_alcance.any? %>
+            <div class="admin-resumen-cuenta__block">
+              <h2 class="admin-resumen-cuenta__col-title">Turnos fuera de alcance</h2>
+              <p class="admin-resumen-cuenta__hint"><em>Tendrás acceso al renovar la cuota del nuevo período.</em></p>
+              <ul class="admin-resumen-cuenta__turnos-list list-group">
+                <% @turnos_fuera_alcance.first(6).each do |klass| %>
+                  <li class="list-group-item list-group-item-warning">
+                    <span class="admin-resumen-cuenta__turno-fecha"><%= klass.start_time.strftime("%a %d/%m") %> <%= klass.start_time.strftime("%H") %>:00hs</span>
+                    <span class="label label-default"><%= klass.room.name %></span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="admin-resumen-cuenta__block">
+            <h2 class="admin-resumen-cuenta__col-title">Eventos recientes</h2>
+            <% if @eventos_recientes.any? %>
+              <ul class="admin-resumen-cuenta__eventos-list list-group">
+                <% @eventos_recientes.first(15).each do |e| %>
+                  <li class="list-group-item list-group-item-warning">
+                    <% if e[:type] == :payment %>
+                      <strong>Pago <%= e[:label] %></strong>
+                      <%= number_to_currency(e[:amount], unit: "$", separator: ",", delimiter: ".") %>
+                      <% if e[:period] %><small><%= e[:period] %></small><% end %>
+                      <small class="admin-resumen-cuenta__evento-date"><%= l(e[:date], format: :short) %></small>
+                    <% else %>
+                      <strong><%= e[:label] %></strong> <%= e[:class_name] %>
+                      <small class="admin-resumen-cuenta__evento-date"><%= l(e[:date], format: :short) %></small>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="admin-resumen-cuenta__empty">No hay eventos recientes.</p>
             <% end %>
           </div>
-        <% else %>
-          <div><strong>Pago (estado):</strong> <%= @user.billing_status.to_s.humanize %></div>
-        <% end %>
-        <div><strong>Abono inicio:</strong> <%= @user.subscription_start ? @user.subscription_start.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Abono fin:</strong> <%= @user.subscription_end ? @user.subscription_end.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Importe pago:</strong> <%= @user.payment_amount ? number_to_currency(@user.payment_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></div>
-        <div><strong>Importe deuda:</strong> <%= @user.debt_amount ? number_to_currency(@user.debt_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></div>
-        <div><strong>Fecha pago:</strong> <%= @user.last_payment_date ? @user.last_payment_date.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Fecha ingreso:</strong> <%= @user.join_date ? @user.join_date.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Fecha primer pago:</strong> <%= @user.first_payment_date ? @user.first_payment_date.strftime("%d/%m/%Y") : "-" %></div>
-        <div><strong>Cantidad pagos (manual):</strong> <%= @user.payments_count.presence || "-" %></div>
-        <div><strong>VistaNormal:</strong> <%= @user.normal_view? ? "Sí" : "No" %></div>
-        <div><strong>param1:</strong> <%= @user.param1.presence || "-" %></div>
-        <div><strong>param2:</strong> <%= @user.param2.presence || "-" %></div>
-        <div><strong>param3:</strong> <%= @user.param3.presence || "-" %></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="admin-section">
-    <h2>Pagos</h2>
-    <% if @payments.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Monto</th>
-            <th>Método</th>
-            <th>Estado</th>
-            <th>Referencia</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @payments.each do |payment| %>
-            <tr>
-              <td><%= payment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-              <td><%= number_to_currency(payment.amount, unit: "$", separator: ",", delimiter: ".") %></td>
-              <td><%= payment.payment_method.humanize %></td>
-              <td><%= payment.payment_status.humanize %></td>
-              <td><%= payment.transaction_id.presence || "-" %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <p style="opacity:.7; margin-top:.5rem;">Tip: podés registrar pagos desde <%= link_to "Caja", management_cashbox_path %>.</p>
-    <% else %>
-      <p>No hay pagos registrados.</p>
-    <% end %>
+  <div class="admin-resumen-cuenta__tab-content" data-tabs-target="content">
+    <div class="tab-pane">
+      <div class="admin-section">
+        <h2>Créditos / Recuperos</h2>
+        <% if @credits.any? %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Cantidad</th>
+                <th>Expira</th>
+                <th>Sala</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @credits.each do |credit| %>
+                <tr>
+                  <td><%= credit.amount %></td>
+                  <td><%= credit.expires_at.strftime("%d/%m/%Y") %></td>
+                  <td><%= credit.room&.name || "—" %></td>
+                  <td><%= credit.used? ? "Usado" : (credit.expired? ? "Expirado" : "Disponible") %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p>No hay recuperos.</p>
+        <% end %>
+        <p><%= link_to "Administrar recuperos (modal)", "#", data: { controller: "credits-modal", credits_modal_url_value: credits_modal_management_student_path(@user), action: "click->credits-modal#open" }, class: "btn btn-sm btn-outline" %></p>
+      </div>
+    </div>
   </div>
 
-  <div class="admin-section">
-    <h2>Recuperos</h2>
-    <% if @credits.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Cantidad</th>
-            <th>Expira</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @credits.each do |credit| %>
-            <tr>
-              <td><%= credit.amount %></td>
-              <td><%= credit.expires_at.strftime("%d/%m/%Y") %></td>
-              <td>
-                <% if credit.used? %>
-                  Usado
-                <% elsif credit.expired? %>
-                  Expirado
-                <% else %>
-                  Disponible
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>No hay recuperos.</p>
-    <% end %>
-  </div>
-
-  <div class="admin-section">
-    <h2>Reservas recientes</h2>
-    <% if @reservations.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Clase</th>
-            <th>Fecha</th>
-            <th>Sala</th>
-            <th>Instructor</th>
-            <th>Estado</th>
-            <th>Asistencia</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @reservations.each do |reservation| %>
-            <tr>
-              <td><%= reservation.pilates_class.name %></td>
-              <td><%= reservation.pilates_class.start_time.strftime("%d/%m/%Y %H:%M") %></td>
-              <td><%= reservation.pilates_class.room.name %></td>
-              <td><%= reservation.pilates_class.instructor.name %></td>
-              <td><%= reservation.status.humanize %></td>
-              <td><%= reservation.attendance_status.humanize %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <p style="opacity:.7; margin-top:.5rem;">La asistencia se marca desde “Tomar lista” en la clase.</p>
-    <% else %>
-      <p>No hay reservas.</p>
-    <% end %>
+  <div class="admin-resumen-cuenta__tab-content" data-tabs-target="content">
+    <div class="tab-pane">
+      <div class="admin-section">
+        <h2>Solicitudes</h2>
+        <% if @requests.any? %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Clase</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @requests.each do |req| %>
+                <tr>
+                  <td><%= l(req.created_at, format: :short) %></td>
+                  <td><%= req.request_type.humanize %></td>
+                  <td><%= req.pilates_class&.name || "—" %></td>
+                  <td><%= req.status.humanize %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p>No hay solicitudes.</p>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
 
-
+<%# Modal de créditos (el controlador busca id="credits-modal") %>
+<div id="credits-modal" class="credits-modal" data-controller="credits-modal" aria-hidden="true" style="display: none;">
+  <div class="credits-modal-backdrop" data-action="click->credits-modal#close"></div>
+  <div class="credits-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="credits-modal-title">
+    <div class="credits-modal-header">
+      <h2 id="credits-modal-title" class="credits-modal-title">Administrar recuperos</h2>
+      <button type="button" class="credits-modal-close" aria-label="Cerrar" data-action="click->credits-modal#close">&times;</button>
+    </div>
+    <div class="credits-modal-body" data-credits-modal-target="body" data-credits-modal-url-value="<%= credits_modal_management_student_path(@user) %>"></div>
+  </div>
+</div>

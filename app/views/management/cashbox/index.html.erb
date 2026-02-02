@@ -1,10 +1,13 @@
 <div class="admin-dashboard">
-  <div class="admin-header">
-    <h1>Caja</h1>
-    <p class="admin-subtitle">Control de pagos por período y método</p>
-    <div style="margin-top: 0.75rem;">
-      <%= link_to "Ver deudores", management_billing_debtors_path, class: "btn btn-outline" %>
+  <div class="admin-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="margin: 0;">Caja</h1>
+      <p class="admin-subtitle">Control de pagos por período y método</p>
+      <div style="margin-top: 0.75rem;">
+        <%= link_to "Ver deudores", management_billing_debtors_path, class: "btn btn-outline" %>
+      </div>
     </div>
+    <%= link_to "← Volver", management_root_path, class: "btn btn-outline" %>
   </div>
 
   <div class="admin-section">

@@ -1,12 +1,13 @@
-<div class="admin-classes">
-  <div class="admin-page-header">
+<div class="admin-classes admin-students-page">
+  <div class="admin-page-header admin-page-header--compact">
     <h1>Alumnos</h1>
+    <%= link_to "← Volver", management_root_path, class: "btn btn-outline" %>
   </div>
 
-  <div class="admin-section">
+  <div class="admin-section admin-section--compact">
     <h2>Buscar / Filtrar</h2>
     <%= form_with url: management_students_path, method: :get, local: true do %>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
+      <div class="admin-filter-grid">
         <div>
           <label>Nombre o email</label><br>
           <%= text_field_tag :search, params[:search], class: "form-input", placeholder: "Ej: Ana o ana@..." %>
@@ -33,43 +34,146 @@
   <div class="admin-section">
     <h2>Listado</h2>
     <% if @students.any? %>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Alumno</th>
-            <th>Activo</th>
-            <th>Nivel</th>
-            <th>Tipo</th>
-            <th>Recuperos disponibles</th>
-            <th>Deuda</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @students.each do |student| %>
-            <tr>
-              <td>
-                <strong><%= student.name.presence || student.email %></strong><br>
-                <small style="opacity:.75;"><%= student.email %></small>
-              </td>
-              <td><%= student.active? ? "Sí" : "No" %></td>
-              <td><%= level_label(student.level) %></td>
-              <td><%= student.class_type.humanize %></td>
-              <td><%= student.credits_available %></td>
-              <td><%= student.debt_amount ? number_to_currency(student.debt_amount, unit: "$", separator: ",", delimiter: ".") : "-" %></td>
-              <td style="display:flex; gap: .5rem; flex-wrap: wrap;">
-                <%= link_to "Ver ficha", management_student_path(student), class: "btn btn-sm btn-outline" %>
-                <% if current_user.admin? %>
-                  <%= link_to "Editar", edit_management_student_path(student), class: "btn btn-sm btn-primary" %>
+      <ul class="admin-students-list">
+        <% @students.each do |student| %>
+          <% active_slots = student.fixed_slots.select(&:active?) %>
+          <% slots_by_room = active_slots.group_by(&:room_id) %>
+          <% room_ids_with_slots = slots_by_room.keys %>
+          <% rooms_without_slots = @rooms.reject { |r| room_ids_with_slots.include?(r.id) } %>
+          <li class="admin-student-card" data-controller="student-card">
+            <div class="admin-student-card__main" data-action="click->student-card#toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="student-details-<%= student.id %>" id="student-toggle-<%= student.id %>">
+              <div class="admin-student-card__header">
+                <span class="admin-student-card__deuda" aria-hidden="true">💳</span>
+                <% if student.debt_amount.to_f.positive? %>
+                  <span class="admin-student-card__deuda-amount"><%= number_to_currency(student.debt_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %></span>
+                <% else %>
+                  <span class="admin-student-card__deuda-amount admin-student-card__deuda-amount--ok">—</span>
                 <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+                <strong class="admin-student-card__name"><%= student.name.presence || student.email %></strong>
+                <span class="admin-student-card__credits">{ Crédito: <%= student.credits_available %> }</span>
+              </div>
+              <div class="admin-student-card__meta">
+                <%= student.email %>
+                <span class="admin-student-card__tag admin-student-card__tag--<%= student.active? ? 'activado' : 'bloqueado' %>">
+                  <%= student.active? ? "activado" : "bloqueado" %>
+                </span>
+                <% fijos_count = active_slots.size %>
+                <span class="admin-student-card__tag admin-student-card__tag--fijos">{ <%= fijos_count %> <%= fijos_count == 1 ? 'fijo' : 'fijos' %> }</span>
+              </div>
+              <% if active_slots.any? %>
+                <ul class="admin-student-card__slots">
+                  <% active_slots.sort_by { |s| [ s.day_of_week, s.hour ] }.each do |slot| %>
+                    <li><%= slot.room.label %> - <%= slot.room.name %>: <%= slot.day_name %> <%= "%02d" % slot.hour %>:00hs (<%= level_label(slot.level) %>)</li>
+                  <% end %>
+                </ul>
+                <% if active_slots.size > 1 %>
+                  <p class="admin-student-card__interpase">inter-pase: <%= active_slots.map { |s| "#{s.room.label} - #{s.room.name}" }.uniq.join(", ") %></p>
+                <% end %>
+              <% end %>
+              <% if student.subscription_start.present? && student.subscription_end.present? %>
+                <p class="admin-student-card__periodo">
+                  Actividades desde el <%= I18n.l(student.subscription_start, format: "%A %e de %B") %> al <%= I18n.l(student.subscription_end, format: "%A %e de %B de %Y") %>
+                  <% if student.payment_amount.to_f.positive? %>
+                    <%= number_to_currency(student.payment_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>
+                  <% end %>
+                </p>
+              <% end %>
+              <span class="admin-student-card__expand-hint" aria-hidden="true"><span class="admin-student-card__expand-hint-text">▼ más datos</span></span>
+            </div>
+
+            <div class="admin-student-card__details" id="student-details-<%= student.id %>" aria-hidden="true">
+              <div class="admin-student-card__details-inner">
+                <% if student.mobile.present? || student.emergency_phone.present? %>
+                  <p class="admin-student-card__contact">
+                    <% if student.mobile.present? %><%= student.mobile %><% end %>
+                    <% if student.emergency_phone.present? %>
+                      <br>Emergencias: <%= student.emergency_phone %>
+                    <% end %>
+                  </p>
+                <% end %>
+
+                <h4 class="admin-student-card__details-title">Suscripciones</h4>
+                <% slots_by_room.each do |room_id, slots| %>
+                  <% room = slots.first.room %>
+                  <% other_rooms = @rooms.select { |r| r.id != room_id && room_ids_with_slots.include?(r.id) } %>
+                  <div class="admin-student-card__suscripcion">
+                    <strong><%= room.label %> - <%= room.name %></strong>
+                    <p class="admin-student-card__dias-fijos">Días Fijos: <%= slots.sort_by { |s| [ s.day_of_week, s.hour ] }.map { |s| "#{s.day_name} #{'%02d' % s.hour}:00hs (#{level_label(s.level)})" }.join(" | ") %></p>
+                    <p class="admin-student-card__credito-line">Crédito: <%= student.credits_available %></p>
+                    <% if other_rooms.any? %>
+                      <p class="admin-student-card__comparte">Comparte créditos con <%= other_rooms.map { |r| "#{r.label} - #{r.name}" }.join(" | ") %></p>
+                    <% end %>
+                    <div class="admin-student-card__suscripcion-actions">
+                      <%= link_to "Editar", edit_management_student_path(student), class: "btn btn-xs btn-outline" %>
+                      <span class="btn btn-xs btn-outline">Desuscribir</span>
+                    </div>
+                  </div>
+                <% end %>
+
+                <% if rooms_without_slots.any? %>
+                  <h4 class="admin-student-card__details-title">Servicios sin suscripción</h4>
+                  <ul class="admin-student-card__sin-suscripcion">
+                    <% rooms_without_slots.each do |room| %>
+                      <li>[<%= link_to "Suscribir en #{room.label} - #{room.name}", edit_management_student_path(student), class: "admin-student-card__link" %>]</li>
+                    <% end %>
+                  </ul>
+                <% end %>
+
+                <div class="admin-student-card__panel-buttons">
+                  <button type="button"
+                    class="btn btn-sm btn-success"
+                    title="Abonos"
+                    data-controller="abonos-modal"
+                    data-abonos-modal-url-value="<%= abonos_modal_management_student_path(student) %>"
+                    data-action="click->abonos-modal#open">💳</button>
+                  <button type="button"
+                    class="btn btn-sm btn-warning"
+                    title="Créditos / Recuperos"
+                    data-controller="credits-modal"
+                    data-credits-modal-url-value="<%= credits_modal_management_student_path(student) %>"
+                    data-action="click->credits-modal#open">⭐</button>
+                  <%= link_to management_student_path(student), class: "btn btn-sm btn-info", title: "Ver notificaciones" do %>📋<% end %>
+                  <%= link_to management_student_path(student), class: "btn btn-sm btn-primary", title: "Resumen de cuenta" do %>📅<% end %>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-student-card__actions">
+              <%= link_to "Ver ficha", management_student_path(student), class: "btn btn-sm btn-outline" %>
+              <% if current_user.admin? %>
+                <%= link_to "Editar", edit_management_student_path(student), class: "btn btn-sm btn-primary" %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     <% else %>
       <p>No hay alumnos para estos filtros.</p>
     <% end %>
+  </div>
+
+  <div id="abonos-modal" class="abonos-modal" data-controller="abonos-modal" aria-hidden="true">
+    <div class="abonos-modal-backdrop" data-action="click->abonos-modal#close"></div>
+    <div class="abonos-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="abonos-modal-title">
+      <div class="abonos-modal-header">
+        <h2 id="abonos-modal-title" class="abonos-modal-title">Administración de abonos</h2>
+        <button type="button" class="abonos-modal-close" aria-label="Cerrar" data-action="click->abonos-modal#close">&times;</button>
+      </div>
+      <div class="abonos-modal-body" data-abonos-modal-target="body">
+      </div>
+    </div>
+  </div>
+
+  <div id="credits-modal" class="credits-modal" data-controller="credits-modal" aria-hidden="true">
+    <div class="credits-modal-backdrop" data-action="click->credits-modal#close"></div>
+    <div class="credits-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="credits-modal-title">
+      <div class="credits-modal-header">
+        <h2 id="credits-modal-title" class="credits-modal-title">Administrar recuperos</h2>
+        <button type="button" class="credits-modal-close" aria-label="Cerrar" data-action="click->credits-modal#close">&times;</button>
+      </div>
+      <div class="credits-modal-body" data-credits-modal-target="body">
+      </div>
+    </div>
   </div>
 </div>
 

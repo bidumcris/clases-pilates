@@ -1,0 +1,96 @@
+<% start = @pilates_class.start_time %>
+<% modal_title = "Gestionar horario #{I18n.l(start, format: '%A')} #{start.day}/#{start.month} #{start.strftime('%H:%M')}hs" %>
+<div data-modal-title="<%= modal_title %>" class="visually-hidden" aria-hidden="true"></div>
+
+<div class="class-modal-card">
+  <% if @class_in_future %>
+    <%# Vista futura: botón con caret (completar después) %>
+    <p class="class-modal-actions-top">
+      <button type="button" class="btn btn-primary btn-block" data-action="click->#">
+        Cambiar parámetros de esta clase <span class="caret"></span>
+      </button>
+    </p>
+  <% else %>
+    <%# Vista pasada: enlace a editar %>
+    <p class="class-modal-actions-top">
+      <%= link_to "Cambiar parámetros de esta clase", edit_management_class_path(@pilates_class), class: "btn btn-sm btn-outline" %>
+    </p>
+  <% end %>
+
+  <div class="alert class-modal-alert-level <%= @class_in_future ? 'alert-danger' : 'alert-info' %>" role="alert">
+    <span><strong>En este horario:</strong> <em><%= @pilates_class.privada? ? "Clase personalizada" : level_label(@pilates_class.level) %></em></span>
+  </div>
+
+  <div class="class-modal-buttons-row">
+    <%= link_to "Nuevo turno", attendance_management_class_path(@pilates_class), class: "btn btn-sm btn-success" %>
+    <%= link_to "Solicitudes", management_requests_path, class: "btn btn-sm btn-success" %>
+  </div>
+  <% if current_user.admin? %>
+    <div class="class-modal-buttons-row">
+      <% if @pilates_class.holiday? %>
+        <%= button_to "Quitar bloqueo", unmark_holiday_management_class_path(@pilates_class), method: :post,
+            class: "btn btn-sm btn-outline",
+            data: { turbo_confirm: "¿Quitar feriado de esta clase?" } %>
+      <% else %>
+        <%= button_to "Bloquear horario", mark_holiday_management_class_path(@pilates_class), method: :post,
+            class: "btn btn-sm btn-danger",
+            params: { holiday_reason: "Feriado" },
+            data: { turbo_confirm: "¿Marcar esta clase como feriado? Se cancelarán reservas confirmadas." } %>
+      <% end %>
+      <button type="button" class="btn btn-sm btn-warning" title="Etiqueta">Etiqueta</button>
+    </div>
+  <% end %>
+
+  <div class="class-modal-meta">
+    <span class="label label-default">Cupo: <%= @pilates_class.max_capacity %></span>
+    <%= link_to "Ver turnos del horario", attendance_management_class_path(@pilates_class), class: "class-modal-link-turnos" %>
+  </div>
+
+  <% if @class_in_future && @activos.present? %>
+    <div class="class-modal-turnos-activos list-group-item">
+      <strong>Turnos Activos</strong>
+      <div class="class-modal-turnos-list">
+        <% @activos.each_with_index do |reservation, idx| %>
+          <div class="class-modal-turno-row">
+            <%= button_to "[F#{idx + 1}] #{reservation.user.name} [#{level_label(reservation.user.level)}] ×",
+                cancel_reservation_management_class_path(@pilates_class, reservation_id: reservation.id),
+                method: :delete,
+                class: "btn btn-sm btn-danger class-modal-turno-btn",
+                data: { turbo_confirm: "¿Cancelar el turno de #{reservation.user.name}?" },
+                form: { class: "class-modal-turno-form" } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !@class_in_future && (@cancelados.present? || @atendidos.present?) %>
+    <div class="class-modal-turnos-pasado">
+      <% if @cancelados.present? %>
+        <div class="class-modal-turnos-seccion">
+          <strong>Turnos cancelados</strong>
+          <ul class="class-modal-turnos-lista">
+            <% @cancelados.each do |reservation| %>
+              <li><%= reservation.user.name %> [<%= level_label(reservation.user.level) %>]</li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <% if @atendidos.present? %>
+        <div class="class-modal-turnos-seccion">
+          <strong>Turnos atendidos</strong>
+          <ul class="class-modal-turnos-lista class-modal-turnos-lista--atendidos">
+            <% @atendidos.each do |reservation| %>
+              <li>
+                <%= reservation.user.name %> [<%= level_label(reservation.user.level) %>]
+                <span class="class-modal-attendance-badge class-modal-attendance-badge--<%= reservation.attendance_status %>">
+                  <%= reservation.attendance_status == "presente" ? "Atendido" : reservation.attendance_status.humanize %>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

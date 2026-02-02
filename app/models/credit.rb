@@ -1,5 +1,6 @@
 class Credit < ApplicationRecord
   belongs_to :user
+  belongs_to :room, optional: true
 
   MONTHLY_AVAILABLE_CAP = 3
 
@@ -26,6 +27,7 @@ class Credit < ApplicationRecord
       created_at
       expires_at
       id
+      room_id
       updated_at
       used
       user_id
@@ -33,7 +35,7 @@ class Credit < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[user]
+    %w[room user]
   end
 
   def expired?
@@ -65,19 +67,20 @@ class Credit < ApplicationRecord
     )
   end
 
-  # Otorgar recuperos con tope mensual (saldo disponible) por mes de expiración.
+  # Otorgar recuperos con tope mensual (saldo disponible) por mes de expiración (y por sala si room está presente).
   # Devuelve la cantidad efectivamente otorgada (0 si ya alcanzó el tope).
-  def self.grant_capped(user:, amount:, expires_at:, cap: MONTHLY_AVAILABLE_CAP)
+  def self.grant_capped(user:, amount:, expires_at:, cap: MONTHLY_AVAILABLE_CAP, room: nil)
     amount = amount.to_i
     return 0 if amount <= 0
 
-    current_available =
-      user.credits.available.where(expires_at: expires_at).sum(:amount)
+    scope = user.credits.available.where(expires_at: expires_at)
+    scope = scope.where(room_id: room&.id) if room
+    current_available = scope.sum(:amount)
 
-    allowed = [amount, cap - current_available].min
+    allowed = [ amount, cap - current_available ].min
     return 0 if allowed <= 0
 
-    create!(user: user, amount: allowed, expires_at: expires_at, used: false)
+    create!(user: user, amount: allowed, expires_at: expires_at, used: false, room: room)
     allowed
   end
 

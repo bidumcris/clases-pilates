@@ -1,0 +1,126 @@
+<div class="admin-dashboard asistencia-page">
+  <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <h1 style="margin: 0;">Asistencia</h1>
+    <%= link_to "← Volver", management_root_path, class: "btn btn-outline" %>
+  </div>
+
+  <%= form_with url: management_attendance_path, method: :get, local: true, class: "asistencia-filters" do |f| %>
+    <div class="filter-row">
+      <label>Sala</label>
+      <select name="room_id" id="room_id" class="form-select">
+        <% @rooms.each do |room| %>
+          <option value="<%= room.id %>" <%= "selected" if @room_id.to_s == room.id.to_s %>><%= room.name %></option>
+        <% end %>
+      </select>
+      <label style="margin-left: 1rem;">Fecha</label>
+      <input type="date" name="date" value="<%= @date.strftime('%Y-%m-%d') %>" class="form-input" />
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+  <% end %>
+
+  <div class="asistencia-layout">
+    <!-- Columna izquierda: clases del día por sala y lista de asistencia -->
+    <div class="asistencia-left">
+      <% if @room_id.blank? %>
+        <p class="muted">Elegí una sala y una fecha para ver las clases y la asistencia.</p>
+      <% elsif @classes.empty? %>
+        <p class="muted">No hay clases en esta sala para el <%= @date.strftime('%d/%m/%Y') %>.</p>
+      <% else %>
+        <% @classes.each do |pilates_class| %>
+          <% confirmed = pilates_class.reservations.select { |r| r.status == "confirmed" } %>
+          <div class="asistencia-class-block">
+            <div class="class-schedule-tag">
+              <%= pilates_class.start_time.strftime("%H:%M") %>hs
+              <%= pilates_class.room.name %>
+              [<%= level_label(pilates_class.level) %>]
+              Cupo: <%= pilates_class.max_capacity %>
+            </div>
+            <ul class="asistencia-list">
+              <% confirmed.each_with_index do |reservation, idx| %>
+                <li class="asistencia-list-item">
+                  <div class="asistencia-list-main">
+                    <span class="asistencia-num"><%= idx + 1 %></span>
+                    <span class="asistencia-name"><%= reservation.user.name.presence || reservation.user.email %></span>
+                  </div>
+                  <div class="asistencia-list-detail">
+                    <span class="attendance-badge attendance-badge--<%= reservation.attendance_status %>">
+                      <%= reservation.attendance_status == "presente" ? "atendido" : reservation.attendance_status.humanize %>
+                    </span>
+                    <span class="asistencia-meta">clase <%= pilates_class.start_time.strftime("%d/%m") %></span>
+                    <span class="asistencia-meta"><%= reservation.updated_at.strftime("%d/%m %H:%M") %>hs</span>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Columna derecha: Autogestion / Admin -->
+    <div class="asistencia-right">
+      <div class="asistencia-tabs">
+        <button type="button" class="asistencia-tab active" data-tab="autogestion">Autogestion</button>
+        <button type="button" class="asistencia-tab" data-tab="admin">Admin</button>
+      </div>
+
+      <div id="panel-autogestion" class="asistencia-panel active">
+        <h3 style="margin-top: 0;">Turnos recientes / cancelados</h3>
+        <% if @recent_reservations.any? %>
+          <ul class="recent-list">
+            <% @recent_reservations.first(10).each do |res| %>
+              <li>
+                <%= res.user.name.presence || res.user.email %>
+                <span class="badge badge-<%= res.status %>"><%= res.status %></span>
+                <%= res.pilates_class.start_time.strftime("%d/%m %H:%M") %> · <%= res.pilates_class.room.name %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="muted">No hay turnos recientes.</p>
+        <% end %>
+
+        <h3>Modificaciones de pago / información</h3>
+        <% if @recent_payments.any? %>
+          <ul class="recent-list">
+            <% @recent_payments.first(8).each do |pay| %>
+              <li>
+                <%= pay.user.name.presence || pay.user.email %>
+                <%= number_to_currency(pay.amount, unit: "$", separator: ",", delimiter: ".") %>
+                <span class="badge badge-<%= pay.payment_status %>"><%= pay.payment_status %></span>
+                <%= pay.updated_at.strftime("%d/%m %H:%M") %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="muted">No hay pagos recientes.</p>
+        <% end %>
+      </div>
+
+      <div id="panel-admin" class="asistencia-panel">
+        <p class="muted">Acciones administrativas.</p>
+        <%= link_to "Caja", management_cashbox_path, class: "btn btn-outline" %>
+        <%= link_to "Alumnos", management_students_path, class: "btn btn-outline" %>
+        <%= link_to "Clases", management_classes_path, class: "btn btn-outline" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var tabs = document.querySelectorAll('.asistencia-tab');
+  var panels = document.querySelectorAll('.asistencia-panel');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) {
+        p.classList.remove('active');
+        if (p.id === 'panel-' + target) p.classList.add('active');
+      });
+      this.classList.add('active');
+    });
+  });
+})();
+</script>
