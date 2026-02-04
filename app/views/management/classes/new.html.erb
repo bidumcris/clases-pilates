@@ -1,89 +1,54 @@
-<div class="admin-form-page">
+<div class="admin-form-page admin-services-page">
   <div class="admin-page-header">
-    <h1>Nueva Clase</h1>
+    <h1>Configurar servicios de salas</h1>
     <%= link_to "Volver", management_classes_path, class: "btn btn-outline" %>
   </div>
 
-  <div class="form-container">
-    <%= form_with model: @pilates_class, url: management_classes_path, scope: :pilates_class, local: true, class: "admin-form" do |f| %>
-      <%= render "shared/error_messages", resource: @pilates_class %>
+  <div class="admin-section">
+    <p class="admin-services-intro">
+      Elegí una sala para configurar su servicio (horarios, duración de turnos y límites de reservas).
+    </p>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :name, "Nombre de la Clase" %>
-          <%= f.text_field :name, class: "form-control", placeholder: "Opcional (si lo dejás vacío se autogenera)" %>
-          <small class="form-hint">Tip: podés usar “Etiqueta” para distinguir grupos (teens, pre pilates, etc.)</small>
-        </div>
-      </div>
+    <div class="admin-services-list">
+      <% circuito = Room.find_by(room_type: :circuito) %>
+      <% mat = Room.find_by(room_type: :planta_baja_mat_accesorios) %>
+      <% reformer = Room.find_by(room_type: :planta_alta_privadas) %>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :tags, "Etiqueta / Grupo (opcional)" %>
-          <%= f.text_field :tags, class: "form-control", placeholder: "Ej: teens, pre pilates" %>
+      <% if circuito %>
+        <div class="admin-service-card">
+          <div class="admin-service-card-main">
+            <h3>Circuito - Planta Alta</h3>
+            <p>Configurar horarios, duración y límites del servicio de Circuito.</p>
+          </div>
+          <%= link_to edit_management_room_path(circuito), class: "btn btn-sm btn-warning admin-service-edit-btn", title: "Editar servicio" do %>
+            <i class="glyphicon glyphicon-edit"></i> Editar servicio
+          <% end %>
         </div>
-        <div class="form-group">
-          <%= f.label :level, "Nivel" %>
-          <%= f.select :level, options_for_select([
-            ['Inicial', 'inicial'],
-            ['Basic', 'basic'],
-            ['Intermedio', 'intermediate'],
-            ['Pre avanzado', 'advanced']
-          ], @pilates_class.level), {}, { class: "form-control" } %>
-        </div>
+      <% end %>
 
-        <div class="form-group">
-          <%= f.label :class_type, "Tipo de Clase" %>
-          <%= f.select :class_type, options_for_select([
-            ['Grupal', 'grupal'],
-            ['Privada', 'privada']
-          ], @pilates_class.class_type), {}, { class: "form-control" } %>
-          <small class="form-hint">Privada: 1 alumno, 1 sala. Grupal: clases normales</small>
+      <% if mat %>
+        <div class="admin-service-card">
+          <div class="admin-service-card-main">
+            <h3>Mat y Accesorios - Planta Alta</h3>
+            <p>Configurar horarios, duración y límites del servicio de Mat y Accesorios.</p>
+          </div>
+          <%= link_to edit_management_room_path(mat), class: "btn btn-sm btn-warning admin-service-edit-btn", title: "Editar servicio" do %>
+            <i class="glyphicon glyphicon-edit"></i> Editar servicio
+          <% end %>
         </div>
-      </div>
+      <% end %>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :room_id, "Sala" %>
-          <%= f.select :room_id, options_from_collection_for_select(@rooms, :id, :admin_display_name, @pilates_class.room_id),
-              { prompt: "Seleccionar sala" }, { class: "form-control" } %>
-          <small class="form-hint">Reformer · Mat y Accesorios · Circuito</small>
+      <% if reformer %>
+        <div class="admin-service-card">
+          <div class="admin-service-card-main">
+            <h3>Reformer - Planta Baja</h3>
+            <p>Configurar horarios, duración y límites del servicio de Reformer.</p>
+          </div>
+          <%= link_to edit_management_room_path(reformer), class: "btn btn-sm btn-warning admin-service-edit-btn", title: "Editar servicio" do %>
+            <i class="glyphicon glyphicon-edit"></i> Editar servicio
+          <% end %>
         </div>
-
-        <div class="form-group">
-          <%= f.label :instructor_id, "Instructor / Profesor" %>
-          <%= f.select :instructor_id, options_from_collection_for_select(@instructors, :id, :name, @pilates_class.instructor_id), 
-              { prompt: "Seleccionar instructor" }, { class: "form-control" } %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :start_time, "Día y horario" %>
-          <%= f.datetime_local_field :start_time, class: "form-control", value: @pilates_class.start_time&.strftime("%Y-%m-%dT%H:%M") %>
-        </div>
-
-        <div class="form-group">
-          <%= f.label :end_time, "Hora de fin (opcional)" %>
-          <%= f.datetime_local_field :end_time, class: "form-control", value: "" %>
-          <small class="form-hint">Si lo dejás vacío, se calcula automáticamente (+1 hora)</small>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :max_capacity, "Cupo máximo" %>
-          <%= f.select :max_capacity,
-            options_for_select([["(Usar cupo de la sala)", ""], ["7", 7], ["8", 8], ["10", 10], ["12", 12], ["15", 15]], @pilates_class.max_capacity),
-            {},
-            { class: "form-control" } %>
-          <small class="form-hint">En grupales suele ser 7 u 8 según el nivel. Si es privada, el sistema fuerza cupo = 1.</small>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <%= f.submit "Crear Clase", class: "btn btn-primary btn-large" %>
-        <%= link_to "Cancelar", management_classes_path, class: "btn btn-outline" %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 </div>

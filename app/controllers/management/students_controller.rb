@@ -31,6 +31,8 @@ class Management::StudentsController < Management::BaseController
     @user.join_date ||= Date.current
     @user.subscription_start ||= Date.current
     @user.subscription_end ||= Date.current.end_of_month
+    @rooms = Room.order(:name)
+    @instructors = Instructor.order(:name)
   end
 
   def create
@@ -43,8 +45,11 @@ class Management::StudentsController < Management::BaseController
     @user.subscription_end ||= (@user.subscription_start&.end_of_month)
 
     if @user.save
+      create_fixed_slot_if_present
       redirect_to management_student_path(@user), notice: "Alumno creado exitosamente"
     else
+      @rooms = Room.order(:name)
+      @instructors = Instructor.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
@@ -320,6 +325,37 @@ class Management::StudentsController < Management::BaseController
       :payment_amount, :debt_amount, :monthly_turns,
       weekly_days: []
     )
+  end
+
+  def create_fixed_slot_if_present
+    room_ids = Array(params[:fixed_slot_room_id])
+    instructor_ids = Array(params[:fixed_slot_instructor_id])
+    day_of_weeks = Array(params[:fixed_slot_day_of_week])
+    hours = Array(params[:fixed_slot_hour])
+    default_instructor_id = Instructor.order(:id).first&.id
+
+    room_ids.each_with_index do |room_id, i|
+      room_id = room_id.presence
+      day_of_week = day_of_weeks[i].presence
+      hour = hours[i].presence
+      next unless room_id.present? && day_of_week.present? && hour.present?
+
+      room = Room.find_by(id: room_id)
+      next unless room
+
+      instructor_id = instructor_ids[i].presence || default_instructor_id
+      next unless instructor_id.present?
+
+      @user.fixed_slots.create!(
+        room_id: room.id,
+        instructor_id: instructor_id,
+        day_of_week: day_of_week.to_i,
+        hour: hour.to_i,
+        level: @user.level
+      )
+    end
+  rescue ActiveRecord::RecordInvalid
+    # No bloquear la creación del alumno si falla algún turno fijo
   end
 
   # Clases en el rango de fechas que coinciden con los turnos fijos del usuario (mismo room, instructor, level, día, hora)

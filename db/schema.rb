@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_29_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_04_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -142,6 +142,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_120000) do
     t.integer "capacity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "service_kind"
+    t.string "service_name"
+    t.text "service_description"
+    t.text "service_notice"
+    t.text "service_schedule_description"
+    t.integer "service_slot_interval_minutes"
+    t.integer "service_duration_minutes"
+    t.integer "service_reserved_fixed_slots"
+    t.integer "service_daily_free_limit"
+    t.integer "service_weekly_free_limit"
+    t.integer "service_daily_active_limit"
+    t.integer "service_weekly_active_limit"
+    t.integer "service_max_days_in_advance"
   end
 
   create_table "users", force: :cascade do |t|

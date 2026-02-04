@@ -48,6 +48,9 @@ Rails.application.routes.draw do
       root "dashboard#index"
       get "dashboard", to: "dashboard#index", as: :dashboard
 
+      # Configuración de salas / servicios
+      resources :rooms, only: [ :edit, :update ]
+
       # Asistencia (panel administradoras)
       get "asistencia", to: "attendance#index", as: :attendance
 

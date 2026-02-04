@@ -13,7 +13,8 @@ class Management::ClassesController < Management::BaseController
     @date = Date.current if @view_mode == "today"
 
     @week_start = (@view_mode == "today") ? @date : @date.beginning_of_week(:monday)
-    @week_end = (@view_mode == "today") ? @date : (@week_start + 6.days)
+    # Semana laboral: lunes a viernes (ocultamos sábado y domingo)
+    @week_end = (@view_mode == "today") ? @date : (@week_start + 4.days)
 
     @classes = PilatesClass.where("DATE(start_time) >= ? AND DATE(start_time) <= ?", @week_start, @week_end)
                            .order(start_time: :asc)
