@@ -14,7 +14,7 @@
             <span class="credits-modal-btn-placeholder">−</span>
           <% end %>
           <span class="credits-modal-amount"><%= amount %></span>
-          <%= button_to "+", grant_recoveries_management_student_path(@user), method: :post, params: { amount: 1, room_id: room.id }, class: "btn btn-sm btn-success credits-modal-btn-spin", data: { turbo: false }, title: "Agregar 1" %>
+          <%= button_to "+", grant_recoveries_management_student_path(@user), method: :post, params: { amount: 1, room_id: room.id }, class: "btn btn-sm btn-success credits-modal-btn-spin", data: { turbo: false }, form: { onsubmit: "return confirm('¿Agregar 1 recupero para #{room.label} — #{room.name}?');" }, title: "Agregar 1" %>
           <span class="credits-modal-vence">vence <strong><%= first_credit ? I18n.l(first_credit.expires_at, format: :short) : "—" %></strong></span>
           <span class="credits-modal-room label label-primary"><%= room.label %> — <%= room.name %></span>
         </div>

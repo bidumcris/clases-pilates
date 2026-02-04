@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   # Devise: redirección post-login por rol
   def after_sign_in_path_for(resource)
-    return management_root_path if resource.respond_to?(:admin?) && resource.admin?
+    return management_attendance_path if resource.respond_to?(:admin?) && resource.admin?
     return management_root_path if resource.respond_to?(:instructor?) && resource.instructor?
 
     super
