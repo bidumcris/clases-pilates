@@ -1,0 +1,71 @@
+<div class="abonos-modal-card modificar-abono-form" data-abonos-back-url="<%= abonos_modal_management_student_path(@user) %>">
+  <p class="abonos-modal-field"><strong>Cliente:</strong> <%= @user.name.presence || @user.email %></p>
+
+  <% active_slots = @user.fixed_slots.select(&:active?) %>
+  <% if active_slots.any? %>
+    <p class="abonos-modal-field"><strong>Días fijos:</strong></p>
+    <ul class="abonos-modal-list">
+      <% active_slots.sort_by { |s| [ s.day_of_week, s.hour ] }.each do |slot| %>
+        <li><%= slot.room.label %> - <%= slot.room.name %>: <%= slot.day_name %> <%= "%02d" % slot.hour %>:00hs (<%= level_label(slot.level) %>)</li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <p class="abonos-modal-field"><strong>Abono actual:</strong></p>
+  <p class="abonos-modal-abono">
+    <% if @user.last_payment_date.present? %>
+      [Generado el <%= I18n.l(@user.last_payment_date, format: "%d/%m") %>]:
+    <% end %>
+    <% if @user.subscription_start.present? && @user.subscription_end.present? %>
+      Vigencia <%= I18n.l(@user.subscription_start, format: "%a %d/%m") %> a <%= I18n.l(@user.subscription_end, format: "%a %d/%m") %>,
+    <% end %>
+    <% if @user.payment_amount.to_f.positive? %>
+      Importe: <%= number_to_currency(@user.payment_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>
+    <% end %>
+    <% if @user.debt_amount.to_f.positive? %>
+      <strong>[DEBE <%= number_to_currency(@user.debt_amount, unit: "$", separator: ",", delimiter: ".", format: "%u %n") %>]</strong>
+    <% else %>
+      [Al día]
+    <% end %>
+  </p>
+
+  <p class="abonos-modal-warning"><strong>Importante:</strong> Estás modificando un abono.</p>
+
+  <%= form_with model: @user, url: update_abono_management_student_path(@user), method: :patch, local: true, html: { id: "form-modificar-abono", data: { action: "submit->abonos-modal#submitModificar" } } do |f| %>
+    <div class="abonos-modal-field abonos-modal-dates-row">
+      <div class="abonos-modal-date-col">
+        <label class="abonos-modal-label">Inicio actividades</label>
+        <div class="form-control abonos-modal-readonly" id="inicioAct"><%= @user.subscription_start.present? ? I18n.l(@user.subscription_start, format: "%-d/%-m") : "—" %></div>
+      </div>
+      <div class="abonos-modal-date-col">
+        <label class="abonos-modal-label">Fin de actividades</label>
+        <%= f.date_field :subscription_end, class: "form-control", value: @user.subscription_end&.strftime("%Y-%m-%d"), min: @user.subscription_start&.strftime("%Y-%m-%d") %>
+      </div>
+    </div>
+
+    <div class="miRow no-gutter abonos-modal-row">
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="text-center abonos-modal-label"><b title="Cantidad de turnos fijos en el período">Fijos</b></div>
+        <input type="text" class="form-control" value="<%= @turnos_fijos_count %>" disabled readonly>
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="text-center abonos-modal-label"><b title="Importe total de la cuota">Total $</b></div>
+        <%= f.number_field :payment_amount, min: 0, max: 99999999, step: 0.01, class: "form-control", value: @user.payment_amount %>
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="text-center abonos-modal-label"><b title="Saldo restante que debe el cliente">Saldo $</b></div>
+        <%= f.number_field :debt_amount, min: 0, max: 99999999, step: 0.01, class: "form-control", value: @user.debt_amount %>
+      </div>
+    </div>
+
+    <div class="abonos-modal-field abonos-modal-row">
+      <div class="text-center abonos-modal-label"><b>Nota adicional <small>(la verá el cliente)</small></b></div>
+      <input type="text" name="note" id="inputNota" class="form-control" value="<%= @abono_note %>" placeholder="Opcional">
+    </div>
+
+    <div class="text-center abonos-modal-actions abonos-modal-actions--bottom">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="button" class="btn btn-danger" data-action="click->abonos-modal#descartarModificar">Descartar</button>
+    </div>
+  <% end %>
+</div>

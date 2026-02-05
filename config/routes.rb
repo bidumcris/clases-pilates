@@ -93,11 +93,14 @@ Rails.application.routes.draw do
         end
         member do
           get :abonos_modal
+          get :modificar_abono_modal
+          patch :update_abono
           get :credits_modal
           post :add_credits
           post :deduct_credit
           post :grant_recoveries
           post :deduct_recoveries
+          post :cancel_payment
           post :send_whatsapp_test
           patch :update_class_type
           patch :update_billing_status
