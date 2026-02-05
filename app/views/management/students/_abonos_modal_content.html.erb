@@ -30,10 +30,31 @@
   </p>
 
   <div class="abonos-modal-actions">
-    <button type="button" class="btn btn-sm btn-warning" title="Modificar abono">Modificar</button>
-    <button type="button" class="btn btn-sm btn-danger" title="Cancelar pago">Cancelar Pago</button>
+    <button type="button"
+        class="btn btn-sm btn-warning"
+        title="Modificar abono"
+        data-action="click->abonos-modal#loadModificar"
+        data-modificar-abono-url="<%= modificar_abono_modal_management_student_path(@user) %>">Modificar</button>
+    <button type="button" class="btn btn-sm btn-danger abonos-cancel-pago-btn" title="Cancelar pago" onclick="document.getElementById('abonos-cancel-pago-dialog-<%= @user.id %>').showModal()">Cancelar Pago</button>
     <button type="button" class="btn btn-sm btn-primary" title="Finalizar">Finalizar</button>
   </div>
+
+  <dialog class="abonos-cancel-pago-dialog" id="abonos-cancel-pago-dialog-<%= @user.id %>" aria-labelledby="abonos-cancel-pago-title">
+    <div class="abonos-cancel-pago-dialog-inner">
+      <h2 id="abonos-cancel-pago-title" class="abonos-cancel-pago-title">¡Cuidado!</h2>
+      <p class="abonos-cancel-pago-text">
+        Se borrará por completo este pago, los créditos y todos los turnos asociados desde el día <strong class="abonos-cancel-pago-date"><%= @user.subscription_start.present? ? I18n.l(@user.subscription_start, format: "%a %d/%m") : "—" %></strong>.
+      </p>
+      <p class="abonos-cancel-pago-note">
+        Nota: Si deseas mantener el registro histórico del pago y los turnos ya transcurridos debes utilizar la opción &quot;Finalizar el pago&quot;.
+      </p>
+      <p class="abonos-cancel-pago-question">¿Deseas continuar?</p>
+      <div class="abonos-cancel-pago-buttons">
+        <button type="button" class="btn btn-outline abonos-cancel-pago-no" onclick="this.closest('dialog').close()">No</button>
+        <%= button_to "Sí", cancel_payment_management_student_path(@user), method: :post, class: "btn btn-danger abonos-cancel-pago-yes", form: { class: "abonos-cancel-pago-form-inline" } %>
+      </div>
+    </div>
+  </dialog>
 
   <p class="abonos-modal-note">
     Si deseas cargar un nuevo abono primero debes saldar la deuda actual del cliente (Modificando el abono) y luego si aún no te la ha pagado puedes trasladarla al nuevo abono con el recargo correspondiente.

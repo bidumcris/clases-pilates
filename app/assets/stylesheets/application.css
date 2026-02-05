@@ -1141,7 +1141,7 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   max-height: 90vh;
   overflow: auto;
   background: var(--color-blanco);
@@ -1203,6 +1203,97 @@ body {
   font-size: 0.8rem;
   color: #555;
   line-height: 1.4;
+}
+.abonos-modal-warning {
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.5rem 0.75rem;
+  background: #fff3cd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #856404;
+}
+.abonos-modal-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+.abonos-modal-readonly {
+  background: #f1f1f1;
+  color: #555;
+  cursor: default;
+}
+.abonos-modal-row {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.abonos-modal-row .form-control {
+  margin-top: 0.25rem;
+}
+.abonos-modal-dates-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+.abonos-modal-date-col {
+  flex: 1;
+  min-width: 0;
+}
+.abonos-modal-date-col .form-control {
+  margin-top: 0.25rem;
+}
+.abonos-modal-actions--bottom {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-marfil);
+}
+
+/* Diálogo de confirmación "Cancelar Pago" dentro del modal de abonos */
+.abonos-cancel-pago-dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 420px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+.abonos-cancel-pago-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+.abonos-cancel-pago-dialog-inner {
+  padding: 1.5rem;
+}
+.abonos-cancel-pago-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #b71c1c;
+  text-align: center;
+}
+.abonos-cancel-pago-text {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-texto);
+}
+.abonos-cancel-pago-note {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.4;
+}
+.abonos-cancel-pago-question {
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.abonos-cancel-pago-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.abonos-cancel-pago-form-inline {
+  display: inline-block;
+  margin: 0;
 }
 
 .class-availability {

@@ -1,5 +1,5 @@
 class Management::StudentsController < Management::BaseController
-  before_action :set_user, only: [ :show, :edit, :update, :abonos_modal, :credits_modal, :add_credits, :deduct_credit, :grant_recoveries, :deduct_recoveries, :update_class_type, :update_billing_status ]
+  before_action :set_user, only: [ :show, :edit, :update, :abonos_modal, :modificar_abono_modal, :update_abono, :credits_modal, :add_credits, :deduct_credit, :grant_recoveries, :deduct_recoveries, :cancel_payment, :update_class_type, :update_billing_status ]
   before_action :ensure_admin!, only: [ :new, :create, :edit, :update, :add_credits, :deduct_credit, :grant_recoveries, :deduct_recoveries, :update_class_type, :update_billing_status, :debtors, :absences, :birthdays ]
 
   def index
@@ -121,10 +121,36 @@ class Management::StudentsController < Management::BaseController
     render partial: "abonos_modal_content", layout: false
   end
 
+  def modificar_abono_modal
+    @turnos_fijos_count = count_fixed_slots_in_range(@user, @user.subscription_start, @user.subscription_end)
+    payment = @user.payments.subscription_fees
+      .where(period_start: @user.subscription_start, period_end: @user.subscription_end)
+      .order(created_at: :desc).first
+    payment ||= @user.payments.subscription_fees.order(created_at: :desc).first
+    @abono_note = payment&.notes
+    render partial: "modificar_abono_modal_content", layout: false
+  end
+
+  def update_abono
+    if @user.update(update_abono_params)
+      update_abono_note_if_present
+      render partial: "abonos_modal_content", layout: false, status: :ok
+    else
+      @turnos_fijos_count = count_fixed_slots_in_range(@user, @user.subscription_start, @user.subscription_end)
+      @abono_note = params[:note]
+      render partial: "modificar_abono_modal_content", layout: false, status: :unprocessable_entity
+    end
+  end
+
   def credits_modal
     @rooms = Room.order(:name)
     @credits = @user.credits.available.includes(:room).order(expires_at: :asc, created_at: :asc)
     render partial: "credits_modal_content", layout: false
+  end
+
+  def cancel_payment
+    # TODO: borrar pago, créditos y turnos asociados desde subscription_start
+    redirect_to management_students_path, notice: "Cancelar pago: funcionalidad en desarrollo."
   end
 
   def update
@@ -299,6 +325,40 @@ class Management::StudentsController < Management::BaseController
         redirect_to management_students_path
       end
     end
+  end
+
+  def update_abono_params
+    params.require(:user).permit(:subscription_end, :payment_amount, :debt_amount)
+  end
+
+  def update_abono_note_if_present
+    note = params[:note].to_s.strip
+    return if note.blank?
+
+    payment = @user.payments.subscription_fees
+      .where(period_start: @user.subscription_start, period_end: @user.subscription_end)
+      .order(created_at: :desc)
+      .first
+    payment ||= @user.payments.subscription_fees.order(created_at: :desc).first
+    payment&.update(notes: note)
+  end
+
+  # Cuenta cuántas veces caen los turnos fijos del usuario entre inicio y fin (inclusive).
+  def count_fixed_slots_in_range(user, start_date, end_date)
+    return 0 if start_date.blank? || end_date.blank?
+
+    start_d = start_date.to_date
+    end_d = end_date.to_date
+    return 0 if start_d > end_d
+
+    slots = user.fixed_slots.active
+    return 0 if slots.empty?
+
+    count = 0
+    (start_d..end_d).each do |d|
+      slots.each { |s| count += 1 if s.day_of_week == d.wday }
+    end
+    count
   end
 
   def user_params
