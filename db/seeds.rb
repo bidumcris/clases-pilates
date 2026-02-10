@@ -195,6 +195,24 @@ user_advanced = find_or_create_user!(
   billing_status: :deudor
 )
 
+# Alumno \"Libre\" (pensado para probar modalidad libre / sin plan fijo)
+user_libre = find_or_create_user!(
+  email: "libre@test.com",
+  password: "password123",
+  role: :alumno,
+  level: :basic,
+  class_type: :grupal,
+  dni: "30000007",
+  mobile: "+54 11 7000 0007",
+  name: "Alumno Libre",
+  join_date: month_start - 1.month,
+  subscription_start: month_start,
+  subscription_end: month_end,
+  monthly_turns: 999, # efecto \"libre\": muchos turnos
+  payment_amount: 80000,
+  billing_status: :abonado
+)
+
 # Usuario con clase privada (patología/lesión)
 user_privada = find_or_create_user!(
   email: "privada@test.com",
@@ -252,7 +270,10 @@ real_students = real_emails.map.with_index do |email, i|
 end
 
 # Crear Admin
-admin_email = ENV["ADMIN_EMAIL"].presence || (Rails.env.development? ? "admin@pilates.com" : nil)
+# En desarrollo, se crea por defecto el admin principal del estudio.
+# Email: energiapilates4@gmail.com
+# Clave: admin123
+admin_email = ENV["ADMIN_EMAIL"].presence || (Rails.env.development? ? "energiapilates4@gmail.com" : nil)
 admin_password = ENV["ADMIN_PASSWORD"].presence || (Rails.env.development? ? "admin123" : nil)
 
 admin = nil
@@ -270,7 +291,7 @@ end
 
 # Crear Créditos para usuarios (mensuales)
 puts "Creando créditos..."
-seed_students = [ user_inicial, user_basic, user_intermediate, user_advanced, user_privada, user_medio_mes ] + real_students
+seed_students = [ user_inicial, user_basic, user_intermediate, user_advanced, user_libre, user_privada, user_medio_mes ] + real_students
 seed_students.each do |user|
   # Créditos para el mes actual (vencen al final del mes actual)
   current_month_end = Date.current.end_of_month
@@ -303,7 +324,7 @@ seed_students.each do |user|
   end
 
   # Extra: algún pago manual / efectivo para ver métodos
-  next unless user.email.in?(["basico@test.com", "avanzado@test.com"])
+  next unless user.email.in?([ "basico@test.com", "avanzado@test.com" ])
 
   Payment.create!(
     user: user,
@@ -418,12 +439,107 @@ end
   end
 end
 
+# Crear clases específicas para febrero 2026
+puts "Creando clases de pilates para febrero 2026..."
+feb_start = Date.new(2026, 2, 1)
+feb_end = feb_start.end_of_month
+
+(feb_start..feb_end).each do |current_date|
+  # Clases grupales por la mañana (8:00, 9:00, 10:00)
+  [ 8, 9, 10 ].each do |hour|
+    level = levels.sample
+    start_time = Time.zone.parse("#{current_date} #{hour}:00")
+    end_time = start_time + 1.hour
+    room = rooms.shuffle.find { |r| room_available?(room: r, start_time: start_time, end_time: end_time) }
+    next unless room
+    instructor = instructors.sample
+
+    PilatesClass.find_or_create_by!(
+      name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+      start_time: start_time,
+      room: room,
+      instructor: instructor
+    ) do |pc|
+      pc.level = level
+      pc.class_type = :grupal
+      pc.end_time = end_time
+      pc.max_capacity =
+        case room.room_type
+        when "planta_alta_privadas"
+          8
+        when "circuito"
+          12
+        when "planta_baja_mat_accesorios"
+          15
+        else
+          10
+        end
+    end
+  end
+
+  # Clases grupales por la tarde (18:00, 19:00)
+  [ 18, 19 ].each do |hour|
+    level = levels.sample
+    start_time = Time.zone.parse("#{current_date} #{hour}:00")
+    end_time = start_time + 1.hour
+    room = rooms.shuffle.find { |r| room_available?(room: r, start_time: start_time, end_time: end_time) }
+    next unless room
+    instructor = instructors.sample
+
+    PilatesClass.find_or_create_by!(
+      name: "Clase #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+      start_time: start_time,
+      room: room,
+      instructor: instructor
+    ) do |pc|
+      pc.level = level
+      pc.class_type = :grupal
+      pc.end_time = end_time
+      pc.max_capacity =
+        case room.room_type
+        when "planta_alta_privadas"
+          8
+        when "circuito"
+          12
+        when "planta_baja_mat_accesorios"
+          15
+        else
+          10
+        end
+    end
+  end
+
+  # Algunas clases privadas fijas (para febrero)
+  if current_date.wday.in?([ 1, 3 ]) # Lunes y Miércoles
+    [ 11, 17 ].each do |hour|
+      level = [ :inicial, :basic ].sample
+      room_privada = room1
+      instructor = instructors.sample
+      start_time = Time.zone.parse("#{current_date} #{hour}:00")
+      end_time = start_time + 1.hour
+      next unless room_available?(room: room_privada, start_time: start_time, end_time: end_time)
+
+      PilatesClass.find_or_create_by!(
+        name: "Clase Privada #{level.to_s.capitalize} - #{current_date.strftime('%d/%m')} #{hour}:00",
+        start_time: start_time,
+        room: room_privada,
+        instructor: instructor
+      ) do |pc|
+        pc.level = level
+        pc.class_type = :privada
+        pc.end_time = end_time
+        pc.max_capacity = 1
+      end
+    end
+  end
+end
+
 # Crear turnos fijos + clases repetidas del mes para que el dashboard muestre "clases fijas"
 puts "Creando turnos fijos..."
 fixed_definitions = [
-  { user: user_basic, days: [1, 3], hour: 18, level: :basic, room: room2, instructor: instructor1 }, # Lun/Mié 18
-  { user: user_intermediate, days: [2, 4], hour: 19, level: :intermediate, room: room3, instructor: instructor2 }, # Mar/Jue 19
-  { user: user_advanced, days: [1, 3], hour: 17, level: :advanced, room: room2, instructor: instructor3 } # Lun/Mié 17
+  { user: user_basic, days: [ 1, 3 ], hour: 18, level: :basic, room: room2, instructor: instructor1 }, # Lun/Mié 18
+  { user: user_intermediate, days: [ 2, 4 ], hour: 19, level: :intermediate, room: room3, instructor: instructor2 }, # Mar/Jue 19
+  { user: user_advanced, days: [ 1, 3 ], hour: 17, level: :advanced, room: room2, instructor: instructor3 } # Lun/Mié 17
 ].select { |h| h[:user].present? }
 
 fixed_definitions.each do |fd|

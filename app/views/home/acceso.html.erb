@@ -5,6 +5,9 @@
       <%= image_tag "energia-pilates/1. logotipo/EP_logotipo 1.png", alt: "Energía Pilates", class: "acceso-logo" %>
       <h1 class="acceso-title">Acceso para Alumnos</h1>
       <p class="acceso-subtitle">Gestiona tus clases, cancelaciones y recuperos de forma fácil y rápida</p>
+      <div class="acceso-back">
+        <%= link_to "Volver", root_path, class: "btn btn-outline-primary" %>
+      </div>
     </div>
     
     <div class="login-section-content">
@@ -25,16 +28,18 @@
         </div>
         
         <div class="tab-content active" data-tabs-target="content">
-          <% resource = User.new %>
-          <% resource_name = :user %>
-          <%= render partial: "devise/sessions/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: Devise.mappings[:user] } %>
+          <% resource ||= User.new %>
+          <% resource_name ||= :user %>
+          <% devise_mapping ||= Devise.mappings[:user] %>
+          <%= render partial: "devise/sessions/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: devise_mapping } %>
         </div>
         
         <div class="tab-content" data-tabs-target="content">
-          <% resource = User.new %>
-          <% resource_name = :user %>
-          <% @minimum_password_length = Devise.password_length.min %>
-          <%= render partial: "devise/registrations/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: Devise.mappings[:user] } %>
+          <% resource ||= User.new %>
+          <% resource_name ||= :user %>
+          <% devise_mapping ||= Devise.mappings[:user] %>
+          <% @minimum_password_length ||= Devise.password_length.min %>
+          <%= render partial: "devise/registrations/new_landing", locals: { resource: resource, resource_name: resource_name, devise_mapping: devise_mapping } %>
         </div>
       </div>
     </div>

@@ -1,0 +1,10 @@
+es:
+  devise:
+    failure:
+      invalid: "Usuario o contraseña inválido"
+      not_found_in_database: "Usuario o contraseña inválido"
+    sessions:
+      signed_in: "Has iniciado sesión correctamente."
+      signed_out: "Has cerrado sesión correctamente."
+      already_signed_out: "Has cerrado sesión correctamente."
+
