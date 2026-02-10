@@ -8,84 +8,89 @@
     <%= form_with model: @user, url: management_students_path, scope: :user, local: true, class: "admin-form" do |f| %>
       <%= render "shared/error_messages", resource: @user %>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :name, "Nombre y apellido" %>
-          <%= f.text_field :name, class: "form-control", placeholder: "Ej: Ana Pérez" %>
-        </div>
-        <div class="form-group">
-          <%= f.label :email, "Email" %>
-          <%= f.email_field :email, class: "form-control", placeholder: "ana@..." %>
-        </div>
-      </div>
+      <div class="admin-section">
+        <h2>Datos personales</h2>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :password, "Contraseña" %>
-          <%= f.password_field :password, class: "form-control" %>
+        <div class="form-row form-row--cols-3">
+          <div class="form-group">
+            <label for="user_first_name">Nombre</label>
+            <%= text_field_tag "user[first_name]", nil, class: "form-control", placeholder: "Ej: Ana" %>
+          </div>
+          <div class="form-group">
+            <label for="user_last_name">Apellido</label>
+            <%= text_field_tag "user[last_name]", nil, class: "form-control", placeholder: "Ej: Pérez" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :dni, "DNI o CI" %>
+            <%= f.text_field :dni, class: "form-control" %>
+          </div>
         </div>
-        <div class="form-group">
-          <%= f.label :password_confirmation, "Confirmar contraseña" %>
-          <%= f.password_field :password_confirmation, class: "form-control" %>
-        </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :level, "Nivel" %>
-          <%= f.select :level, options_for_select(User.levels.keys.map { |k| [k.humanize, k] }, @user.level), {}, { class: "form-control" } %>
+        <div class="form-row form-row--cols-3">
+          <div class="form-group">
+            <%= f.label :email, "Email (*)" %>
+            <%= f.email_field :email, class: "form-control", placeholder: "ana@..." %>
+          </div>
+          <div class="form-group">
+            <%= f.label :mobile, "Teléfono celular" %>
+            <%= f.text_field :mobile, class: "form-control", placeholder: "+54 ..." %>
+          </div>
+          <div class="form-group">
+            <%= f.label :emergency_phone, "Teléfono de contacto (para emergencias)" %>
+            <%= f.text_field :emergency_phone, class: "form-control" %>
+          </div>
         </div>
-        <div class="form-group">
-          <%= f.label :class_type, "Tipo de clase" %>
-          <%= f.select :class_type, options_for_select(User.class_types.keys.map { |k| [k.humanize, k] }, @user.class_type), {}, { class: "form-control" } %>
-        </div>
-        <div class="form-group">
-          <%= f.label :active, "Activo" %><br>
-          <%= f.check_box :active %>
-        </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :dni, "DNI" %>
-          <%= f.text_field :dni, class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= f.label :mobile, "Celular" %>
-          <%= f.text_field :mobile, class: "form-control", placeholder: "+54 ..." %>
-        </div>
-        <div class="form-group">
-          <%= f.label :phone, "Teléfono" %>
-          <%= f.text_field :phone, class: "form-control" %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :birth_date, "Fecha de nacimiento" %>
-          <%= f.date_field :birth_date, class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= f.label :join_date, "Fecha de ingreso" %>
-          <%= f.date_field :join_date, class: "form-control" %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.label :subscription_start, "Alta del servicio" %>
-          <%= f.date_field :subscription_start, class: "form-control" %>
-          <small class="form-hint">Si el alumno entra a mitad de mes, poné esta fecha.</small>
-        </div>
-        <div class="form-group">
-          <%= f.label :subscription_end, "Fin del servicio (mes)" %>
-          <%= f.date_field :subscription_end, class: "form-control" %>
-          <small class="form-hint">Normalmente es el último día del mes.</small>
+        <div class="form-row form-row--cols-3">
+          <div class="form-group">
+            <%= f.label :birth_date, "Fecha de nacimiento" %>
+            <%= f.date_field :birth_date, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :join_date, "Fecha de ingreso" %>
+            <%= f.date_field :join_date, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :password, "Contraseña" %>
+            <div style="display:flex; gap:0.75rem; flex-direction:column;">
+              <%= f.password_field :password, class: "form-control", placeholder: "Contraseña" %>
+              <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Confirmar contraseña" %>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="admin-section" style="margin-top: 1.5rem;">
-        <h2>Plan / Pagos (opcional)</h2>
+        <h2>Datos de suscripción (para Circuito - Planta Alta)</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <%= f.label :level, "Nivel" %>
+            <%= f.select :level, options_for_select(User.levels.keys.map { |k| [k.humanize, k] }, @user.level), {}, { class: "form-control" } %>
+          </div>
+          <div class="form-group">
+            <%= f.label :class_type, "Tipo de clase" %>
+            <%= f.select :class_type, options_for_select(User.class_types.keys.map { |k| [k.humanize, k] }, @user.class_type), {}, { class: "form-control" } %>
+          </div>
+          <div class="form-group">
+            <%= f.label :active, "Activo" %><br>
+            <%= f.check_box :active %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <%= f.label :subscription_start, "Alta del servicio" %>
+            <%= f.date_field :subscription_start, class: "form-control" %>
+            <small class="form-hint">Si el alumno entra a mitad de mes, poné esta fecha.</small>
+          </div>
+          <div class="form-group">
+            <%= f.label :subscription_end, "Fin del servicio (mes)" %>
+            <%= f.date_field :subscription_end, class: "form-control" %>
+            <small class="form-hint">Normalmente es el último día del mes.</small>
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <%= f.label :monthly_turns, "Turnos del mes (plan)" %>
@@ -103,6 +108,48 @@
 
         <div class="form-row">
           <div class="form-group">
+            <%= f.label :additional_info, "Etiqueta del alumno (privada, no podrá verla el alumno)" %>
+            <%= f.text_field :additional_info, class: "form-control", placeholder: "Ej: Embarazada, recupero de lesión, etc." %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Usar días fijos</label>
+            <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+              <label style="display:flex; align-items:center; gap:0.35rem;">
+                <input type="radio" name="use_fixed_days" value="no" checked>
+                <span>No</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:0.35rem;">
+                <input type="radio" name="use_fixed_days" value="si">
+                <span>Sí</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <% day_options = User::WEEKDAY_OPTIONS %>
+        <% hour_options = (7..20).map { |h| ["#{h}:00", h] } %>
+        <% circuito_room = Room.find_by(room_type: :circuito) %>
+
+        <div class="form-row fixed-days-fields" data-fixed-days style="display:none; margin-top:0.5rem;">
+          <div class="form-group">
+            <label>Día fijo</label>
+            <%= select_tag "fixed_slot_day_of_week[]", options_for_select([["— Ninguno —", ""]] + day_options), class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Hora fija</label>
+            <%= select_tag "fixed_slot_hour[]", options_for_select([["— Ninguna —", ""]] + hour_options), class: "form-control" %>
+          </div>
+          <% if circuito_room %>
+            <%= hidden_field_tag "fixed_slot_room_id[]", circuito_room.id %>
+            <%= hidden_field_tag "fixed_slot_instructor_id[]", "" %>
+          <% end %>
+        </div>
+
+        <div class="form-row" style="margin-top: 1.5rem;">
+          <div class="form-group">
             <label>Días por semana</label>
             <div style="display:flex; gap:.75rem; flex-wrap: wrap; margin-top:.5rem;">
               <% User::WEEKDAY_OPTIONS.each do |label, value| %>
@@ -115,15 +162,341 @@
             <small class="form-hint">Ej: 2 veces/semana → Lunes y Miércoles. 3 veces/semana → Lunes, Miércoles y Viernes.</small>
           </div>
         </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#subscription-extra-otros-datos">
+            Editar otros datos de la suscripción <span class="caret"></span>
+          </button>
+          <div id="subscription-extra-otros-datos" style="display:none; margin-top: 0.75rem;">
+            <div class="form-row form-row--cols-3">
+              <div class="form-group">
+                <label for="user_max_cancellations">
+                  Cantidad máxima de cancelaciones
+                  <small class="form-hint" style="display:block; font-weight:normal;">
+                    Sólo completar si la cantidad es diferente a la que está configurada para la empresa en general.
+                  </small>
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  name="turnosACancelar"
+                  id="turnosACancelar"
+                  class="form-control"
+                  placeholder="[opcional] Valor de 0 a 100">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Bloquear autogestión a este usuario</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="block_self_management" value="no" checked>
+                    <span>No</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="block_self_management" value="si">
+                    <span>Sí</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row form-row--cols-3">
+              <div class="form-group">
+                <label for="franja1">Tiene Franja Horaria Oferta (1)</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="franja_oferta_1" value="si">
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="franja_oferta_1" value="no" checked>
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="franja2">Tiene Franja Horaria Oferta (2)</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="franja_oferta_2" value="si">
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="franja_oferta_2" value="no" checked>
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#subscription-extra-recordatorios">
+            Editar Recordatorios <span class="caret"></span>
+          </button>
+          <div id="subscription-extra-recordatorios" style="display:none; margin-top: 0.75rem;">
+            <div class="form-row form-row--cols-3">
+              <div class="form-group">
+                <label for="reminder_type_0">Tipo de recordatorio</label>
+                <select id="reminder_type_0" name="reminders[0][type]" class="form-control">
+                  <option value="">Selecciona el tipo</option>
+                  <option value="general">General</option>
+                  <option value="pago">Pago / Vencimiento</option>
+                  <option value="cumpleanios">Cumpleaños</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reminder_date_0">Fecha recordatorio (*)</label>
+                <input
+                  type="date"
+                  id="reminder_date_0"
+                  name="reminders[0][date]"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Dura el día completo</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="reminders[0][all_day]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="reminders[0][all_day]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reminder_reason_0">Motivo recordatorio (*)</label>
+                <input
+                  type="text"
+                  id="reminder_reason_0"
+                  name="reminders[0][reason]"
+                  class="form-control"
+                  placeholder="Ej: Cobrar cuota, confirmar turno, etc.">
+              </div>
+            </div>
+
+            <div style="margin-top: 0.75rem;">
+              <button type="button" class="btn btn-outline-primary btn-sm">
+                Agregar otro recordatorio
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#subscription-extra-detallada">
+            Editar información detallada <span class="caret"></span>
+          </button>
+          <div id="subscription-extra-detallada" style="display:none; margin-top: 0.75rem;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="inputtags">Etiquetas (tags)</label>
+                <textarea
+                  name="tags"
+                  id="inputtags"
+                  class="form-control"
+                  placeholder="Ingresa los tags separados por coma"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row form-row--cols-3">
+              <div class="form-group">
+                <%= f.label :join_date, "Fecha de ingreso" %>
+                <%= f.date_field :join_date, class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <label for="inputnumSocio">Número de socio</label>
+                <input
+                  type="text"
+                  name="numSocio"
+                  id="inputnumSocio"
+                  class="form-control"
+                  placeholder="Ingresa el número de ficha">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="inputreferidoPor">Referido por</label>
+                <textarea
+                  name="referidoPor"
+                  id="inputreferidoPor"
+                  class="form-control"
+                  placeholder="Ingresa el medio por el que llegó a tu empresa"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#subscription-extra-alertas">
+            Configurar alertas por email <span class="caret"></span>
+          </button>
+          <div id="subscription-extra-alertas" style="display:none; margin-top: 0.75rem;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email_alert_free_reminder">Configuración de alertas por email</label>
+                <small class="form-hint" style="display:block; margin-top:0.25rem;">
+                  Recordatorio turnos libres/recuperatorios:
+                </small>
+                <select id="email_alert_free_reminder" name="email_alerts[free_slots_reminder]" class="form-control" style="margin-top:0.35rem;">
+                  <option value="">Selecciona el tipo</option>
+                  <option value="day_before_and_hours_before" selected>Dia anterior y horas antes</option>
+                  <option value="only_day_before">Sólo día anterior</option>
+                  <option value="only_hours_before">Sólo horas antes</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Aviso por asistir al turno</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_attendance]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_attendance]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Aviso por inasistencia</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_absence]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_absence]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Recordatorio previo de asistencia a turno</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[pre_attendance]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[pre_attendance]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Aviso por anular un turno</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_cancel]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_cancel]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Aviso por realizar un pago y recibir solicitudes de pago, cancelar y/o finalizar un pago</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_payment_flow]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_payment_flow]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Aviso por recordatorio de pago</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem%;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_payment_reminder]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[on_payment_reminder]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Notificaciones importantes (activación de cuenta, cambio de contraseña, cumpleaños, suscripción finalizada, exclusiones días/horarios, etc.)</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[important_notifications]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[important_notifications]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mensajes directos (mensajería)</label>
+                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[direct_messages]" value="si" checked>
+                    <span>Sí</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.35rem;">
+                    <input type="radio" name="email_alerts[direct_messages]" value="no">
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <button type="submit" class="btn btn-primary btn-large">
+                Guardar y volver
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!--
       <div class="admin-section" style="margin-top: 1.5rem;">
         <h2>Salas y horarios (turnos fijos)</h2>
         <p class="form-hint">Opcional. Podés asignar hasta 6 turnos fijos: cada uno con sala, día y hora (y opcionalmente instructor). Un alumno puede tener varias salas con distintos horarios.</p>
         <% room_options = [["— Ninguna —", ""]] + @rooms.map { |r| [r.admin_display_name, r.id] } %>
         <% instructor_options = [["— Por defecto —", ""]] + @instructors.map { |i| [i.name, i.id] } %>
-        <% day_options = [["— Ninguno —", ""]] + User::WEEKDAY_OPTIONS %>
-        <% hour_options = [["— Ninguna —", ""]] + (7..20).map { |h| ["#{h}:00", h] } %>
+        <% day_options_full = [["— Ninguno —", ""]] + User::WEEKDAY_OPTIONS %>
+        <% hour_options_full = [["— Ninguna —", ""]] + (7..20).map { |h| ["#{h}:00", h] } %>
         <% 6.times do |idx| %>
           <div class="fixed-slot-row" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin-bottom: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
             <div class="form-group" style="margin: 0; min-width: 180px;">
@@ -136,21 +509,51 @@
             </div>
             <div class="form-group" style="margin: 0; min-width: 120px;">
               <label class="fixed-slot-row-label">Día</label>
-              <%= select_tag "fixed_slot_day_of_week[]", options_for_select(day_options, nil), class: "form-control" %>
+              <%= select_tag "fixed_slot_day_of_week[]", options_for_select(day_options_full, nil), class: "form-control" %>
             </div>
             <div class="form-group" style="margin: 0; min-width: 100px;">
               <label class="fixed-slot-row-label">Hora</label>
-              <%= select_tag "fixed_slot_hour[]", options_for_select(hour_options, nil), class: "form-control" %>
+              <%= select_tag "fixed_slot_hour[]", options_for_select(hour_options_full, nil), class: "form-control" %>
             </div>
           </div>
         <% end %>
       </div>
+      -->
 
       <div class="form-actions">
-        <%= f.submit "Crear alumno", class: "btn btn-primary btn-large" %>
+        <%= f.submit "Guardar y volver", class: "btn btn-primary btn-large" %>
         <%= link_to "Cancelar", management_students_path, class: "btn btn-outline" %>
       </div>
     <% end %>
   </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Toggle campos de días fijos
+    var radios = document.querySelectorAll('input[name="use_fixed_days"]');
+    var fixedFields = document.querySelector('[data-fixed-days]');
+    if (radios.length && fixedFields) {
+      radios.forEach(function(radio) {
+        radio.addEventListener("change", function() {
+          if (this.value === "si") {
+            fixedFields.style.display = "";
+          } else {
+            fixedFields.style.display = "none";
+          }
+        });
+      });
+    }
 
+    // Toggle secciones de botones desplegables (otros datos, etc.)
+    document.querySelectorAll('[data-toggle-target]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetSelector = btn.getAttribute('data-toggle-target');
+        if (!targetSelector) { return; }
+        var panel = document.querySelector(targetSelector);
+        if (!panel) { return; }
+        var isHidden = panel.style.display === 'none' || panel.style.display === '';
+        panel.style.display = isHidden ? 'block' : 'none';
+      });
+    });
+  });
+</script>

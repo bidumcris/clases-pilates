@@ -3370,6 +3370,12 @@ body {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
 }
+
+/* Margen vertical genérico para botones desplegables */
+.margedvert {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
 .service-section {
   margin-top: 1rem;
   padding-top: 0.5rem;
@@ -3783,7 +3789,9 @@ body {
 .admin-page-header h1 {
   color: var(--color-malva);
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.8rem;
+  flex: 1;
+  text-align: center;
 }
 
 .admin-page-header--compact {
@@ -3827,6 +3835,17 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+/* 3 columnas por fila (ej. Datos personales) */
+.form-row--cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .form-row--cols-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-group {
