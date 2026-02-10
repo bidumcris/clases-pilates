@@ -37,6 +37,17 @@ class Management::StudentsController < Management::BaseController
 
   def create
     @user = User.new(student_create_params)
+
+    # Construir nombre completo a partir de Nombre / Apellido del formulario
+    first_name = params.dig(:user, :first_name).to_s.strip
+    last_name  = params.dig(:user, :last_name).to_s.strip
+    full_name  = [ first_name, last_name ].reject(&:blank?).join(" ")
+    @user.name = full_name if full_name.present?
+
+    # Guardar nombre y apellido por separado en campos auxiliares, si existen
+    @user.param1 = first_name if @user.respond_to?(:param1)
+    @user.param2 = last_name  if @user.respond_to?(:param2)
+
     @user.role = :alumno
     @user.level ||= :basic
     @user.class_type ||= :grupal
@@ -383,6 +394,7 @@ class Management::StudentsController < Management::BaseController
       :level, :class_type, :active,
       :join_date, :subscription_start, :subscription_end,
       :payment_amount, :debt_amount, :monthly_turns,
+      :emergency_phone, :additional_info,
       weekly_days: []
     )
   end
