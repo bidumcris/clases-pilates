@@ -73,9 +73,23 @@ class Management::ClassesController < Management::BaseController
     normalize_class_times_and_capacity
 
     if @pilates_class.save
-      redirect_to management_classes_path, notice: "Clase actualizada exitosamente"
+      if request.headers["Turbo-Frame"].present?
+        set_modal_instance_variables
+        frame_id = "class_modal_#{@pilates_class.id}"
+        render turbo_stream: [
+          turbo_stream.update(frame_id, partial: "management/classes/class_modal_content", layout: false),
+          turbo_stream.update("class-capacity-mini-#{@pilates_class.id}", partial: "management/classes/class_capacity_mini", locals: { pilates_class: @pilates_class })
+        ]
+      else
+        redirect_to management_classes_path, notice: "Clase actualizada exitosamente"
+      end
     else
-      render :edit, status: :unprocessable_entity
+      if request.headers["Turbo-Frame"].present?
+        set_modal_instance_variables
+        render partial: "management/classes/class_modal_content", layout: false, status: :unprocessable_entity
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -174,14 +188,7 @@ class Management::ClassesController < Management::BaseController
   end
 
   def modal
-    @booked_count = @pilates_class.reservations.where(status: :confirmed).count
-    @class_in_future = @pilates_class.start_time > Time.current
-    if @class_in_future
-      @activos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
-    else
-      @cancelados = @pilates_class.reservations.where(status: :cancelled).includes(:user).order(created_at: :asc)
-      @atendidos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
-    end
+    set_modal_instance_variables
     render partial: "management/classes/class_modal_content", layout: false
   end
 
@@ -231,6 +238,17 @@ class Management::ClassesController < Management::BaseController
 
   def pilates_class_params
     params.require(:pilates_class).permit(:name, :tags, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :holiday, :holiday_reason)
+  end
+
+  def set_modal_instance_variables
+    @booked_count = @pilates_class.reservations.where(status: :confirmed).count
+    @class_in_future = @pilates_class.start_time > Time.current
+    if @class_in_future
+      @activos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
+    else
+      @cancelados = @pilates_class.reservations.where(status: :cancelled).includes(:user).order(created_at: :asc)
+      @atendidos = @pilates_class.reservations.where(status: :confirmed).includes(:user).order(created_at: :asc)
+    end
   end
 
   def apply_block_to_classes!(classes, reason:)
