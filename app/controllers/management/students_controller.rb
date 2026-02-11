@@ -404,6 +404,7 @@ class Management::StudentsController < Management::BaseController
     instructor_ids = Array(params[:fixed_slot_instructor_id])
     day_of_weeks = Array(params[:fixed_slot_day_of_week])
     hours = Array(params[:fixed_slot_hour])
+    levels = Array(params[:fixed_slot_level])
     default_instructor_id = Instructor.order(:id).first&.id
 
     room_ids.each_with_index do |room_id, i|
@@ -418,12 +419,15 @@ class Management::StudentsController < Management::BaseController
       instructor_id = instructor_ids[i].presence || default_instructor_id
       next unless instructor_id.present?
 
+      level_value = levels[i].presence
+      level_to_save = level_value.presence? && User.levels.key?(level_value.to_sym) ? level_value.to_s : @user.level.to_s
+
       @user.fixed_slots.create!(
         room_id: room.id,
         instructor_id: instructor_id,
         day_of_week: day_of_week.to_i,
         hour: hour.to_i,
-        level: @user.level
+        level: level_to_save
       )
     end
   rescue ActiveRecord::RecordInvalid

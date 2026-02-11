@@ -3878,6 +3878,18 @@ body {
   margin-top: 0.25rem;
 }
 
+.fixed-slot-inner-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.25rem;
+  margin-top: 0.35rem;
+}
+.fixed-slot-inner-label:first-child {
+  margin-top: 0;
+}
+
 .form-actions {
   display: flex;
   gap: 1rem;

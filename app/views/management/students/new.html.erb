@@ -63,6 +63,7 @@
       <div class="admin-section" style="margin-top: 1.5rem;">
         <h2>Datos de suscripción (para Circuito - Planta Alta)</h2>
 
+        <!--
         <div class="form-row">
           <div class="form-group">
             <%= f.label :level, "Nivel" %>
@@ -105,6 +106,7 @@
             <%= f.number_field :debt_amount, class: "form-control", step: "0.01", min: 0 %>
           </div>
         </div>
+        -->
 
         <div class="form-row">
           <div class="form-group">
@@ -130,36 +132,64 @@
         </div>
 
         <% day_options = User::WEEKDAY_OPTIONS %>
-        <% hour_options = (7..20).map { |h| ["#{h}:00", h] } %>
-        <% circuito_room = Room.find_by(room_type: :circuito) %>
+        <% room_schedules = {} %>
+        <% @rooms.each do |room| %>
+          <% next if room.service_schedule_description.blank? %>
+          <% schedule_map = {} %>
+          <% raw_lines = room.service_schedule_description.to_s.split(/\r?\n/) %>
+          <% raw_lines.each do |line| %>
+            <% line = line.to_s.strip %>
+            <% next if line.blank? %>
+            <% day_name, times_str = line.split(/\s+/, 2) %>
+            <% day_name = day_name.to_s.strip %>
+            <% day_num = { "Lunes" => 1, "Martes" => 2, "Miércoles" => 3, "Miercoles" => 3, "Jueves" => 4, "Viernes" => 5 }[day_name] %>
+            <% next unless day_num && times_str.present? %>
+            <% hours =
+              times_str.split(/[,，]/).map { |t| t.to_s.strip.sub(/:00\z/, "") }.map(&:to_i)
+                       .select { |h| h.between?(0, 23) }.uniq.sort %>
+            <% schedule_map[day_num] = hours if hours.any? %>
+          <% end %>
+          <% room_schedules[room.id] = schedule_map if schedule_map.any? %>
+        <% end %>
 
-        <div class="form-row fixed-days-fields" data-fixed-days style="display:none; margin-top:0.5rem;">
+        <% level_options = User.levels.keys.map { |k| [k.to_s.humanize, k.to_s] } %>
+        <% instructor_chooser_options = [["— Por defecto —", ""]] + @instructors.map { |i| [i.name, i.id] } %>
+
+        <div class="form-row fixed-days-fields"
+             data-fixed-days
+             data-room-schedules="<%= room_schedules.to_json %>"
+             style="display:none; margin-top:0.5rem;">
+          <div class="form-group">
+            <label>Sala</label>
+            <%= select_tag "fixed_slot_room_chooser",
+                  options_for_select([["— Ninguna —", ""]] + @rooms.map { |r| [r.admin_display_name, r.id] }),
+                  class: "form-control",
+                  data: { room_select: true } %>
+          </div>
           <div class="form-group">
             <label>Día fijo</label>
-            <%= select_tag "fixed_slot_day_of_week[]", options_for_select([["— Ninguno —", ""]] + day_options), class: "form-control" %>
+            <%= select_tag "fixed_slot_day_chooser", options_for_select([["— Ninguno —", ""]] + day_options), class: "form-control" %>
           </div>
-          <div class="form-group">
+          <div class="form-group" style="min-width: 220px;">
             <label>Hora fija</label>
-            <%= select_tag "fixed_slot_hour[]", options_for_select([["— Ninguna —", ""]] + hour_options), class: "form-control" %>
+            <%= select_tag "fixed_slot_hour_chooser", options_for_select([["— Ninguna —", ""]]), class: "form-control", data: { hour_select: true } %>
+            <div style="margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px solid #eee;">
+              <label class="fixed-slot-inner-label">Nivel / tipo de sala</label>
+              <%= select_tag "fixed_slot_level_chooser", options_for_select([["— Mismo del alumno —", ""]] + level_options), class: "form-control", style: "margin-bottom: 0.5rem;" %>
+              <label class="fixed-slot-inner-label">Instructor</label>
+              <%= select_tag "fixed_slot_instructor_chooser", options_for_select(instructor_chooser_options), class: "form-control" %>
+            </div>
           </div>
-          <% if circuito_room %>
-            <%= hidden_field_tag "fixed_slot_room_id[]", circuito_room.id %>
-            <%= hidden_field_tag "fixed_slot_instructor_id[]", "" %>
-          <% end %>
         </div>
 
-        <div class="form-row" style="margin-top: 1.5rem;">
+        <div id="fixed-slots-added" data-fixed-slots-container></div>
+
+        <div class="form-row fixed-days-fields" data-fixed-days style="display:none; margin-top:0.75rem;">
           <div class="form-group">
-            <label>Días por semana</label>
-            <div style="display:flex; gap:.75rem; flex-wrap: wrap; margin-top:.5rem;">
-              <% User::WEEKDAY_OPTIONS.each do |label, value| %>
-                <label style="display:flex; align-items:center; gap:.35rem;">
-                  <%= f.check_box :weekly_days, { multiple: true }, value, nil %>
-                  <span><%= label %></span>
-                </label>
-              <% end %>
-            </div>
-            <small class="form-hint">Ej: 2 veces/semana → Lunes y Miércoles. 3 veces/semana → Lunes, Miércoles y Viernes.</small>
+            <button type="button" class="btn btn-success" data-action="add-fixed-slot">
+              Agregar día fijo
+            </button>
+            <div id="fixed-slots-summary" class="form-hint" style="margin-top:0.5rem;"></div>
           </div>
         </div>
 
@@ -528,32 +558,142 @@
   </div>
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Toggle campos de días fijos
-    var radios = document.querySelectorAll('input[name="use_fixed_days"]');
-    var fixedFields = document.querySelector('[data-fixed-days]');
-    if (radios.length && fixedFields) {
-      radios.forEach(function(radio) {
-        radio.addEventListener("change", function() {
-          if (this.value === "si") {
-            fixedFields.style.display = "";
-          } else {
-            fixedFields.style.display = "none";
+  (function() {
+    function initStudentNewToggles() {
+      // Evitar inicializar dos veces (por DOMContentLoaded + turbo:load)
+      if (document.documentElement.dataset.studentNewTogglesInitialized === "1") return;
+      document.documentElement.dataset.studentNewTogglesInitialized = "1";
+
+      // Toggle campos de días fijos + horarios dinámicos según sala seleccionada
+      var radios = document.querySelectorAll('input[name="use_fixed_days"]');
+      var fixedFieldGroups = document.querySelectorAll('[data-fixed-days]');
+      if (radios.length && fixedFieldGroups.length) {
+        radios.forEach(function(radio) {
+          radio.addEventListener("change", function() {
+            if (this.value === "si") {
+              fixedFieldGroups.forEach(function(g) { g.style.display = ""; });
+            } else {
+              fixedFieldGroups.forEach(function(g) { g.style.display = "none"; });
+            }
+          });
+        });
+
+        // Horarios por día por sala: viene en data-room-schedules como
+        // { "22": { "1":[17,18], "2":[17,18,21] }, "23": { ... } }
+        var fixedFields = fixedFieldGroups[0]; // primer grupo: contiene room_schedules
+        var roomSchedulesRaw = fixedFields.getAttribute('data-room-schedules') || '{}';
+        var roomSchedules = {};
+        try { roomSchedules = JSON.parse(roomSchedulesRaw); } catch(e) { roomSchedules = {}; }
+
+        var roomSelect = fixedFields.querySelector('select[data-room-select]');
+        var daySelect  = fixedFields.querySelector('select[name="fixed_slot_day_chooser"]');
+        var hourSelect = fixedFields.querySelector('select[name="fixed_slot_hour_chooser"]');
+        var currentSchedule = {};
+
+        function rebuildHourOptions() {
+          if (!daySelect || !hourSelect) return;
+          var selectedDay = daySelect.value; // "1".."5" o ""
+
+          // Limpiar opciones actuales
+          while (hourSelect.firstChild) hourSelect.removeChild(hourSelect.firstChild);
+
+          // Siempre agregar opción "Ninguna"
+          var optNone = document.createElement('option');
+          optNone.value = '';
+          optNone.textContent = '— Ninguna —';
+          hourSelect.appendChild(optNone);
+
+          if (!selectedDay || !currentSchedule[selectedDay]) return;
+
+          currentSchedule[selectedDay].forEach(function(h) {
+            var opt = document.createElement('option');
+            opt.value = String(h);
+            opt.textContent = h + ':00';
+            hourSelect.appendChild(opt);
+          });
+        }
+
+        function updateScheduleForRoom() {
+          if (!roomSelect) return;
+          var roomId = roomSelect.value;
+          currentSchedule = roomSchedules[roomId] || {};
+          // Reset combinación día + hora cuando cambia la sala
+          if (daySelect) {
+            daySelect.value = '';
           }
+          rebuildHourOptions();
+        }
+
+        if (roomSelect) {
+          roomSelect.addEventListener('change', updateScheduleForRoom);
+          // Inicializar en base a la sala seleccionada (si la hay)
+          updateScheduleForRoom();
+        }
+
+        if (daySelect && hourSelect) {
+          daySelect.addEventListener('change', rebuildHourOptions);
+        }
+
+        // Botón "Agregar día fijo": agrega el turno a la lista sin enviar el formulario
+        var addBtn = document.querySelector('[data-action="add-fixed-slot"]');
+        var container = document.getElementById('fixed-slots-added');
+        var summaryEl = document.getElementById('fixed-slots-summary');
+        var levelChooser = fixedFields.querySelector('select[name="fixed_slot_level_chooser"]');
+        var instructorChooser = fixedFields.querySelector('select[name="fixed_slot_instructor_chooser"]');
+        var dayLabels = { '1': 'Lunes', '2': 'Martes', '3': 'Miércoles', '4': 'Jueves', '5': 'Viernes' };
+
+        if (addBtn && container) {
+          addBtn.addEventListener('click', function() {
+            var roomId = roomSelect ? roomSelect.value : '';
+            var day = daySelect ? daySelect.value : '';
+            var hour = hourSelect ? hourSelect.value : '';
+            if (!roomId || !day || !hour) {
+              alert('Elegí sala, día y hora antes de agregar el día fijo.');
+              return;
+            }
+            var levelVal = levelChooser ? levelChooser.value : '';
+            var instructorVal = instructorChooser ? instructorChooser.value : '';
+            var hourLabel = hour + ':00';
+
+            var wrap = document.createElement('div');
+            wrap.setAttribute('data-fixed-slot-row', '');
+            wrap.innerHTML =
+              '<input type="hidden" name="fixed_slot_room_id[]" value="' + roomId + '">' +
+              '<input type="hidden" name="fixed_slot_day_of_week[]" value="' + day + '">' +
+              '<input type="hidden" name="fixed_slot_hour[]" value="' + hour + '">' +
+              '<input type="hidden" name="fixed_slot_level[]" value="' + levelVal + '">' +
+              '<input type="hidden" name="fixed_slot_instructor_id[]" value="' + (instructorVal || '') + '">';
+            container.appendChild(wrap);
+
+            if (roomSelect) roomSelect.value = '';
+            if (daySelect) daySelect.value = '';
+            rebuildHourOptions();
+            if (hourSelect) hourSelect.value = '';
+
+            var count = container.querySelectorAll('[data-fixed-slot-row]').length;
+            if (summaryEl) {
+              summaryEl.textContent = count === 1
+                ? '1 día fijo agregado: ' + (dayLabels[day] || day) + ' ' + hourLabel
+                : count + ' días fijos agregados. Último: ' + (dayLabels[day] || day) + ' ' + hourLabel;
+            }
+          });
+        }
+      }
+
+      // Toggle secciones de botones desplegables (otros datos, recordatorios, info detallada, alertas)
+      document.querySelectorAll('[data-toggle-target]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var targetSelector = btn.getAttribute('data-toggle-target');
+          if (!targetSelector) { return; }
+          var panel = document.querySelector(targetSelector);
+          if (!panel) { return; }
+          var isHidden = panel.style.display === 'none' || panel.style.display === '';
+          panel.style.display = isHidden ? 'block' : 'none';
         });
       });
     }
 
-    // Toggle secciones de botones desplegables (otros datos, etc.)
-    document.querySelectorAll('[data-toggle-target]').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var targetSelector = btn.getAttribute('data-toggle-target');
-        if (!targetSelector) { return; }
-        var panel = document.querySelector(targetSelector);
-        if (!panel) { return; }
-        var isHidden = panel.style.display === 'none' || panel.style.display === '';
-        panel.style.display = isHidden ? 'block' : 'none';
-      });
-    });
-  });
+    document.addEventListener("DOMContentLoaded", initStudentNewToggles);
+    document.addEventListener("turbo:load", initStudentNewToggles);
+  })();
 </script>
