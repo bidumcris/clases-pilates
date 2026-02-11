@@ -60,3 +60,50 @@ es:
       long: "%d de %B de %Y %H:%M"
       short: "%d/%m/%Y %H:%M"
 
+  errors:
+    messages:
+      not_saved: "Hubo %{count} error(es) que impiden guardar este %{resource}."
+      blank: "no puede estar en blanco"
+      invalid: "no es válido"
+      taken: "ya está en uso"
+      too_short: "es demasiado corto (mínimo %{count} caracteres)"
+      too_long: "es demasiado largo (máximo %{count} caracteres)"
+      confirmation: "no coincide con la confirmación"
+    attributes:
+      email: "correo electrónico"
+      password: "contraseña"
+      password_confirmation: "confirmación de contraseña"
+      name: "nombre"
+      dni: "DNI"
+
+  activerecord:
+    models:
+      user: "usuario"
+    attributes:
+      user:
+        email: "Correo electrónico"
+        password: "Contraseña"
+        password_confirmation: "Confirmación de contraseña"
+        name: "Nombre"
+        dni: "DNI"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "no puede estar en blanco"
+              invalid: "no es válido"
+              taken: "ya está en uso"
+            password:
+              blank: "no puede estar en blanco"
+              too_short: "es demasiado corta (mínimo %{count} caracteres)"
+              confirmation: "no coincide con la confirmación"
+            password_confirmation:
+              blank: "no puede estar en blanco"
+            name:
+              blank: "no puede estar en blanco"
+          messages:
+            blank: "no puede estar en blanco"
+            taken: "ya está en uso"
+            record_invalid: "La validación falló: %{errors}"
+
