@@ -994,6 +994,103 @@ body {
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
+/* Modal secundario: Etiqueta y cupo (se abre sobre el modal de la clase) */
+.etiqueta-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.2s, opacity 0.2s;
+}
+.etiqueta-modal.etiqueta-modal--open {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+}
+.etiqueta-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.etiqueta-modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  background: var(--color-blanco);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.etiqueta-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+.etiqueta-modal-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.etiqueta-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  color: #666;
+}
+.etiqueta-modal-close:hover {
+  color: var(--color-texto);
+}
+.etiqueta-modal-body {
+  padding: 1rem;
+}
+.etiqueta-modal-form .form-group {
+  margin-bottom: 1rem;
+}
+.etiqueta-modal-form .form-group:last-of-type {
+  margin-bottom: 1.25rem;
+}
+.etiqueta-modal-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.etiqueta-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.class-modal-etiqueta-label {
+  align-self: center;
+  margin-right: 0.25rem;
+  font-size: 0.9rem;
+}
+.class-modal-etiqueta-form {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.class-modal-etiqueta-select {
+  width: auto;
+  min-width: 7rem;
+}
+.class-modal-etiqueta-cupo {
+  width: 4rem;
+  display: inline-block;
+}
 .class-modal-meta {
   display: flex;
   align-items: center;

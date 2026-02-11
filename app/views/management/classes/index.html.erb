@@ -78,21 +78,7 @@
             <div class="hour-block hour-block--compact">
               <div class="hour-label"><%= "%02d" % hour %></div>
               <% classes_at_hour.each do |pilates_class| %>
-                <% occupied = pilates_class.max_capacity - pilates_class.available_spots %>
-                <% percent = pilates_class.max_capacity.positive? ? (occupied.to_f / pilates_class.max_capacity * 100).round : 0 %>
-                <div class="class-capacity-mini"
-                     data-controller="class-modal"
-                     data-class-modal-url-value="<%= modal_management_class_path(pilates_class) %>"
-                     data-action="click->class-modal#open"
-                     role="button"
-                     tabindex="0"
-                     aria-label="Ver clase <%= pilates_class.name %>">
-                  <span class="class-capacity-mini-label"><%= pilates_class.privada? ? "Clase personalizada" : level_label(pilates_class.level) %></span>
-                  <div class="class-capacity-progress class-capacity-progress--mini" role="progressbar" aria-valuenow="<%= occupied %>" aria-valuemin="0" aria-valuemax="<%= pilates_class.max_capacity %>">
-                    <div class="class-capacity-progress-bar class-capacity-progress-bar--<%= percent >= 100 ? 'full' : (percent >= 75 ? 'warning' : 'ok') %>" style="width: <%= [percent, 100].min %>%;"></div>
-                    <span class="class-capacity-progress-text"><%= occupied %>/<%= pilates_class.max_capacity %></span>
-                  </div>
-                </div>
+                <%= render "management/classes/class_capacity_mini", pilates_class: pilates_class %>
               <% end %>
             </div>
           <% end %>
