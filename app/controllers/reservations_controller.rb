@@ -18,11 +18,17 @@ class ReservationsController < ApplicationController
       return
     end
 
-    # Verificar si tiene créditos disponibles
-    available_credit = current_user.credits.available_this_month.first
+    # Después del 10 no puede usar recupero sin estar al día con el pago
+    unless current_user.can_use_recupero?
+      redirect_to agenda_path, alert: "No podés usar recupero después del 10 sin estar al día con el pago. Tenés pago pendiente."
+      return
+    end
+
+    # Verificar si tiene un crédito disponible para esta clase (inicial: sin sala; otros: sala o sin sala)
+    available_credit = current_user.credit_available_for_recupero(@pilates_class)
 
     unless available_credit
-      redirect_to creditos_path, alert: "No tienes recuperos disponibles"
+      redirect_to creditos_path, alert: "No tienes recuperos disponibles para esta clase"
       return
     end
 

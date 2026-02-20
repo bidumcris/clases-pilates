@@ -20,4 +20,15 @@ class Instructor < ApplicationRecord
   def self.ransackable_associations(_auth_object = nil)
     %w[pilates_classes]
   end
+
+  # true si todas las reservas confirmadas de las clases de hoy tienen asistencia marcada (presente o ausente).
+  def today_attendance_complete?
+    day = Date.current
+    scope = Reservation
+      .joins(:pilates_class)
+      .where(pilates_classes: { instructor_id: id })
+      .where(status: :confirmed)
+      .where("DATE(pilates_classes.start_time) = ?", day)
+    scope.where(attendance_status: :sin_marcar).exists? ? false : true
+  end
 end

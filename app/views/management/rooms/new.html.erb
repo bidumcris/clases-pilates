@@ -1,0 +1,33 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Nueva sala</h1>
+    <%= link_to "← Volver a salas", new_management_class_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="admin-section">
+    <%= form_with model: @room, url: management_rooms_path, method: :post, local: true, class: "admin-form" do |f| %>
+      <%= render "shared/error_messages", resource: @room %>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :name, "Nombre de la sala (*)" %>
+          <%= f.text_field :name, class: "form-control", placeholder: "Ej: Sala 1, Reformer, Mat" %>
+          <small class="form-hint">Espacio físico con nombre; los alumnos pueden tomar clases en cualquier sala.</small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :capacity, "Capacidad (*)" %>
+          <%= f.number_field :capacity, class: "form-control", min: 1, value: @room.capacity %>
+          <small class="form-hint">Cantidad máxima de personas en la sala.</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Crear sala", class: "btn btn-primary" %>
+        <%= link_to "Cancelar", new_management_class_path, class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>

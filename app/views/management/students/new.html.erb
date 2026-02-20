@@ -131,6 +131,22 @@
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de clase</label>
+            <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+              <label style="display:flex; align-items:center; gap:0.35rem;">
+                <%= f.radio_button :class_type, "grupal", id: "user_class_type_grupal" %>
+                <span>Clase grupal</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:0.35rem;">
+                <%= f.radio_button :class_type, "privada", id: "user_class_type_privada" %>
+                <span>Clase personalizada</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <% day_options = User::WEEKDAY_OPTIONS %>
         <% room_schedules = {} %>
         <% @rooms.each do |room| %>

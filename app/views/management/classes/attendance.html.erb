@@ -22,6 +22,7 @@
   </div>
 
   <% if @reservations.any? %>
+    <p class="form-hint" style="margin-bottom: 1rem;">Marcá solo los ausentes; al guardar, el resto se darán por presentes.</p>
     <%= form_with url: update_attendance_management_class_path(@pilates_class), method: :patch do %>
       <table class="admin-table">
         <thead>
