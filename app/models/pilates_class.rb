@@ -66,6 +66,14 @@ class PilatesClass < ApplicationRecord
     available_spots <= 0
   end
 
+  # true si la clase empieza dentro de al menos N minutos (N = config empresa "minutos previos para permitir reservar").
+  # Así el alumno puede reservar hasta N minutos antes del inicio.
+  def reservable_now?
+    min_minutes = Setting.get("accion_minprevturno").to_i
+    return true if min_minutes <= 0
+    (start_time - Time.current) >= min_minutes.minutes
+  end
+
   def availability_percentage
     return 0 if max_capacity.zero?
     (available_spots.to_f / max_capacity * 100).round
@@ -88,7 +96,7 @@ class PilatesClass < ApplicationRecord
     time_str = start_time.strftime("%H:%M")
     tag_str = tags.to_s.strip.presence
 
-    parts = [type]
+    parts = [ type ]
     parts << level_str if level_str.present?
     parts << "(#{tag_str})" if tag_str.present?
     parts << "- #{instructor.name}"

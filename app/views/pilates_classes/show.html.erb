@@ -65,6 +65,10 @@
             class: "btn btn-primary",
             style: "margin-top: 1rem;",
             data: { turbo_frame: "_top" } %>
+      <% elsif @can_reserve_level && !@reservable_now %>
+        <div class="alert alert-error">
+          Solo podés reservar hasta <%= Setting.get("accion_minprevturno").presence || "0" %> minutos antes del inicio de la clase.
+        </div>
       <% elsif !@can_reserve %>
         <div class="alert alert-error">
           No tienes el nivel necesario para reservar esta clase.

@@ -20,9 +20,11 @@
       <div class="stat-label">Calendario</div>
     <% end %>
 
-    <%= link_to management_requests_path, class: "stat-card stat-card--link" do %>
-      <div class="stat-number"><%= @pending_requests_count %></div>
-      <div class="stat-label">Solicitudes Pendientes</div>
+    <% if current_user.admin? %>
+      <%= link_to management_company_path, class: "stat-card stat-card--link" do %>
+        <div class="stat-number">Empresa</div>
+        <div class="stat-label">Empresa</div>
+      <% end %>
     <% end %>
 
     <%= link_to management_classes_path, class: "stat-card stat-card--link" do %>

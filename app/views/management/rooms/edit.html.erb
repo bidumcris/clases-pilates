@@ -17,12 +17,15 @@
     <%= form_with model: @room, url: management_room_path(@room), method: :patch, local: true, class: "admin-form admin-room-service-form" do |f| %>
       <div class="service-section" data-service-sections-target="datos">
         <h2>Datos del servicio</h2>
+        <%# Bloque ocultado temporalmente: tipo de servicio %>
+        <%# 
         <div class="form-row">
           <div class="form-group">
             <%= f.label :service_kind, "Tipo de servicio (*)" %>
             <%= f.text_field :service_kind, class: "form-control", placeholder: "Ej: Pilates grupal, Circuito, Reformer" %>
           </div>
         </div>
+        %>
 
         <div class="form-row">
           <div class="form-group">
@@ -31,19 +34,25 @@
           </div>
         </div>
 
+        <%# Bloque ocultado temporalmente: información descriptiva del servicio %>
+        <%#
         <div class="form-row">
           <div class="form-group">
             <%= f.label :service_description, "Información descriptiva (*)" %>
             <%= f.text_area :service_description, class: "form-control", rows: 4, placeholder: "Describe el servicio (nivel, objetivos, a quién está dirigido, etc.)" %>
           </div>
         </div>
+        %>
 
+        <%# Bloque ocultado temporalmente: información para usuarios del servicio (cartelera) %>
+        <%#
         <div class="form-row">
           <div class="form-group">
             <%= f.label :service_notice, "Información para usuarios del servicio (Cartelera)" %>
             <%= f.text_area :service_notice, class: "form-control", rows: 4, placeholder: "Mensajes importantes que ve el alumno (cartelera, avisos especiales)" %>
           </div>
         </div>
+        %>
       </div>
 
       <div class="service-section" data-service-sections-target="config">

@@ -49,12 +49,14 @@
                       </p>
                     </div>
                     
-                    <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? %>
+                    <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? && pilates_class.reservable_now? %>
                       <%= button_to "Reservar (1 recupero)", reservations_path,
                           params: { pilates_class_id: pilates_class.id },
                           method: :post,
                           class: "btn btn-success btn-reserve",
                           data: { turbo_frame: "_top" } %>
+                    <% elsif current_user.can_reserve_class?(pilates_class) && !pilates_class.full? && !pilates_class.reservable_now? %>
+                      <p class="cannot-reserve">Solo podés reservar hasta <%= Setting.get("accion_minprevturno").presence || "0" %> min antes del inicio</p>
                     <% elsif pilates_class.full? %>
                       <%= button_to requests_path,
                           params: { pilates_class_id: pilates_class.id, request_type: 'alert' },

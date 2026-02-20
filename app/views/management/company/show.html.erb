@@ -1,0 +1,598 @@
+<div class="admin-form-page">
+  <div class="admin-page-header">
+    <h1>Configuración de la empresa</h1>
+    <%= link_to "Volver al panel", management_root_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="admin-section">
+    <%= form_with url: management_company_path, method: :patch, local: true, class: "company-config-form" do %>
+    <div class="service-toggle-buttons">
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-datos">
+          Datos de la empresa <span class="caret"></span>
+        </button>
+        <div id="empresa-datos" style="display:none; margin-top:0.75rem;">
+          <h2>Datos de la empresa</h2>
+          <p class="form-hint">Completá los datos básicos de tu empresa.</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label class="control-label">ID único (alias) (*)</label>
+              <input
+                type="text"
+                name="company[alias]"
+                class="form-control"
+                placeholder="Ej: energia-pilates"
+                required>
+              <small class="form-hint">
+                Nombre corto, sin espacios. Se usa como identificador interno.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Nombre / Razón Social (*)</label>
+              <input
+                type="text"
+                name="company[name]"
+                class="form-control"
+                placeholder="Ej: Energía Pilates SRL"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Email (*)</label>
+              <input
+                type="email"
+                name="company[email]"
+                class="form-control"
+                placeholder="Ej: info@tuempresa.com"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Acerca de la empresa (*)</label>
+              <textarea
+                name="company[about]"
+                class="form-control"
+                rows="3"
+                placeholder="Breve descripción de la empresa (a qué se dedica, estilo, etc.)"
+                required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Domicilio (*)</label>
+              <input
+                type="text"
+                name="company[address]"
+                class="form-control"
+                placeholder="Calle, número, ciudad"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Website</label>
+              <input
+                type="text"
+                name="company[website]"
+                id="company_website"
+                class="form-control"
+                placeholder="https://tuempresa.com">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Teléfono</label>
+              <input
+                type="text"
+                name="company[phone]"
+                id="company_phone"
+                class="form-control"
+                placeholder="Teléfono fijo">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Teléfono celular</label>
+              <input
+                type="text"
+                name="company[mobile]"
+                id="company_mobile"
+                class="form-control"
+                placeholder="Celular / WhatsApp">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-config">
+          Configuración <span class="caret"></span>
+        </button>
+        <div id="empresa-config" style="display:none; margin-top:0.75rem;">
+          <h2>Configuración</h2>
+          <p class="form-hint">Parámetros principales que afectan a todos los servicios.</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label for="company_rubro" class="control-label">Rubro</label>
+              <select name="company[rubro]" id="company_rubro" class="form-control form-select">
+                <option value="">— Seleccionar tipo —</option>
+                <option value="salud_bienestar">Salud / Bienestar</option>
+                <option value="deportes">Deportes</option>
+                <option value="pilates">Pilates</option>
+                <option value="fitness">Fitness</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="company_subrubro" class="control-label">Sub rubro</label>
+              <select name="company[subrubro]" id="company_subrubro" class="form-control form-select">
+                <option value="">— Seleccionar sub tipo —</option>
+                <option value="reformer">Reformer</option>
+                <option value="mat">Mat / Suelo</option>
+                <option value="circuito">Circuito</option>
+                <option value="mixto">Mixto</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-config-opcional">
+          Configuración opcional <span class="caret"></span>
+        </button>
+        <div id="empresa-config-opcional" style="display:none; margin-top:0.75rem;">
+          <h2>Configuración opcional</h2>
+          <p class="form-hint">Opciones adicionales que no son obligatorias pero ayudan a afinar el sistema.</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label class="control-label">Bloquear autogestión a deudores</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[bloqueardeudor]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[bloqueardeudor]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Días de aviso previo para renovar la suscripción antes de la fecha de fin de actividades (*)</label>
+              <input type="number" name="company[dias_previos_renovar]" id="company_dias_previos_renovar" class="form-control" min="0" max="30" placeholder="Valor de 0 a 30" value="0">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Días de preaviso de vencimiento de plazo de renovación</label>
+              <input type="number" name="company[dias_preaviso_vencimiento]" id="company_dias_preaviso_vencimiento" class="form-control" min="0" max="10" placeholder="Valor de 0 a 10 (Por defecto: 5)" value="5">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Modo de renovación inversa (modo feeling)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[renovacion_inversa]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[renovacion_inversa]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Cantidad límite de turnos libres o recupero que un alumno puede reservar en 1 día</label>
+              <input type="number" name="company[limite_turnos_por_dia]" class="form-control" min="0" max="20" placeholder="Por defecto: 2" value="2">
+            </div>
+            <div class="form-group">
+              <label class="control-label">Cantidad límite de turnos libres o recupero que un alumno puede reservar en 1 semana</label>
+              <input type="number" name="company[limite_turnos_por_semana]" class="form-control" min="0" max="140" placeholder="Por defecto: 10" value="10">
+            </div>
+            <div class="form-group">
+              <label class="control-label">Cantidad máxima de turnos activos que un alumno puede tener en 1 día</label>
+              <input type="number" name="company[limite_turnos_activos_por_dia]" class="form-control" min="0" max="20" placeholder="Por defecto: 2" value="2">
+            </div>
+            <div class="form-group">
+              <label class="control-label">Cantidad máxima de turnos activos que un alumno puede tener en 1 semana</label>
+              <input type="number" name="company[limite_turnos_activos_por_semana]" class="form-control" min="0" max="140" placeholder="Por defecto: 10" value="10">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Soporta solicitudes del cliente</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[solicitudes]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[solicitudes]" value="no"> No</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Modo de solicitudes (full=0, ocultarDisponibilidadFija=1, soloLibres=2)</label>
+              <input type="number" name="company[solicitudes_mode]" class="form-control" min="0" max="2" value="0">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Pantalla inicial (asistencia=0, calendario=1)</label>
+              <input type="number" name="company[pantalla_inicial]" class="form-control" min="0" max="1" value="0">
+            </div>
+            <div class="form-group">
+              <label class="control-label">Visibilidad de empresa (visiblePublico=0, visibleAdmin=1, visibleDios=2, invisible=3)</label>
+              <input type="number" name="company[visibilidad]" class="form-control" min="0" max="3" value="0">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Tiene AdSense</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[adsense]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[adsense]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Exigir pago para activar la suscripción</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[pago_por_anticipado]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[pago_por_anticipado]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Suspensión automática del alumno en pago vencido</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[suspension_automatica_pago_vencido]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[suspension_automatica_pago_vencido]" value="no"> No</label>
+              </div>
+              <p class="form-hint">(Sí) El alumno será suspendido de forma automática cuando haya transcurrido el período de renovación sin haber ingresado un pago.<br>(No) El alumno seguirá activo durante 20 días más en un período "fantasma".</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Inter-pase a todos los servicios</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[pase_libre_todos_servicios]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[pase_libre_todos_servicios]" value="no"> No</label>
+              </div>
+              <p class="form-hint">(Sí) Cada nuevo alumno tiene acceso a todas las agendas. (No) El acceso a cada agenda se otorga manualmente.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Créditos retenidos durante renovación</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[creditos_retenidos_renovacion]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[creditos_retenidos_renovacion]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Si se cancelan turnos en período de renovación, los créditos quedan retenidos hasta renovar. (No) Se obtiene crédito de inmediato.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Impedir recuperar en período siguiente</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[impedir_recuperar_periodo_siguiente]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[impedir_recuperar_periodo_siguiente]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) No se permite reservar turnos con fecha posterior a fin de actividades hasta el disparador. (No) Sí se permite.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Permitir reservar turnos del siguiente mes si tiene pago por adelantado que aún no entró en vigencia</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[permitir_reservar_siguiente_mes_pago_adelantado]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[permitir_reservar_siguiente_mes_pago_adelantado]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Soporta abonos largos</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[soporta_abonos_largos]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[soporta_abonos_largos]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) El reciclado no borra nunca los turnos. (No) Se borran turnos con más de 4 meses.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Incluye en tope de cancelaciones las del admin</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[incluye_tope_cancelacion_admin]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[incluye_tope_cancelacion_admin]" value="no"> No</label>
+              </div>
+              <p class="form-hint">(Sí) Las cancelaciones hechas por el administrador cuentan en el tope mensual del alumno.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">El disparador de nuevo mes es el pago (*)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[disparador_nuevo_mes_es_pago]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[disparador_nuevo_mes_es_pago]" value="no"> No</label>
+              </div>
+              <p class="form-hint">(Sí) El mes comienza cuando el alumno abona la renovación. (No) El mes comienza el día siguiente al fin de actividades.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">¿Permite adelantar recuperos?</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[permite_adelantar_recupero]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[permite_adelantar_recupero]" value="no"> No</label>
+              </div>
+              <p class="form-hint">(Sí) Se puede cancelar un turno de fin de mes y recuperarlo hoy. (No) El recupero debe ser luego de la fecha del turno cancelado.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Tiene Franja Horaria Oferta (1)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[franja_horaria_oferta_1]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[franja_horaria_oferta_1]" value="no" checked> No</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Tiene Franja Horaria Oferta (2)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[franja_horaria_oferta_2]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[franja_horaria_oferta_2]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">No revelar identidad por email</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[no_revelar_identidad_email]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[no_revelar_identidad_email]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Reserva nuevos fijos solo admin</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[reserva_nuevos_fijos_solo_admin]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[reserva_nuevos_fijos_solo_admin]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Soporta MercadoPago</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[tiene_mercadopago]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[tiene_mercadopago]" value="no" checked> No</label>
+              </div>
+            </div>
+            <div class="form-group" id="company-mp-token-row" style="display:none;">
+              <label class="control-label">MP Access Token (*)</label>
+              <input type="text" name="company[mp_access_token]" class="form-control" placeholder="Pida estos datos a Mercado Pago">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Cantidad de sucursales</label>
+              <input type="number" name="company[cant_sucursales]" class="form-control" min="1" max="10" value="1">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Lista de precios</label>
+              <small class="form-hint" style="display:block; margin-bottom:0.35rem;">Indicar precios en este orden (transferencia / efectivo / mercadopago). Un precio por línea. Ej: 4 clases pilates $36.300 / $33.000</small>
+              <textarea name="company[lista_de_precios]" class="form-control" rows="6" placeholder="Ingresa los precios de tus servicios"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Información de pago</label>
+              <textarea name="company[informacion_de_pago]" class="form-control" rows="3" placeholder="Información bancaria para que los alumnos puedan pagarte"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-config-extendida">
+          Configuración extendida <span class="caret"></span>
+        </button>
+        <div id="empresa-config-extendida" style="display:none; margin-top:0.75rem;">
+          <h2>Configuración extendida</h2>
+          <p class="form-hint">Opciones avanzadas para personalizar más el comportamiento.</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label class="control-label">Permitir mostrar calendario público</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[permito_mostrar_calendario_publico]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[permito_mostrar_calendario_publico]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Permite mostrar el calendario de disponibilidad horaria a usuarios que aún no son alumnos.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Muestra cartel de pago a owner</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[muestra_cartel_pago_owner]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[muestra_cartel_pago_owner]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Muestra el cartel de recordatorio de pago a los owners. (No) No lo muestra.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Certificado médico opción (SolicitarDirectamente = 0, CargarManualmente = 1)</label>
+              <input type="number" name="company[certificado_medico_opcion]" class="form-control" min="0" max="5" placeholder="Valor de 0 a 5" value="0">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Prefiere ocultar calendario a alumnos</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[prefiere_ocultar_calendario_alumnos]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[prefiere_ocultar_calendario_alumnos]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Cuando el alumno reservó todos los recuperatorios del mes ya no puede ver el calendario. (No) Siempre puede ver el calendario.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Permite al profesor ver info extendida</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[permite_profesor_ver_info_extendida]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[permite_profesor_ver_info_extendida]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Un profesor puede ver email, teléfono, detalles de suscripción del alumno. (No) Solo información mínima para dar la clase.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">¿Tratar alumno SportClub/Wellhub igual que a tus alumnos? ¿Mismas reglas?</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[tiene_sportclub_permisivo]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[tiene_sportclub_permisivo]" value="no" checked> No</label>
+              </div>
+              <p class="form-hint">(Sí) Mismas reglas. (No) El usuario SportClub tendrá limitaciones (ej. no lista de espera, máximo 1 turno por día).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-config-accion">
+          Configuración de acción <span class="caret"></span>
+        </button>
+        <div id="empresa-config-accion" style="display:none; margin-top:0.75rem;">
+          <h2>Configuración de acción</h2>
+          <p class="form-hint">Reglas de reserva, cancelación y asistencia (tiempos en minutos/horas).</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label class="control-label">Minutos previos para permitir reservar turnos (*)</label>
+              <input type="number" name="company[accion_minprevturno]" class="form-control" min="0" max="5000" placeholder="Valor de 0 a 5000" value="<%= @accion_minprevturno %>" required>
+              <small class="form-hint">Ej: 10 = el alumno puede reservar en autogestión hasta 10 minutos antes de que empiece la clase.</small>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas previas para cancelar turnos [turnos hasta las 8hs] (en horas, decimal) (*)</label>
+              <input type="number" name="company[accion_horasatrascancelar8]" class="form-control" min="0" max="72" step="0.01" placeholder="Valor de 0 a 72" value="0" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas previas para cancelar turnos [turnos hasta las 9hs] (en horas, decimal) (*)</label>
+              <input type="number" name="company[accion_horasatrascancelar9]" class="form-control" min="0" max="72" step="0.01" placeholder="Valor de 0 a 72" value="0" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas previas para cancelar turnos [a partir de las 10hs] (en horas, decimal) (*)</label>
+              <input type="number" name="company[accion_horasatrascancelar10]" class="form-control" min="0" max="72" step="0.01" placeholder="Valor de 0 a 72" value="0" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas previas para cancelar turnos [turnos hasta las 12hs] (en horas, decimal) (opcional)</label>
+              <input type="number" name="company[accion_horasatrascancelar12]" class="form-control" min="0" max="72" step="0.01" placeholder="Valor de 0 a 72">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas previas para cancelar turnos [turnos desde las 13hs en adelante] (en horas, decimal) (opcional)</label>
+              <input type="number" name="company[accion_horasatrascancelar13]" class="form-control" min="0" max="72" step="0.01" placeholder="Valor de 0 a 72">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Horas atrás permitidos para tomar asistencia (*)</label>
+              <input type="number" name="company[accion_horasatrasasistencia]" class="form-control" min="12" max="240" placeholder="Valor de 12 a 240" value="24" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-toggle-block">
+        <button type="button" class="btn btn-primary btn-large btn-block margedvert" data-toggle-target="#empresa-config-avisos">
+          Configurar avisos por email <span class="caret"></span>
+        </button>
+        <div id="empresa-config-avisos" style="display:none; margin-top:0.75rem;">
+          <h2>Configurar avisos por email</h2>
+          <p class="form-hint">Activa o desactiva los avisos por correo que reciben los alumnos.</p>
+
+          <div class="admin-form">
+            <div class="form-group">
+              <label class="control-label">Aviso por asistir al turno</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[aviso_asistir_turno]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[aviso_asistir_turno]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Aviso por inasistencia</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[aviso_inasistencia]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[aviso_inasistencia]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Recordatorio previo de asistencia a turno</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[recordatorio_previo_asistencia]" value="si"> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[recordatorio_previo_asistencia]" value="no" checked> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Aviso por anular un turno</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[aviso_anular_turno]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[aviso_anular_turno]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Aviso por realizar un pago y recibir solicitudes de pago, cancelar y/o finalizar un pago</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[aviso_pago_solicitudes]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[aviso_pago_solicitudes]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Aviso por recordatorio de pago</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[aviso_recordatorio_pago]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[aviso_recordatorio_pago]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Notificaciones importantes (activación de cuenta, cambio de contraseña, cumpleaños, suscripción finalizada, exclusiones días/horarios, etc.)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[notificaciones_importantes]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[notificaciones_importantes]" value="no"> No</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Mensajes directos (mensajería)</label>
+              <div class="radio-group-inline">
+                <label class="radio-inline"><input type="radio" name="company[mensajes_directos]" value="si" checked> Sí</label>
+                <label class="radio-inline"><input type="radio" name="company[mensajes_directos]" value="no"> No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions" style="margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary btn-large">Guardar</button>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initEmpresaToggles() {
+      if (document.documentElement.dataset.empresaTogglesInitialized === "1") return;
+      document.documentElement.dataset.empresaTogglesInitialized = "1";
+
+      document.querySelectorAll('[data-toggle-target]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var targetSelector = btn.getAttribute('data-toggle-target');
+          if (!targetSelector) { return; }
+          var panel = document.querySelector(targetSelector);
+          if (!panel) { return; }
+          var isHidden = panel.style.display === 'none' || panel.style.display === '';
+          panel.style.display = isHidden ? 'block' : 'none';
+        });
+      });
+
+      // Mostrar/ocultar campo MP Access Token según Soporta MercadoPago
+      var mpRadios = document.querySelectorAll('input[name="company[tiene_mercadopago]"]');
+      var mpRow = document.getElementById('company-mp-token-row');
+      function toggleMpTokenRow() {
+        if (!mpRow) return;
+        var checked = document.querySelector('input[name="company[tiene_mercadopago]"]:checked');
+        mpRow.style.display = (checked && checked.value === 'si') ? 'block' : 'none';
+      }
+      mpRadios.forEach(function(r) { r.addEventListener('change', toggleMpTokenRow); });
+      toggleMpTokenRow();
+    }
+
+    document.addEventListener("DOMContentLoaded", initEmpresaToggles);
+    document.addEventListener("turbo:load", initEmpresaToggles);
+  })();
+</script>
+

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_04_130000) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_17_223209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -155,6 +155,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_04_130000) do
     t.integer "service_daily_active_limit"
     t.integer "service_weekly_active_limit"
     t.integer "service_max_days_in_advance"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
   create_table "users", force: :cascade do |t|
