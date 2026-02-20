@@ -67,6 +67,10 @@ Rails.application.routes.draw do
         end
       end
 
+      # Configuración de Empresa (acceso directo por URL /management/company)
+      get "company", to: "company#show", as: :company
+      patch "company", to: "company#update"
+
       # Gestión de Clases
       resources :classes, only: [ :index, :new, :create, :edit, :update, :destroy ] do
         collection do

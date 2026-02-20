@@ -2607,6 +2607,21 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.radio-group-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+.radio-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-weight: normal;
+}
+
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;

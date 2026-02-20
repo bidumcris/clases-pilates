@@ -34,7 +34,9 @@ class PilatesClassesController < ApplicationController
       redirect_to agenda_path, alert: "Esta clase no está disponible para tu nivel."
       return
     end
-    @can_reserve = current_user.can_reserve_class?(@pilates_class)
+    @can_reserve_level = current_user.can_reserve_class?(@pilates_class)
+    @reservable_now = @pilates_class.reservable_now?
+    @can_reserve = @can_reserve_level && @reservable_now
     @has_reservation = current_user.reservations.where(pilates_class: @pilates_class, status: :confirmed).exists?
     @available_spots = @pilates_class.available_spots
   end

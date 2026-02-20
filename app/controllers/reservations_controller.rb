@@ -38,6 +38,13 @@ class ReservationsController < ApplicationController
       return
     end
 
+    # No permitir reservar si faltan menos de N minutos para el inicio (config empresa)
+    unless @pilates_class.reservable_now?
+      min_min = Setting.get("accion_minprevturno").to_i
+      redirect_to agenda_path, alert: "Solo podés reservar hasta #{min_min} minutos antes del inicio de la clase."
+      return
+    end
+
     @reservation = current_user.reservations.build(
       pilates_class: @pilates_class,
       status: :confirmed,
