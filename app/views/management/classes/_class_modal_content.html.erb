@@ -53,15 +53,18 @@
                   data: { turbo_frame: frame_id }, class: "etiqueta-modal-form" do |f| %>
                 <div class="form-group">
                   <%= f.label :level, "Nivel" %>
-                  <%= f.select :level,
-                      options_for_select([
-                        [ "Inicial", "inicial" ],
-                        [ "Basic", "basic" ],
-                        [ "Intermedio", "intermediate" ],
-                        [ "Pre avanzado", "advanced" ]
-                      ], @pilates_class.level),
-                      {},
-                      { class: "form-control form-select" } %>
+                  <%= f.text_field :level,
+                      value: @pilates_class.level.present? ? level_label(@pilates_class.level) : "",
+                      class: "form-control",
+                      list: "pilates-class-level-list",
+                      placeholder: "Ej: Inicial, Basic, Intermedio, Pre avanzado",
+                      autocomplete: "off" %>
+                  <datalist id="pilates-class-level-list">
+                    <option value="Inicial" label="inicial">
+                    <option value="Basic" label="basic">
+                    <option value="Intermedio" label="intermediate">
+                    <option value="Pre avanzado" label="advanced">
+                  </datalist>
                 </div>
                 <div class="form-group">
                   <%= f.label :max_capacity, "Cupo máximo" %>

@@ -568,6 +568,12 @@ body {
   border: 1px solid #f5c6cb;
 }
 
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
 /* Cards */
 .card {
   background: white;
@@ -944,6 +950,68 @@ body {
 .class-modal-body {
   padding: 1rem 1.25rem;
 }
+
+/* Modal confirmación reserva con recupero (agenda alumnos) */
+.recupero-confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.2s, opacity 0.2s;
+}
+.recupero-confirm-modal.recupero-confirm-modal--open {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+}
+.recupero-confirm-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.recupero-confirm-modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
+  background: var(--color-blanco);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.recupero-confirm-modal-content {
+  padding: 1.25rem 1.5rem;
+}
+.recupero-confirm-modal-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  color: var(--color-malva);
+}
+.recupero-confirm-modal-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--color-texto);
+}
+.recupero-confirm-modal-text:last-of-type {
+  margin-bottom: 1rem;
+}
+.recupero-confirm-form {
+  margin: 0;
+}
+.recupero-confirm-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1428,6 +1496,22 @@ body {
   font-size: 0.875rem;
   margin-top: 0.5rem;
   text-align: center;
+}
+
+.cannot-reserve.payment-pending-msg {
+  color: #b8860b;
+  font-weight: 500;
+}
+
+.agenda-payment-pending-banner {
+  margin: 0.5rem 0 0 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(184, 134, 11, 0.12);
+  border: 1px solid rgba(184, 134, 11, 0.4);
+  border-radius: 8px;
+  color: #7a5f0a;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .no-classes {
@@ -4153,7 +4237,10 @@ body {
   /* En mobile: CTA + botón menú a la derecha; nav en dropdown */
   .landing-header-right {
     justify-content: flex-end;
+    align-items: center;
     position: relative;
+    gap: 0.5rem;
+    min-width: 0;
   }
 
   .landing-header-nav {
@@ -4181,24 +4268,56 @@ body {
     border-radius: 8px;
   }
 
+  .landing-header-cta-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
   .landing-header-menu-toggle {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .landing-header-menu-toggle__icon.eicon-menu-bar {
+    width: 24px;
+    height: 18px;
+  }
+
+  .landing-header-menu-toggle__icon.eicon-menu-bar::before {
+    top: 2px;
+    box-shadow: 0 7px 0 currentColor;
+  }
+
+  .landing-header-menu-toggle__icon.eicon-menu-bar::after {
+    bottom: 2px;
   }
 
   .landing-header-cta {
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: 0.35rem;
+    min-width: 0;
   }
 
   .landing-header-link {
-    font-size: 0.7rem;
-    padding: 0.18rem 0.45rem;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
     border-radius: 14px;
     line-height: 1.2;
-    white-space: normal;
-    text-align: center;
-    max-width: 52vw;
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .landing-hero .hero-content {

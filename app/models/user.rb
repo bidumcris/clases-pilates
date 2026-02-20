@@ -16,11 +16,11 @@ class User < ApplicationRecord
 
   # Postgres EXTRACT(DOW): domingo=0 ... sábado=6
   WEEKDAY_OPTIONS = [
-    ["Lunes", 1],
-    ["Martes", 2],
-    ["Miércoles", 3],
-    ["Jueves", 4],
-    ["Viernes", 5]
+    [ "Lunes", 1 ],
+    [ "Martes", 2 ],
+    [ "Miércoles", 3 ],
+    [ "Jueves", 4 ],
+    [ "Viernes", 5 ]
   ].freeze
 
   has_many :reservations, dependent: :destroy
@@ -103,6 +103,33 @@ class User < ApplicationRecord
     credits.available_this_month.sum(:amount)
   end
 
+  # Devuelve un crédito de recupero usable para esa clase.
+  # Nivel inicial: puede recuperar en todos los horarios de su nivel sin restricción de sala (cualquier crédito).
+  # Otros niveles: crédito sin sala (room_id nil) o que coincida con la sala de la clase.
+  def credit_available_for_recupero(pilates_class)
+    return nil if pilates_class.nil?
+
+    base = credits.available_this_month
+    if inicial?
+      base.first
+    else
+      base.where("room_id IS NULL OR room_id = ?", pilates_class.room_id).first
+    end
+  end
+
+  # Cuota del mes actual pagada (cuota de suscripción con payment_status completed).
+  def subscription_paid_for_current_month?
+    month_start = Date.current.beginning_of_month
+    month_end = Date.current.end_of_month
+    payments.subscription_fees.for_period(month_start, month_end).completed.exists?
+  end
+
+  # Después del día 10 solo puede usar recupero si está al día con el pago.
+  def can_use_recupero?
+    return true if Date.current.day <= 10
+    subscription_paid_for_current_month?
+  end
+
   def fixed_days_summary
     fixed_slots.active.order(:day_of_week, :hour).map(&:full_description).join(" · ")
   end
@@ -125,7 +152,7 @@ class User < ApplicationRecord
 
   def turnos_adeudados_mes_actual
     return nil unless monthly_turns.present?
-    [monthly_turns - turnos_consumidos_mes_actual, 0].max
+    [ monthly_turns - turnos_consumidos_mes_actual, 0 ].max
   end
 
   private

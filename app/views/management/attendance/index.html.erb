@@ -13,7 +13,7 @@
         <% end %>
       </select>
       <label style="margin-left: 1rem;">Fecha</label>
-      <input type="date" name="date" value="<%= @date.strftime('%Y-%m-%d') %>" class="form-input" />
+      <input type="date" name="date" value="<%= @date.strftime('%Y-%m-%d') %>" class="form-input" <%= "max=\"#{(Date.current + 1.day).strftime('%Y-%m-%d')}\"".html_safe if current_user.instructor? %> />
       <button type="submit" class="btn btn-primary">Filtrar</button>
     </div>
   <% end %>
@@ -29,11 +29,14 @@
         <% @classes.each do |pilates_class| %>
           <% confirmed = pilates_class.reservations.select { |r| r.status == "confirmed" } %>
           <div class="asistencia-class-block">
-            <div class="class-schedule-tag">
-              <%= pilates_class.start_time.strftime("%H:%M") %>hs
-              <%= pilates_class.room.name %>
-              [<%= level_label(pilates_class.level) %>]
-              Cupo: <%= pilates_class.max_capacity %>
+            <div class="class-schedule-tag" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+              <span>
+                <%= pilates_class.start_time.strftime("%H:%M") %>hs
+                <%= pilates_class.room.name %>
+                [<%= level_label(pilates_class.level) %>]
+                Cupo: <%= pilates_class.max_capacity %>
+              </span>
+              <%= link_to "Tomar lista", attendance_management_class_path(pilates_class), class: "btn btn-sm btn-primary" %>
             </div>
             <ul class="asistencia-list">
               <% confirmed.each_with_index do |reservation, idx| %>

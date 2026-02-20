@@ -9,6 +9,12 @@
       Elegí una sala para configurar su servicio (horarios, duración de turnos y límites de reservas).
     </p>
 
+    <p style="margin-bottom: 1rem;">
+      <%= link_to new_management_room_path, class: "btn btn-primary" do %>
+        + Crear nueva sala
+      <% end %>
+    </p>
+
     <div class="admin-services-list">
       <% circuito = Room.find_by(room_type: :circuito) %>
       <% mat = Room.find_by(room_type: :planta_baja_mat_accesorios) %>

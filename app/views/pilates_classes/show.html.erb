@@ -43,7 +43,15 @@
           Ya tienes una reserva para esta clase
         </div>
       <% elsif @can_reserve && !@pilates_class.full? %>
-        <% if current_user.credits.available_this_month.any? %>
+        <% if !current_user.can_use_recupero? %>
+          <div class="alert alert-warning">
+            Pago pendiente. No podés reservar con recupero después del 10 sin estar al día con el pago.
+          </div>
+        <% elsif !current_user.credit_available_for_recupero(@pilates_class) %>
+          <div class="alert alert-error">
+            No tenés recupero disponible para esta clase.
+          </div>
+        <% else %>
           <%= button_to "Reservar Clase", reservations_path, 
               params: { pilates_class_id: @pilates_class.id },
               method: :post,

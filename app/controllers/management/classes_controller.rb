@@ -180,6 +180,9 @@ class Management::ClassesController < Management::BaseController
 
         reservation.update!(attendance_status: status)
       end
+
+      # Quienes quedan sin marcar se consideran presentes (solo se marca ausente al que no asiste)
+      @pilates_class.reservations.where(status: :confirmed, attendance_status: :sin_marcar).update_all(attendance_status: Reservation.attendance_statuses[:presente])
     end
 
     redirect_to attendance_management_class_path(@pilates_class), notice: "Lista actualizada"
@@ -237,7 +240,21 @@ class Management::ClassesController < Management::BaseController
   end
 
   def pilates_class_params
-    params.require(:pilates_class).permit(:name, :tags, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :holiday, :holiday_reason)
+    p = params.require(:pilates_class).permit(:name, :tags, :level, :class_type, :room_id, :instructor_id, :start_time, :end_time, :max_capacity, :holiday, :holiday_reason)
+    p[:level] = normalize_level_param(p[:level]) if p[:level].present?
+    p
+  end
+
+  def normalize_level_param(value)
+    return value if value.blank?
+    v = value.to_s.strip
+    mapping = {
+      "inicial" => "inicial", "Inicial" => "inicial",
+      "basic" => "basic", "Basic" => "basic",
+      "intermediate" => "intermediate", "intermedio" => "intermediate", "Intermedio" => "intermediate",
+      "advanced" => "advanced", "pre avanzado" => "advanced", "Pre avanzado" => "advanced"
+    }
+    mapping[v] || v
   end
 
   def set_modal_instance_variables

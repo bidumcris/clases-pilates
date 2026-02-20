@@ -1,4 +1,4 @@
-<div class="agenda-page">
+<div class="agenda-page" data-controller="recupero-confirm">
   <h1>Ver Agenda</h1>
 
   <!-- Semana actual (recuperos) -->
@@ -11,6 +11,11 @@
       <p style="margin: .35rem 0 0 0; opacity: .75;">
         Solo podés ver y reservar clases de la semana actual.
       </p>
+      <% if !current_user.can_use_recupero? && current_user.credits.available_this_month.any? %>
+        <p class="agenda-payment-pending-banner" role="alert">
+          Pago pendiente. Después del 10 no podés reservar con recupero sin estar al día con el pago.
+        </p>
+      <% end %>
     </div>
   </div>
 
@@ -50,11 +55,18 @@
                     </div>
                     
                     <% if current_user.can_reserve_class?(pilates_class) && !pilates_class.full? && pilates_class.reservable_now? %>
-                      <%= button_to "Reservar (1 recupero)", reservations_path,
-                          params: { pilates_class_id: pilates_class.id },
-                          method: :post,
-                          class: "btn btn-success btn-reserve",
-                          data: { turbo_frame: "_top" } %>
+                      <% if current_user.can_use_recupero? && current_user.credit_available_for_recupero(pilates_class) %>
+                        <button type="button"
+                                class="btn btn-success btn-reserve"
+                                data-action="click->recupero-confirm#open"
+                                data-recupero-confirm-pilates-class-id-param="<%= pilates_class.id %>">
+                          Reservar (1 recupero)
+                        </button>
+                      <% elsif !current_user.can_use_recupero? %>
+                        <p class="cannot-reserve payment-pending-msg">Pago pendiente. No podés reservar con recupero después del 10 sin estar al día.</p>
+                      <% elsif !current_user.credit_available_for_recupero(pilates_class) %>
+                        <p class="cannot-reserve">No tenés recupero disponible para esta clase.</p>
+                      <% end %>
                     <% elsif current_user.can_reserve_class?(pilates_class) && !pilates_class.full? && !pilates_class.reservable_now? %>
                       <p class="cannot-reserve">Solo podés reservar hasta <%= Setting.get("accion_minprevturno").presence || "0" %> min antes del inicio</p>
                     <% elsif pilates_class.full? %>
@@ -85,4 +97,31 @@
       <% end %>
     </div>
   <% end %>
+
+  <!-- Modal confirmación recupero -->
+  <div id="recupero-confirm-modal"
+       class="recupero-confirm-modal"
+       data-recupero-confirm-target="modal"
+       aria-hidden="true"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="recupero-confirm-title">
+    <div class="recupero-confirm-modal-backdrop" data-action="click->recupero-confirm#close"></div>
+    <div class="recupero-confirm-modal-dialog">
+      <div class="recupero-confirm-modal-content">
+        <h2 id="recupero-confirm-title" class="recupero-confirm-modal-title">Reservar con recupero</h2>
+        <p class="recupero-confirm-modal-text">
+          El recupero una vez pactado día y hora no tiene modificaciones.
+        </p>
+        <p class="recupero-confirm-modal-text"><strong>¿Confirmás?</strong></p>
+        <%= form_with url: reservations_path, method: :post, local: true, data: { turbo_frame: "_top" }, class: "recupero-confirm-form" do |f| %>
+          <%= f.hidden_field :pilates_class_id, value: "", data: { recupero_confirm_target: "pilatesClassIdInput" } %>
+          <div class="recupero-confirm-modal-actions">
+            <button type="button" class="btn btn-outline-secondary" data-action="click->recupero-confirm#close">Cancelar</button>
+            <%= f.submit "Confirma", class: "btn btn-success" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
