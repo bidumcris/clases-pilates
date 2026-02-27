@@ -25,6 +25,15 @@
               class: "form-select" %>
         </div>
         <div>
+          <label>Días fijos</label><br>
+          <%= select_tag :fixed_slots_count,
+              options_for_select(
+                [["Todos", ""]] + (1..5).map { |n| ["#{n} #{n == 1 ? 'día' : 'días'} fijos", n] },
+                params[:fixed_slots_count].to_s
+              ),
+              class: "form-select" %>
+        </div>
+        <div>
           <%= submit_tag "Aplicar", class: "btn btn-primary" %>
         </div>
       </div>
