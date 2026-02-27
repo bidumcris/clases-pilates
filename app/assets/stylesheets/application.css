@@ -4271,9 +4271,10 @@ body {
   .landing-header-cta-wrap {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.3rem;
     flex-shrink: 0;
     margin-left: auto;
+    margin-right: 0.35rem;
   }
 
   .landing-header-menu-toggle {
@@ -4304,15 +4305,15 @@ body {
 
   .landing-header-cta {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
     min-width: 0;
   }
 
   .landing-header-link {
-    font-size: 0.8rem;
-    padding: 0.35rem 0.5rem;
+    font-size: 0.72rem;
+    padding: 0.28rem 0.45rem;
     border-radius: 14px;
     line-height: 1.2;
     white-space: nowrap;

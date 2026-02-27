@@ -12,6 +12,18 @@ class Management::StudentsController < Management::BaseController
     @students = @students.where(level: params[:level]) if params[:level].present?
     @students = @students.where(class_type: params[:class_type]) if params[:class_type].present?
 
+    if params[:fixed_slots_count].present?
+      count = params[:fixed_slots_count].to_i
+      if count > 0
+        @students =
+          @students
+            .joins(:fixed_slots)
+            .merge(FixedSlot.active)
+            .group("users.id")
+            .having("COUNT(fixed_slots.id) = ?", count)
+      end
+    end
+
     if current_user.instructor?
       instructor = current_user.instructor_profile
       @students = if instructor
